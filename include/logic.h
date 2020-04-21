@@ -5,7 +5,7 @@
 
 struct Payload
 {
-  const char *chars;
+  const char *chars; // no smart pointers on avr architecture
   uint8_t size;
 
 #ifdef TESTING
