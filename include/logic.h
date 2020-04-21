@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <iostream>
 
 struct Payload
 {
@@ -36,15 +35,8 @@ class UartHanshake
 public:
   UartHanshake(TVoidPayload on_transmit, TPayloadVoid on_receive) : on_transmit_{on_transmit}, on_receive_{on_receive} {}
 
-  void Transmit(const Payload &payload)
-  {
-    on_transmit_(payload);
-  }
-
-  Payload Receive()
-  {
-    return on_receive_();
-  }
+  void Transmit(const Payload &payload);
+  Payload Receive();
 
 private:
   TVoidPayload on_transmit_;
