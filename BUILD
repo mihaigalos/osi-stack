@@ -16,6 +16,7 @@ cc_test(
     ]),
     copts = [
         "-fdiagnostics-color",
+        "-DTESTING",
         "-std=c++17",
     ],
     tags = ["unit"],

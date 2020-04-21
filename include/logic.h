@@ -8,6 +8,7 @@ struct Payload
   const char *chars;
   uint8_t size;
 
+#ifdef TESTING
   bool operator==(const Payload &rhs) const
   {
     bool result{false};
@@ -24,6 +25,7 @@ struct Payload
     }
     return result;
   }
+#endif
 };
 
 using TVoidPayload = void (*)(const Payload &);
@@ -34,12 +36,12 @@ class UartHanshake
 public:
   UartHanshake(TVoidPayload on_transmit, TPayloadVoid on_receive) : on_transmit_{on_transmit}, on_receive_{on_receive} {}
 
-  void transmit(const Payload &payload)
+  void Transmit(const Payload &payload)
   {
     on_transmit_(payload);
   }
 
-  Payload receive()
+  Payload Receive()
   {
     return on_receive_();
   }
