@@ -9,6 +9,32 @@ struct Payload
   uint8_t data[kPayloadMaxSize];
   uint8_t size;
 
+  Payload()
+  {
+    Reset();
+  }
+
+  Payload(const uint8_t *data, uint8_t size)
+  {
+    for (uint8_t i = 0; i < size; ++i)
+    {
+      this->data[i] = data[i];
+    }
+    this->size = size;
+  }
+  Payload(const char *data, uint8_t size)
+  {
+    Payload(reinterpret_cast<const uint8_t *>(data), size);
+  }
+  void Reset()
+  {
+    for (uint8_t i = 0; i < size; ++i)
+    {
+      data[i] = 0;
+    }
+    size = 0;
+  }
+
 #ifdef TESTING
   bool operator==(const Payload &rhs) const
   {
@@ -32,7 +58,7 @@ struct Payload
     if (size == 1 && data[0] == rhs)
     {
       result = true;
-        }
+    }
     return result;
   }
 #endif
