@@ -33,6 +33,7 @@ protected:
 
   static Payload transmitted_, received_;
   static uint8_t pos_in_received_;
+  UartHanshake sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 Payload Fixture::transmitted_{};
@@ -41,13 +42,24 @@ uint8_t Fixture::pos_in_received_{};
 
 TEST_F(Fixture, TransmitCalled_WhenTypical)
 {
-  uint8_t transmitted_byte = {};
-  auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
+
   auto string = std::string{"abc"};
-  auto payload_to_transmit = Payload{string.c_str(), string.length()};
+  auto payload_to_transmit = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
   auto expected = payload_to_transmit;
 
   sut_.Transmit(payload_to_transmit);
 
   ASSERT_EQ(transmitted_, expected);
+}
+
+TEST_F(Fixture, ReceiveCalled_WhenTypical)
+{
+  auto string = std::string{"def"};
+  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
+
+  auto received_ = sut_.Receive();
+  received_ = sut_.Receive();
+  received_ = sut_.Receive();
+
+  ASSERT_EQ(received_, expected);
 }

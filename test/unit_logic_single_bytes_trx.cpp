@@ -27,13 +27,13 @@ protected:
   virtual void TearDown() override {}
 
   static uint8_t data_;
+  UartHanshake sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 uint8_t Fixture::data_;
 
 TEST_F(Fixture, ReceiveCalled_WhenTypical)
 {
-  auto sut_ = UartHanshake{Fixture::generic_transmit_byte, Fixture::generic_receive_byte};
   uint8_t expected_byte = 'A';
   data_ = expected_byte;
 
@@ -45,7 +45,6 @@ TEST_F(Fixture, ReceiveCalled_WhenTypical)
 TEST_F(Fixture, TransmitCalled_WhenTypical)
 {
   uint8_t transmitted_byte = {};
-  auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
   auto payload_to_transmit = Payload{};
   payload_to_transmit.data[0] = 'B';
   payload_to_transmit.size = 1;
@@ -59,7 +58,6 @@ TEST_F(Fixture, TransmitCalled_WhenTypical)
 TEST_F(Fixture, TransmitReceive_WhenTypical)
 {
   uint8_t transmitted_byte = {};
-  auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
   uint8_t data_ = 'C';
   auto expected = data_;
 
