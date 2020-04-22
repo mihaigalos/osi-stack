@@ -1,11 +1,11 @@
 #include "logic.h"
 
-void UartHanshake::Transmit(const Payload &payload)
+void UartHanshake::Transmit(const uint8_t &payload)
 {
-    on_transmit_(payload);
+    on_transmit_byte_(payload);
 }
 
-Payload UartHanshake::Receive()
+uint8_t UartHanshake::Receive()
 {
-    return on_receive_();
+    return on_receive_byte_();
 }

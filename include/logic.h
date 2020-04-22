@@ -2,43 +2,18 @@
 
 #include <cstdint>
 
-struct Payload
-{
-  const char *chars; // no smart pointers on avr architecture
-  uint8_t size;
-
-#ifdef TESTING
-  bool operator==(const Payload &rhs) const
-  {
-    bool result{false};
-    if (size == rhs.size)
-    {
-      for (uint8_t i = 0; i < size; ++i)
-      {
-        if (chars[i] != rhs.chars[i])
-        {
-          result = false;
-        }
-      }
-      result = true;
-    }
-    return result;
-  }
-#endif
-};
-
-using TVoidPayload = void (*)(const Payload &);
-using TPayloadVoid = Payload (*)();
+using TVoidUint8 = void (*)(const uint8_t &);
+using TUint8Void = uint8_t (*)();
 
 class UartHanshake
 {
 public:
-  UartHanshake(TVoidPayload on_transmit, TPayloadVoid on_receive) : on_transmit_{on_transmit}, on_receive_{on_receive} {}
+  UartHanshake(TVoidUint8 on_transmit, TUint8Void on_receive) : on_transmit_byte_{on_transmit}, on_receive_byte_{on_receive} {}
 
-  void Transmit(const Payload &payload);
-  Payload Receive();
+  void Transmit(const uint8_t &payload);
+  uint8_t Receive();
 
 private:
-  TVoidPayload on_transmit_;
-  TPayloadVoid on_receive_;
+  TVoidUint8 on_transmit_byte_;
+  TUint8Void on_receive_byte_;
 };

@@ -17,21 +17,18 @@ protected:
 
   auto MakeGenericHandshake()
   {
-    auto generic_transmit = [](const Payload &payload) {};
-    auto generic_receive = []() {
-                      std::string data_string{"HelloWorld"};
-                      return Payload{data_string.c_str(), static_cast<uint8_t>(data_string.length())}; };
-    return UartHanshake{generic_transmit, generic_receive};
+    auto generic_transmit_byte = [](const uint8_t &payload) {};
+    auto generic_receive_byte = []() { return static_cast<uint8_t>('A'); };
+    return UartHanshake{generic_transmit_byte, generic_receive_byte};
   }
 };
 
 TEST_F(Fixture, TransmitCalled_WhenTypical)
 {
   auto sut_ = MakeGenericHandshake();
-  std::string expected_string = "HelloWorld";
-  auto expected_payload = Payload{expected_string.c_str(), static_cast<uint8_t>(expected_string.length())};
+  uint8_t expected_byte = 'A';
 
-  auto received_payload = sut_.Receive();
+  auto received_byte = sut_.Receive();
 
-  ASSERT_EQ(expected_payload, received_payload);
+  ASSERT_EQ(expected_byte, received_byte);
 }
