@@ -1,11 +1,20 @@
 #include "logic.h"
 
-void UartHanshake::Transmit(const uint8_t &payload)
+void UartHanshake::Transmit(const Payload &payload)
 {
-    on_transmit_byte_(payload);
+    for (uint8_t i = 0; i < payload.size; ++i)
+    {
+        on_transmit_byte_(payload.data[i]);
+    }
 }
 
-uint8_t UartHanshake::Receive()
+Payload UartHanshake::Receive()
 {
-    return on_receive_byte_();
+    auto received_value = on_receive_byte_();
+    auto return_value = Payload{};
+
+    return_value.data[0] = received_value;
+    return_value.size = 1;
+
+    return return_value;
 }

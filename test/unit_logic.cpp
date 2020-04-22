@@ -39,29 +39,29 @@ TEST_F(Fixture, ReceiveCalled_WhenTypical)
 
   auto received_byte = sut_.Receive();
 
-  ASSERT_EQ(expected_byte, received_byte);
+  ASSERT_EQ(received_byte, expected_byte);
 }
 
-TEST_F(Fixture, TransmitCalled_WhenTypical)
-{
-  uint8_t transmitted_byte = {};
-  auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
-  uint8_t byte_to_transmit = 'B';
+// TEST_F(Fixture, TransmitCalled_WhenTypical)
+// {
+//   uint8_t transmitted_byte = {};
+//   auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
+//   uint8_t byte_to_transmit = 'B';
 
-  sut_.Transmit(byte_to_transmit);
-  transmitted_byte = data_;
+//   sut_.Transmit(byte_to_transmit);
+//   transmitted_byte = data_;
 
-  ASSERT_EQ(transmitted_byte, byte_to_transmit);
-}
+//   ASSERT_EQ(transmitted_byte, byte_to_transmit);
+// }
 
-TEST_F(Fixture, TransmitReceive_WhenTypical)
-{
-  uint8_t transmitted_byte = {};
-  auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
-  uint8_t data_ = 'C';
+// TEST_F(Fixture, TransmitReceive_WhenTypical)
+// {
+//   uint8_t transmitted_byte = {};
+//   auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
+//   uint8_t data_ = 'C';
 
-  sut_.Transmit(sut_.Receive());
-  transmitted_byte = data_;
+//   sut_.Transmit(sut_.Receive());
+//   transmitted_byte = data_;
 
-  ASSERT_EQ(transmitted_byte, data_);
-}
+//   ASSERT_EQ(transmitted_byte, data_);
+// }
