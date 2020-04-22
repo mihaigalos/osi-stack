@@ -32,7 +32,7 @@ protected:
 
 uint8_t Fixture::data_;
 
-TEST_F(Fixture, ReceiveCalled_WhenTypical)
+TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
   uint8_t expected_byte = 'A';
   data_ = expected_byte;
@@ -42,7 +42,7 @@ TEST_F(Fixture, ReceiveCalled_WhenTypical)
   ASSERT_EQ(received_byte, expected_byte);
 }
 
-TEST_F(Fixture, TransmitCalled_WhenTypical)
+TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
   uint8_t transmitted_byte = {};
   auto payload_to_transmit = Payload{};
@@ -55,7 +55,7 @@ TEST_F(Fixture, TransmitCalled_WhenTypical)
   ASSERT_EQ(payload_to_transmit, transmitted_byte);
 }
 
-TEST_F(Fixture, TransmitReceive_WhenTypical)
+TEST_F(Fixture, TransmitReceiveWorks_WhenTypical)
 {
   uint8_t transmitted_byte = {};
   uint8_t data_ = 'C';

@@ -40,7 +40,7 @@ Payload Fixture::transmitted_{};
 Payload Fixture::received_{};
 uint8_t Fixture::pos_in_received_{};
 
-TEST_F(Fixture, TransmitCalled_WhenTypical)
+TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
 
   auto string = std::string{"abc"};
