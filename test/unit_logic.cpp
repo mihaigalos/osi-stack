@@ -46,10 +46,22 @@ TEST_F(Fixture, TransmitCalled_WhenTypical)
 {
   uint8_t transmitted_byte = {};
   auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
-  uint8_t byte_to_transmit = 'A';
+  uint8_t byte_to_transmit = 'B';
 
   sut_.Transmit(byte_to_transmit);
   transmitted_byte = data_;
 
   ASSERT_EQ(transmitted_byte, byte_to_transmit);
+}
+
+TEST_F(Fixture, TransmitReceive_WhenTypical)
+{
+  uint8_t transmitted_byte = {};
+  auto sut_ = UartHanshake{generic_transmit_byte, generic_receive_byte};
+  uint8_t data_ = 'C';
+
+  sut_.Transmit(sut_.Receive());
+  transmitted_byte = data_;
+
+  ASSERT_EQ(transmitted_byte, data_);
 }
