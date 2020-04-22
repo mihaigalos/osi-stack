@@ -51,15 +51,3 @@ TEST_F(Fixture, TransmitCalled_WhenTypical)
 
   ASSERT_EQ(transmitted_, expected);
 }
-
-TEST_F(Fixture, ReceiveCalled_WhenTypical)
-{
-  auto string = std::string{"def"};
-  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
-
-  auto received_ = sut_.Receive();
-  received_ = sut_.Receive();
-  received_ = sut_.Receive();
-
-  ASSERT_EQ(received_, expected);
-}
