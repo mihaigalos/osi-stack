@@ -4,7 +4,13 @@ cc_library(
     name = "sut",
     srcs = glob(["src/**/*.cpp"]),
     hdrs = glob(["include/**/*.h"]),
-    copts = ["-std=c++17"],
+    copts = [
+        "-std=c++17",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Werror",
+    ],
     strip_include_prefix = "include",
 )
 
@@ -16,6 +22,10 @@ cc_test(
     copts = [
         "-fdiagnostics-color",
         "-DTESTING",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Werror",
         "-std=c++17",
     ],
     tags = ["unit"],
@@ -34,6 +44,10 @@ cc_test(
     copts = [
         "-fdiagnostics-color",
         "-DTESTING",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Werror",
         "-std=c++17",
     ],
     tags = ["unit"],
@@ -52,6 +66,10 @@ cc_test(
     copts = [
         "-fdiagnostics-color",
         "-DTESTING",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Werror",
         "-std=c++17",
     ],
     tags = ["unit"],
@@ -70,6 +88,10 @@ cc_test(
     copts = [
         "-fdiagnostics-color",
         "-DTESTING",
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Werror",
         "-std=c++17",
     ],
     tags = ["unit"],

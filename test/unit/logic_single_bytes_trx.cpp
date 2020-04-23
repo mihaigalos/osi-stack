@@ -57,7 +57,6 @@ TEST_F(Fixture, TransmitWorks_WhenTypical)
 
 TEST_F(Fixture, TransmitReceiveWorks_WhenTypical)
 {
-  uint8_t transmitted_byte = {};
   uint8_t data_ = 'C';
   auto expected = data_;
 
