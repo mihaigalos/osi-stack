@@ -19,14 +19,20 @@ struct Payload
 
   Payload(const Payload &rhs)
   {
-    for (uint8_t i = 0; i < rhs.size; ++i)
-    {
-      this->data[i] = rhs.data[i];
-    }
-    this->size = rhs.size;
+    clone(rhs.data, rhs.size);
+  }
+
+  Payload(const uint8_t *data, uint8_t size)
+  {
+    clone(data, size);
   }
 
   Payload(const char *data, uint8_t size)
+  {
+    clone(reinterpret_cast<const uint8_t *>(data), size);
+  }
+
+  void clone(const uint8_t *data, uint8_t size)
   {
     for (uint8_t i = 0; i < size; ++i)
     {
@@ -34,6 +40,7 @@ struct Payload
     }
     this->size = size;
   }
+
   void Reset()
   {
     for (uint8_t i = 0; i < size; ++i)

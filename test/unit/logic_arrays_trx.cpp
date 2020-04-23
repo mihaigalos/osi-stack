@@ -43,7 +43,6 @@ uint8_t Fixture::pos_in_transmitted_{};
 
 TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
-
   auto string = std::string{"a"};
 
   auto payload_to_transmit = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
@@ -56,7 +55,6 @@ TEST_F(Fixture, TransmitWorks_WhenTypical)
 
 TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
-
   auto string = std::string{"abcd"};
   auto payloadified = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
   received_ = append_crc_to_payload(payloadified);
@@ -70,7 +68,6 @@ TEST_F(Fixture, ReceiveWorks_WhenTypical)
 
 TEST_F(Fixture, ReceiveCRCError_WhenCRCMismatch)
 {
-
   auto string = std::string{"abcd"};
   auto payloadified_without_crc_update = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
   received_ = Payload{payloadified_without_crc_update};
