@@ -1,16 +1,20 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
+DEFAULT_COMPILER_OPTIONS = [
+    "-fdiagnostics-color",
+    "-DTESTING",
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Werror",
+    "-std=c++17",
+]
+
 cc_library(
     name = "sut",
     srcs = glob(["src/**/*.cpp"]),
     hdrs = glob(["include/**/*.h"]),
-    copts = [
-        "-std=c++17",
-        "-Wall",
-        "-Wextra",
-        "-Wpedantic",
-        "-Werror",
-    ],
+    copts = DEFAULT_COMPILER_OPTIONS,
     strip_include_prefix = "include",
 )
 
@@ -19,15 +23,7 @@ cc_test(
     srcs = [
         "test/unit/logic_arrays_trx.cpp",
     ],
-    copts = [
-        "-fdiagnostics-color",
-        "-DTESTING",
-        "-Wall",
-        "-Wextra",
-        "-Wpedantic",
-        "-Werror",
-        "-std=c++17",
-    ],
+    copts = DEFAULT_COMPILER_OPTIONS,
     tags = ["unit"],
     deps = [
         ":sut",
@@ -41,15 +37,7 @@ cc_test(
     srcs = [
         "test/unit/logic_reset_payload.cpp",
     ],
-    copts = [
-        "-fdiagnostics-color",
-        "-DTESTING",
-        "-Wall",
-        "-Wextra",
-        "-Wpedantic",
-        "-Werror",
-        "-std=c++17",
-    ],
+    copts = DEFAULT_COMPILER_OPTIONS,
     tags = ["unit"],
     deps = [
         ":sut",
@@ -63,15 +51,7 @@ cc_test(
     srcs = [
         "test/unit/logic_sanity.cpp",
     ],
-    copts = [
-        "-fdiagnostics-color",
-        "-DTESTING",
-        "-Wall",
-        "-Wextra",
-        "-Wpedantic",
-        "-Werror",
-        "-std=c++17",
-    ],
+    copts = DEFAULT_COMPILER_OPTIONS,
     tags = ["unit"],
     deps = [
         ":sut",
@@ -85,15 +65,7 @@ cc_test(
     srcs = [
         "test/unit/logic_single_bytes_trx.cpp",
     ],
-    copts = [
-        "-fdiagnostics-color",
-        "-DTESTING",
-        "-Wall",
-        "-Wextra",
-        "-Wpedantic",
-        "-Werror",
-        "-std=c++17",
-    ],
+    copts = DEFAULT_COMPILER_OPTIONS,
     tags = ["unit"],
     deps = [
         ":sut",
