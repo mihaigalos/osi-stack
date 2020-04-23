@@ -10,6 +10,12 @@ DEFAULT_COMPILER_OPTIONS = [
     "-std=c++17",
 ]
 
+DEFAULT_TEST_DEPS = [
+    ":sut",
+    "@gtest",
+    "@gtest//:gtest_main",
+]
+
 cc_library(
     name = "sut",
     srcs = glob(["src/**/*.cpp"]),
@@ -25,11 +31,7 @@ cc_test(
     ],
     copts = DEFAULT_COMPILER_OPTIONS,
     tags = ["unit"],
-    deps = [
-        ":sut",
-        "@gtest",
-        "@gtest//:gtest_main",
-    ],
+    deps = DEFAULT_TEST_DEPS,
 )
 
 cc_test(
@@ -39,11 +41,7 @@ cc_test(
     ],
     copts = DEFAULT_COMPILER_OPTIONS,
     tags = ["unit"],
-    deps = [
-        ":sut",
-        "@gtest",
-        "@gtest//:gtest_main",
-    ],
+    deps = DEFAULT_TEST_DEPS,
 )
 
 cc_test(
@@ -53,9 +51,5 @@ cc_test(
     ],
     copts = DEFAULT_COMPILER_OPTIONS,
     tags = ["unit"],
-    deps = [
-        ":sut",
-        "@gtest",
-        "@gtest//:gtest_main",
-    ],
+    deps = DEFAULT_TEST_DEPS,
 )
