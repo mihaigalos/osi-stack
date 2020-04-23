@@ -45,6 +45,24 @@ cc_test(
 )
 
 cc_test(
+    name = "unit_logic_sanity",
+    srcs = [
+        "test/unit_logic_sanity.cpp",
+    ],
+    copts = [
+        "-fdiagnostics-color",
+        "-DTESTING",
+        "-std=c++17",
+    ],
+    tags = ["unit"],
+    deps = [
+        ":sut",
+        "@gtest",
+        "@gtest//:gtest_main",
+    ],
+)
+
+cc_test(
     name = "unit_logic_single_bytes_trx",
     srcs = [
         "test/unit_logic_single_bytes_trx.cpp",

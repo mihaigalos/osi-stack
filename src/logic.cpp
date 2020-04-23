@@ -8,13 +8,12 @@ void UartHanshake::Transmit(const Payload &payload)
     }
 }
 
-Payload UartHanshake::Receive()
+Payload UartHanshake::Receive(uint8_t expected_count)
 {
-    auto received_value = on_receive_byte_();
     auto return_value = Payload{};
-
-    return_value.data[0] = received_value;
-    return_value.size = 1;
-
+    if (expected_count < kPayloadMaxSize)
+    {
+        return_value.data[return_value.size++] = on_receive_byte_();
+    }
     return return_value;
 }

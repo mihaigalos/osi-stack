@@ -73,7 +73,7 @@ public:
   UartHanshake(TVoidUint8 on_transmit, TUint8Void on_receive) : on_transmit_byte_{on_transmit}, on_receive_byte_{on_receive} {}
 
   void Transmit(const Payload &payload);
-  Payload Receive();
+  Payload Receive(uint8_t expected_count = 1);
 
 private:
   TVoidUint8 on_transmit_byte_;
