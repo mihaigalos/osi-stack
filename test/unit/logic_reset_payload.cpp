@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#include "logic.h"
+#include "uart_handshake.h"
 
 using ::testing::AtLeast;
 
