@@ -59,17 +59,3 @@ cc_test(
         "@gtest//:gtest_main",
     ],
 )
-
-cc_test(
-    name = "unit_logic_single_bytes_trx",
-    srcs = [
-        "test/unit/logic_single_bytes_trx.cpp",
-    ],
-    copts = DEFAULT_COMPILER_OPTIONS,
-    tags = ["unit"],
-    deps = [
-        ":sut",
-        "@gtest",
-        "@gtest//:gtest_main",
-    ],
-)

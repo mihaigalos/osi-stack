@@ -12,7 +12,7 @@ using ::testing::AtLeast;
 class Fixture : public ::testing::Test
 {
 public:
-  static void generic_transmit_byte(const uint8_t &payload)
+  static void generic_transmit_byte(const uint8_t payload)
   {
     data_ = payload;
   }
