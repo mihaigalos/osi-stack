@@ -11,7 +11,7 @@ cc_library(
 cc_test(
     name = "unit_logic_arrays_trx",
     srcs = [
-        "test/unit_logic_arrays_trx.cpp",
+        "test/unit/logic_arrays_trx.cpp",
     ],
     copts = [
         "-fdiagnostics-color",
@@ -29,7 +29,7 @@ cc_test(
 cc_test(
     name = "unit_logic_reset_payload",
     srcs = [
-        "test/unit_logic_reset_payload.cpp",
+        "test/unit/logic_reset_payload.cpp",
     ],
     copts = [
         "-fdiagnostics-color",
@@ -47,7 +47,7 @@ cc_test(
 cc_test(
     name = "unit_logic_sanity",
     srcs = [
-        "test/unit_logic_sanity.cpp",
+        "test/unit/logic_sanity.cpp",
     ],
     copts = [
         "-fdiagnostics-color",
@@ -65,7 +65,7 @@ cc_test(
 cc_test(
     name = "unit_logic_single_bytes_trx",
     srcs = [
-        "test/unit_logic_single_bytes_trx.cpp",
+        "test/unit/logic_single_bytes_trx.cpp",
     ],
     copts = [
         "-fdiagnostics-color",
