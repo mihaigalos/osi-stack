@@ -6,6 +6,7 @@
 #include <string>
 
 #include "logic.h"
+#include "crc.h"
 
 using ::testing::AtLeast;
 

@@ -1,11 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include "config.h"
 
 constexpr uint8_t kPayloadMaxSize = 16;
-
-using CRCChecksum = uint16_t;
-constexpr uint8_t kCRCSize = sizeof(CRCChecksum);
 
 struct Payload
 {
@@ -81,8 +79,6 @@ struct Payload
 
 using TVoidUint8 = void (*)(const uint8_t);
 using TUint8Void = uint8_t (*)();
-
-Payload append_crc_to_payload(const Payload &payload);
 
 class UartHanshake
 {
