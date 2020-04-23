@@ -8,8 +8,6 @@
 #include "uart_handshake.h"
 #include "crc.h"
 
-using ::testing::AtLeast;
-
 class Fixture : public ::testing::Test
 {
 public:
