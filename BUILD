@@ -24,32 +24,18 @@ cc_library(
     strip_include_prefix = "include",
 )
 
-cc_test(
-    name = "unit_logic_arrays_trx",
-    srcs = [
-        "test/unit/logic_arrays_trx.cpp",
-    ],
-    copts = DEFAULT_COMPILER_OPTIONS,
-    tags = ["unit"],
-    deps = DEFAULT_TEST_DEPS,
-)
-
-cc_test(
-    name = "unit_logic_reset_payload",
-    srcs = [
-        "test/unit/logic_reset_payload.cpp",
-    ],
-    copts = DEFAULT_COMPILER_OPTIONS,
-    tags = ["unit"],
-    deps = DEFAULT_TEST_DEPS,
-)
-
-cc_test(
-    name = "unit_logic_sanity",
-    srcs = [
-        "test/unit/logic_sanity.cpp",
-    ],
-    copts = DEFAULT_COMPILER_OPTIONS,
-    tags = ["unit"],
-    deps = DEFAULT_TEST_DEPS,
-)
+[
+    cc_test(
+        name = "unit_" + unit_name,
+        srcs = [
+            "test/unit/" + unit_name + ".cpp",
+        ],
+        copts = DEFAULT_COMPILER_OPTIONS,
+        tags = ["unit"],
+        deps = DEFAULT_TEST_DEPS,
+    )
+    for unit_name in [
+        file_name.replace("test/unit/", "").replace(".cpp", "")
+        for file_name in glob(["test/unit/*.cpp"])
+    ]
+]
