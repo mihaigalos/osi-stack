@@ -40,3 +40,13 @@ TEST_F(Fixture, ReceiveDefaultPayload_WhenExpectedCountGreaterThanMaxPayloadSize
 
   ASSERT_EQ(actual, expected);
 }
+
+TEST_F(Fixture, ResetPayloadWorks_WhenTypical)
+{
+  auto initial = Payload{"abc", 3};
+  auto expected = Payload{};
+
+  initial.Reset();
+
+  ASSERT_EQ(initial, expected);
+}
