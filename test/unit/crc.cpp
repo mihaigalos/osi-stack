@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 
 #include <memory>
-#include <iostream>
 #include <string>
 
 #include "uart_handshake.h"

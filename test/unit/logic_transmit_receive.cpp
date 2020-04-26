@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 
 #include <memory>
-#include <iostream>
 #include <string>
 
 #include "uart_handshake.h"
@@ -18,7 +17,6 @@ public:
 
   static uint8_t generic_receive_byte()
   {
-    std::cout << "payloadified_.data[received_.size]= " << static_cast<int>(payloadified_.data[received_.size]) << std::endl;
     return payloadified_.data[received_.size++];
   }
 

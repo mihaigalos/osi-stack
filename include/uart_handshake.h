@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <iostream>
 #include "config.h"
 
 constexpr uint8_t kPayloadMaxSize = 16;
@@ -52,8 +51,6 @@ struct Payload
 #ifdef TESTING
   bool operator==(const Payload &rhs) const
   {
-    std::cout << "this->size: " << static_cast<int>(size) << std::endl;
-    std::cout << " rhs->size: " << static_cast<int>(rhs.size) << std::endl;
     if (size == rhs.size)
     {
       for (uint8_t i = 0; i < size; ++i)
