@@ -1,6 +1,6 @@
 #include "utilities.h"
 
-#ifdef TESTING
+#ifdef LOGGING
 
 void log_dump_payload(const Payload &payload, const std::string header)
 {
