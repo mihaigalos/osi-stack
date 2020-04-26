@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "uart_handshake.h"
+#include "uart_io.h"
 
 using ::testing::AtLeast;
 
