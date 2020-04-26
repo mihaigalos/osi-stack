@@ -1,7 +1,7 @@
 #include "uart_handshake.h"
 #include "crc.h"
 
-void UartHanshake::Transmit(const Payload &payload)
+void UartIO::Transmit(const Payload &payload)
 {
     auto payload_with_crc = append_crc_to_payload(payload);
     for (uint8_t i = 0; i < payload_with_crc.size; ++i)
@@ -10,7 +10,7 @@ void UartHanshake::Transmit(const Payload &payload)
     }
 }
 
-Payload UartHanshake::Receive(uint8_t expected_count)
+Payload UartIO::Receive(uint8_t expected_count)
 {
     auto payload = Payload{};
 

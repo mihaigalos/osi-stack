@@ -26,7 +26,7 @@ protected:
   virtual void TearDown() override {}
 
   static uint8_t data_;
-  UartHanshake sut_{generic_transmit_byte, generic_receive_byte};
+  UartIO sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 uint8_t Fixture::data_;

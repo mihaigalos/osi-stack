@@ -31,7 +31,7 @@ protected:
   virtual void TearDown() override {}
 
   static Payload transmitted_, received_;
-  UartHanshake sut_{generic_transmit_byte, generic_receive_byte};
+  UartIO sut_{generic_transmit_byte, generic_receive_byte};
 
   static std::string data_;
   static Payload payloadified_;
