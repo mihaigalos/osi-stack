@@ -40,3 +40,15 @@ TEST_F(Fixture, ComputeCRCFails_WhenTypical)
 
     ASSERT_FALSE(expected == 'a' + 'b' + 'c' + 'f');
 }
+
+TEST_F(Fixture, AppendCRCToPayloadWorks_WhenTypical)
+{
+    CRCChecksum computed_checksum = computed_crc(payloadified_, payloadified_.size);
+    auto expected = payloadified_;
+    expected.data[expected.size++] = static_cast<uint8_t>(computed_checksum);
+    expected.data[expected.size++] = static_cast<uint8_t>(computed_checksum >> 8);
+
+    payloadified_ = append_crc_to_payload(payloadified_);
+
+    ASSERT_EQ(expected, payloadified_);
+}
