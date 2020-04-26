@@ -20,7 +20,14 @@ void log(std::string in)
 
 #else
 
-void log_dump_payload(const Payload &payload, const std::string header) {}
-void log(std::string in) {}
+void log_dump_payload(const Payload &payload, const std::string header)
+{
+    static_cast<void>(payload);
+    static_cast<void>(header);
+}
+void log(std::string in)
+{
+    static_cast<void>(in);
+}
 
 #endif
