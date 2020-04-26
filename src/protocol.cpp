@@ -16,7 +16,8 @@ CommunicationStatus UartHandshake<>::RetransmitWithAcknowledge(const Payload &pa
 
         if (response.size)
         {
-            switch (static_cast<CommunicationStatus>(response.data[0]))
+            result = static_cast<CommunicationStatus>(response.data[0]);
+            switch (result)
             {
             case CommunicationStatus::NegativeAcknowledge:
                 log("Received negative response, retransmitting.");
@@ -27,7 +28,6 @@ CommunicationStatus UartHandshake<>::RetransmitWithAcknowledge(const Payload &pa
             default:
                 break;
             }
-            result = static_cast<CommunicationStatus>(response.data[0]);
         }
     }
     return result;
