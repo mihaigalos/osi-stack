@@ -73,3 +73,22 @@ TEST_F(Fixture, ReceivedCRCWorks_WhenTypical)
 
     ASSERT_EQ(expected, actual);
 }
+
+TEST_F(Fixture, CRCMatch_WhenTypical)
+{
+    payloadified_ = append_crc_to_payload(payloadified_);
+
+    auto is_crc_match = crc_match(payloadified_);
+
+    ASSERT_TRUE(is_crc_match);
+}
+
+TEST_F(Fixture, CRCNotMatch_WhenTypical)
+{
+    payloadified_ = append_crc_to_payload(payloadified_);
+    payloadified_.data[payloadified_.size - 1] = payloadified_.data[payloadified_.size - 1] + 2;
+
+    auto is_crc_match = crc_match(payloadified_);
+
+    ASSERT_FALSE(is_crc_match);
+}
