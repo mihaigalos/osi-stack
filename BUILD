@@ -7,7 +7,7 @@ DEFAULT_COMPILER_OPTIONS = [
     "-Wextra",
     "-Wpedantic",
     "-Werror",
-    "-std=c++17",
+    "-std=c++14",
 ]
 
 DEFAULT_TEST_DEPS = [
