@@ -31,14 +31,13 @@ protected:
   virtual void TearDown() override {}
 
   static Payload transmitted_, received_;
-  static uint8_t pos_in_received_, pos_in_transmitted_;
+  static uint8_t pos_in_received_;
   UartHanshake sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 Payload Fixture::transmitted_{};
 Payload Fixture::received_{};
 uint8_t Fixture::pos_in_received_{};
-uint8_t Fixture::pos_in_transmitted_{};
 
 TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
