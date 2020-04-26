@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "uart_io.h"
+#include "uartio.h"
 #include "crc.h"
 
 class Fixture : public ::testing::Test
