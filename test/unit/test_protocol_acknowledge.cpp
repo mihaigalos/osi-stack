@@ -40,7 +40,6 @@ public:
 protected:
     virtual void SetUp() override
     {
-        transmitted_.Reset();
         received_.Reset();
 
         payloadified_negative_acknowledge_ = Payload{data_negative_acknowledge_, 1};
@@ -54,7 +53,7 @@ protected:
     }
     virtual void TearDown() override {}
 
-    static Payload transmitted_, received_;
+    static Payload received_;
     UartHandshake<> sut_{generic_transmit_byte, generic_receive_byte};
 
     static std::string data_;
@@ -63,7 +62,6 @@ protected:
     static Payload payloadified_data_;
 };
 
-Payload Fixture::transmitted_{};
 Payload Fixture::received_{};
 
 std::string Fixture::data_{"abcd"};
