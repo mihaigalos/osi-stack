@@ -13,6 +13,7 @@ void UartHanshake::Transmit(const Payload &payload)
 Payload UartHanshake::Receive(uint8_t expected_count)
 {
     auto payload = Payload{};
+
     if (expected_count < kPayloadMaxSize)
     {
         for (uint8_t i = 0; i < expected_count; ++i)
