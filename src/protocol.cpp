@@ -15,16 +15,20 @@ CommunicationStatus UartHandshake<>::RetransmitWithAcknowledge(const Payload &pa
 
         log_dump_payload(response, "response");
 
-        if (response.size && static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge) == response.data[0])
+        if (response.size)
         {
-            log("Received negative response, retransmitting.");
-            result = CommunicationStatus::NegativeAcknowledge;
-        }
-        else if (response.size && static_cast<uint8_t>(CommunicationStatus::Acknowledge) == response.data[0])
-        {
-            log("Received acknowledge response, everything OK.");
-            result = CommunicationStatus::Acknowledge;
-            break;
+            switch (static_cast<CommunicationStatus>(response.data[0]))
+            {
+            case CommunicationStatus::NegativeAcknowledge:
+                log("Received negative response, retransmitting.");
+                break;
+            case CommunicationStatus::Acknowledge:
+                log("Received acknowledge response, everything OK.");
+                return CommunicationStatus::Acknowledge;
+            default:
+                break;
+            }
+            result = static_cast<CommunicationStatus>(response.data[0]);
         }
     }
     return result;
