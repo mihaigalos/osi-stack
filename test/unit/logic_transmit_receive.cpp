@@ -33,6 +33,9 @@ protected:
   static Payload transmitted_, received_;
   static uint8_t pos_in_received_;
   UartHanshake sut_{generic_transmit_byte, generic_receive_byte};
+
+  std::string data_{"abcd"};
+  Payload payloadified_{data_.c_str(), static_cast<uint8_t>(data_.length())};
 };
 
 Payload Fixture::transmitted_{};
@@ -41,64 +44,50 @@ uint8_t Fixture::pos_in_received_{};
 
 TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
-  auto string = std::string{"abcd"};
+  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
 
-  auto payload_to_transmit = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
-  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
-
-  sut_.Transmit(payload_to_transmit);
+  sut_.Transmit(payloadified_);
 
   ASSERT_EQ(transmitted_, expected);
 }
 
 TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
-  auto string = std::string{"abcd"};
-  auto payloadified = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
-  received_ = append_crc_to_payload(payloadified);
+  received_ = append_crc_to_payload(payloadified_);
+  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
 
-  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
-
-  sut_.Receive(static_cast<uint8_t>(string.length()));
+  sut_.Receive(static_cast<uint8_t>(data_.length()));
 
   ASSERT_EQ(received_, expected);
 }
 
 TEST_F(Fixture, ReceiveCRCError_WhenCRCMismatch)
 {
-  auto string = std::string{"abcd"};
-  auto payloadified_without_crc_update = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
-  received_ = Payload{payloadified_without_crc_update};
+  received_ = payloadified_;
+  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
 
-  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
-
-  sut_.Receive(static_cast<uint8_t>(string.length()));
+  sut_.Receive(static_cast<uint8_t>(data_.length()));
 
   ASSERT_FALSE(received_ == expected);
 }
 
 TEST_F(Fixture, ReceiveError_WhenIncorrectPayloadLength)
 {
-  auto string = std::string{"abcd"};
-  auto payloadified = Payload{string.c_str(), static_cast<uint8_t>(string.length() - 1)};
+  auto payloadified = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() - 1)};
   received_ = append_crc_to_payload(payloadified);
+  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
 
-  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
-
-  sut_.Receive(static_cast<uint8_t>(string.length()));
+  sut_.Receive(static_cast<uint8_t>(data_.length()));
 
   ASSERT_FALSE(received_ == expected);
 }
 
 TEST_F(Fixture, ReceiveError_WhenForgotCRCAppend)
 {
-  auto string = std::string{"abcd"};
-  auto payloadified = Payload{string.c_str(), static_cast<uint8_t>(string.length() - 1)};
-  received_ = payloadified;
+  received_ = payloadified_;
+  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
 
-  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
-
-  sut_.Receive(static_cast<uint8_t>(string.length()));
+  sut_.Receive(static_cast<uint8_t>(data_.length()));
 
   ASSERT_FALSE(received_ == expected);
 }
