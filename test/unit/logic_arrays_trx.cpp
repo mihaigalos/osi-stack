@@ -41,7 +41,7 @@ uint8_t Fixture::pos_in_received_{};
 
 TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
-  auto string = std::string{"a"};
+  auto string = std::string{"abcd"};
 
   auto payload_to_transmit = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
   auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
@@ -69,6 +69,32 @@ TEST_F(Fixture, ReceiveCRCError_WhenCRCMismatch)
   auto string = std::string{"abcd"};
   auto payloadified_without_crc_update = Payload{string.c_str(), static_cast<uint8_t>(string.length())};
   received_ = Payload{payloadified_without_crc_update};
+
+  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
+
+  sut_.Receive(static_cast<uint8_t>(string.length()));
+
+  ASSERT_FALSE(received_ == expected);
+}
+
+TEST_F(Fixture, ReceiveError_WhenIncorrectPayloadLength)
+{
+  auto string = std::string{"abcd"};
+  auto payloadified = Payload{string.c_str(), static_cast<uint8_t>(string.length() - 1)};
+  received_ = append_crc_to_payload(payloadified);
+
+  auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
+
+  sut_.Receive(static_cast<uint8_t>(string.length()));
+
+  ASSERT_FALSE(received_ == expected);
+}
+
+TEST_F(Fixture, ReceiveError_WhenForgotCRCAppend)
+{
+  auto string = std::string{"abcd"};
+  auto payloadified = Payload{string.c_str(), static_cast<uint8_t>(string.length() - 1)};
+  received_ = payloadified;
 
   auto expected = Payload{string.c_str(), static_cast<uint8_t>(string.length() + kCRCSize)};
 
