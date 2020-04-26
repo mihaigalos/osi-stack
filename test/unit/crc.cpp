@@ -52,3 +52,13 @@ TEST_F(Fixture, AppendCRCToPayloadWorks_WhenTypical)
 
     ASSERT_EQ(expected, payloadified_);
 }
+
+TEST_F(Fixture, ReceivedCRCWorks_WhenTypical)
+{
+    CRCChecksum expected = computed_crc(payloadified_, payloadified_.size);
+    payloadified_ = append_crc_to_payload(payloadified_);
+
+    CRCChecksum actual = received_crc(payloadified_);
+
+    ASSERT_EQ(expected, actual);
+}

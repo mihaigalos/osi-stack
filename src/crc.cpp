@@ -1,5 +1,6 @@
 #include "uart_handshake.h"
 #include "config.h"
+#include "crc.h"
 #include <iostream>
 
 CRCChecksum crc_function(CRCChecksum initial, uint8_t current)
@@ -28,6 +29,7 @@ CRCChecksum computed_crc(const Payload &payload, uint8_t bytes_count)
     for (uint8_t i = 0; i < bytes_count; ++i)
     {
         crc = crc_function(crc, payload.data[i]);
+        std::cout << "computed_crc_byte: " << static_cast<int>(crc) << std::endl;
     }
 
     return crc;
