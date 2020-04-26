@@ -24,10 +24,7 @@ Payload UartIO::Receive(const uint8_t expected_count) const
             payload.data[payload.size++] = on_receive_byte_();
         }
         log_dump_payload(payload, "received payload");
-        if (crc_match(payload))
-        {
-            return payload;
-        }
+        return crc_match(payload) ? payload : Payload{};
     }
     return {};
 }
