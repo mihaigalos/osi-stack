@@ -27,6 +27,17 @@ protected:
 std::string Fixture::data_{"abcd"};
 Payload Fixture::payloadified_;
 
+TEST_F(Fixture, CRCFunctionWorks_WhenTypical)
+{
+    CRCChecksum initial = 'a';
+    CRCChecksum current = 'b';
+    CRCChecksum expected = initial + current;
+
+    auto actual = crc_function(initial, 'b');
+
+    ASSERT_EQ(expected, actual);
+}
+
 TEST_F(Fixture, ComputeCRCWorks_WhenTypical)
 {
     auto expected = computed_crc(payloadified_, payloadified_.size);

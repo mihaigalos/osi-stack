@@ -3,7 +3,7 @@
 #include "crc.h"
 #include <iostream>
 
-CRCChecksum crc_function(CRCChecksum initial, uint8_t current)
+inline CRCChecksum crc_function(CRCChecksum initial, uint8_t current)
 {
     return initial + current;
 }
