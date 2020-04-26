@@ -3,7 +3,7 @@
 #include <iostream>
 
 template <>
-CommunicationStatus UartHandshake<>::TransmitWithAcknowledge(const Payload &payload)
+CommunicationStatus UartHandshake<>::RetransmitWithAcknowledge(const Payload &payload)
 {
     uint8_t retransmit_count = 2;
     CommunicationStatus result{CommunicationStatus::Unknown};

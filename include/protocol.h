@@ -16,7 +16,7 @@ class UartHandshake
 {
 public:
     UartHandshake(TVoidUint8 on_transmit, TUint8Void on_receive) : io_{on_transmit, on_receive} {}
-    CommunicationStatus TransmitWithAcknowledge(const Payload &payload);
+    CommunicationStatus RetransmitWithAcknowledge(const Payload &payload);
 
 private:
     T io_;
