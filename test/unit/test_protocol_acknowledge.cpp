@@ -71,7 +71,7 @@ Payload Fixture::payloadified_data_;
 
 TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
-    CommunicationStatus result = sut_.RetransmitWithAcknowledge(payloadified_data_);
+    CommunicationStatus result = sut_.TransmitWithAcknowledge(payloadified_data_);
 
     ASSERT_EQ(result, CommunicationStatus::Acknowledge);
 }
