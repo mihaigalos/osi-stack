@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "uartio.h"
+#include "transceiver.h"
 #include "crc.h"
 
 class Fixture : public ::testing::Test
@@ -31,7 +31,7 @@ protected:
   virtual void TearDown() override {}
 
   static Payload transmitted_, received_;
-  UartIO sut_{generic_transmit_byte, generic_receive_byte};
+  Transceiver sut_{generic_transmit_byte, generic_receive_byte};
 
   static std::string data_;
   static Payload payloadified_;

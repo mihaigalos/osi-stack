@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "uartio.h"
+#include "transceiver.h"
 
 using ::testing::AtLeast;
 
@@ -26,7 +26,7 @@ protected:
   virtual void TearDown() override {}
 
   static uint8_t data_;
-  UartIO sut_{generic_transmit_byte, generic_receive_byte};
+  Transceiver sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 uint8_t Fixture::data_;

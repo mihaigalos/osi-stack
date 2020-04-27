@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "uartio.h"
+#include "transceiver.h"
 #include "config.h"
 
 enum class CommunicationStatus : uint8_t
@@ -12,7 +12,7 @@ enum class CommunicationStatus : uint8_t
     NegativeAcknowledge = 0x15
 };
 
-template <typename T = UartIO>
+template <typename T = Transceiver>
 class UartHandshake
 {
 public:

@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "uartio.h"
+#include "transceiver.h"
 #include "crc.h"
 #include "protocol.h"
 

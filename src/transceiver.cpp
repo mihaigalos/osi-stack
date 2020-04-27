@@ -1,9 +1,9 @@
-#include "uartio.h"
+#include "transceiver.h"
 #include "crc.h"
 
 #include "utilities.h"
 
-void UartIO::Transmit(const Payload &payload) const
+void Transceiver::Transmit(const Payload &payload) const
 {
     auto payload_with_crc = append_crc_to_payload(payload);
     log_dump_payload(payload, "transmitting payload");
@@ -13,7 +13,7 @@ void UartIO::Transmit(const Payload &payload) const
     }
 }
 
-Payload UartIO::Receive(const uint8_t expected_count) const
+Payload Transceiver::Receive(const uint8_t expected_count) const
 {
     auto payload = Payload{};
 
