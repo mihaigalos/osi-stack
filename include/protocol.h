@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "uartio.h"
+#include "config.h"
 
 enum class CommunicationStatus : uint8_t
 {
@@ -16,7 +17,8 @@ class UartHandshake
 {
 public:
     UartHandshake(TVoidUint8 on_transmit, TUint8Void on_receive) : io_{on_transmit, on_receive} {}
-    CommunicationStatus TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count = 2) const;
+    CommunicationStatus TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count = kMaxRetransmitCount) const;
+    Payload ReceiveWithAcknowledge(uint8_t expected_count = 1 + kCRCSize) const;
 
 private:
     T io_;

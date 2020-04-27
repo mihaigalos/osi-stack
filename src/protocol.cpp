@@ -21,3 +21,16 @@ CommunicationStatus UartHandshake<>::TransmitWithAcknowledge(const Payload &payl
     }
     return result;
 }
+
+template <>
+Payload UartHandshake<>::ReceiveWithAcknowledge(uint8_t expected_count) const
+{
+    static_cast<void>(expected_count);
+    Payload result;
+    CommunicationStatus status{CommunicationStatus::Unknown};
+    for (uint8_t i = 0; i < kMaxRetransmitCount && status != CommunicationStatus::Acknowledge; ++i)
+    {
+    }
+
+    return result;
+}
