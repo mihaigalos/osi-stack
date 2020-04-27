@@ -1,5 +1,6 @@
 #include "protocol.h"
 #include "utilities.h"
+#include "crc.h"
 #include <iostream>
 
 template <>
@@ -25,12 +26,19 @@ CommunicationStatus UartHandshake<>::TransmitWithAcknowledge(const Payload &payl
 template <>
 Payload UartHandshake<>::ReceiveWithAcknowledge(uint8_t expected_count) const
 {
-    static_cast<void>(expected_count);
-    Payload result;
+    Payload received;
     CommunicationStatus status{CommunicationStatus::Unknown};
+
     for (uint8_t i = 0; i < kMaxRetransmitCount && status != CommunicationStatus::Acknowledge; ++i)
     {
+        received = io_.Receive(expected_count);
+        log_dump_payload(received, "received");
+
+        status = crc_match(received) ? CommunicationStatus::Acknowledge : CommunicationStatus::NegativeAcknowledge;
+
+        uint8_t data_response_[]{static_cast<uint8_t>(status)};
+        io_.Transmit(Payload{data_response_, 1});
     }
 
-    return result;
+    return received;
 }
