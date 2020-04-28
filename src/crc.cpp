@@ -30,6 +30,10 @@ CRCChecksum computed_crc(const Payload &payload, uint8_t bytes_count)
 
 bool crc_match(const Payload &payload)
 {
+    if (payload.size <= kCRCSize)
+    {
+        return false;
+    }
     return received_crc(payload) == computed_crc(payload, payload.size - kCRCSize);
 }
 
