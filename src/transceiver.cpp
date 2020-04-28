@@ -6,7 +6,7 @@
 void Transceiver::Transmit(const Payload &payload) const
 {
     auto payload_with_crc = append_crc_to_payload(payload);
-    log_dump_payload(payload, "transmitting payload");
+    log_dump_payload(payload_with_crc, "transmitting payload");
     for (uint8_t i = 0; i < payload_with_crc.size; ++i)
     {
         on_transmit_byte_(payload_with_crc.data[i]);
