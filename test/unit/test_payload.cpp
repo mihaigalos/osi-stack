@@ -34,6 +34,15 @@ TEST_F(Fixture, PayloadAssignmentWorks_WhenTypical)
     ASSERT_EQ(expected, actual);
 }
 
+TEST_F(Fixture, PayloadOperatorEqualsWorks_WhenTypical)
+{
+    Payload actual{payloadified_};
+
+    Payload expected = actual;
+
+    ASSERT_TRUE(expected == actual);
+}
+
 TEST_F(Fixture, PayloadConstructionFromConstCharWorks_WhenTypical)
 {
     std::string expected{"abcd"};
