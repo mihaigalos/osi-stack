@@ -34,7 +34,7 @@ TEST_F(Fixture, PayloadAssignmentWorks_WhenTypical)
     ASSERT_EQ(expected, actual);
 }
 
-TEST_F(Fixture, PayloadOperatorEqualsWorks_WhenTypical)
+TEST_F(Fixture, PayloadOperatorEqualsPayloadWorks_WhenTypical)
 {
     Payload actual{payloadified_};
 
@@ -56,6 +56,16 @@ TEST_F(Fixture, PayloadConstructionFromConstCharWorks_WhenTypical)
             break;
         }
     }
+
+    ASSERT_TRUE(is_match);
+}
+
+TEST_F(Fixture, PayloadOperatorEqualsUint8Works_WhenTypical)
+{
+    auto expected = 'a';
+
+    payloadified_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
+    bool is_match = payloadified_.data[0] == expected;
 
     ASSERT_TRUE(is_match);
 }
