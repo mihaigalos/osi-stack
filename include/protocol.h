@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "transceiver.h"
+#include "osi_layers/physical.h"
 #include "config.h"
 
 enum class CommunicationStatus : uint8_t
