@@ -1,7 +1,6 @@
 #include "osi_layers/datalink.h"
 #include "utilities.h"
 #include "crc.h"
-#include <iostream>
 
 template <>
 CommunicationStatus UartHandshake<>::TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count) const
