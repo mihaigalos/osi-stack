@@ -27,7 +27,7 @@ cc_library(
 
 [
     cc_test(
-        name = "unit_" + unit_name,
+        name = "unit/" + unit_name,
         srcs = [
             "test/unit/" + unit_name + ".cpp",
         ],
