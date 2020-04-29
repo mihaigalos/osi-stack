@@ -53,7 +53,7 @@ std::string Fixture::data_{"abcd"};
 Payload Fixture::payloadified_negative_acknowledge_;
 Payload Fixture::payloadified_data_;
 
-TEST_F(Fixture, TransmitWorks_WhenTypical)
+TEST_F(Fixture, TransmitNegativeAcknowledgeWorks_WhenTypical)
 {
     CommunicationStatus result = sut_.TransmitWithAcknowledge(payloadified_data_);
 
