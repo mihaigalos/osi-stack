@@ -37,6 +37,6 @@ cc_library(
     )
     for unit_name in [
         file_name.replace("test/unit/", "").replace(".cpp", "")
-        for file_name in glob(["test/unit/*.cpp"])
+        for file_name in glob(["test/unit/**/*.cpp"])
     ]
 ]
