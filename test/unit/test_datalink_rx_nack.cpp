@@ -6,7 +6,7 @@
 
 #include "osi_layers/physical.h"
 #include "crc.h"
-#include "osi_layers/data_link.h"
+#include "osi_layers/datalink.h"
 
 #include "utilities.h"
 
