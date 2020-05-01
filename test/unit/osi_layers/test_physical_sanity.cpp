@@ -29,16 +29,16 @@ protected:
 
 uint8_t Fixture::data_;
 
-TEST_F(Fixture, ReceiveDefaultPayload_WhenExpectedCountGreaterThanMaxPayloadSize)
-{
-  auto expected = Payload{};
+// TEST_F(Fixture, ResetPayloadSizeWorks_WhenTypical)
+// {
+//   auto initial = Payload{"abc", 3};
 
-  auto actual = sut_.Receive();
+//   initial.Reset();
 
-  ASSERT_EQ(actual, expected);
-}
+//   ASSERT_EQ(initial.size, 0);
+// }
 
-TEST_F(Fixture, ResetPayloadWorks_WhenTypical)
+TEST_F(Fixture, ResetPayloadDataWorks_WhenTypical)
 {
   auto initial = Payload{"abc", 3};
   auto expected = Payload{};
