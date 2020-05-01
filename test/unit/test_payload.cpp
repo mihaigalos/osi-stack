@@ -6,8 +6,6 @@
 
 #include "payload.h"
 
-using ::testing::AtLeast;
-
 class Fixture : public ::testing::Test
 {
 public:
