@@ -22,6 +22,10 @@ public:
 
     static uint8_t generic_receive_byte()
     {
+        if (received_.size == 3)
+        {
+            received_.size = 0;
+        }
         return payloadified_negative_acknowledge_.data[received_.size++];
     }
 

@@ -46,7 +46,6 @@ Payload Fixture::payloadified_;
 TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
   auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
-  expected = append_crc_to_payload(expected);
 
   sut_.Transmit(payloadified_);
 
@@ -55,33 +54,29 @@ TEST_F(Fixture, TransmitWorks_WhenTypical)
 
 TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
-  payloadified_ = append_crc_to_payload(payloadified_);
   auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
-  expected = append_crc_to_payload(expected);
 
-  received_ = sut_.Receive(static_cast<uint8_t>(data_.length() + kCRCSize));
+  received_ = sut_.Receive(static_cast<uint8_t>(data_.length()));
 
   ASSERT_EQ(received_, expected);
 }
 
 TEST_F(Fixture, ReceiveCRCError_WhenCRCMismatch)
 {
-  payloadified_ = append_crc_to_payload(payloadified_);
-  payloadified_.data[payloadified_.size - 1] = payloadified_.data[payloadified_.size - 1] + 2;
-  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
+  payloadified_.data[payloadified_.size - 1] = payloadified_.data[payloadified_.size - 1] + 42;
+  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
 
-  received_ = sut_.Receive(static_cast<uint8_t>(data_.length() + kCRCSize));
+  received_ = sut_.Receive(static_cast<uint8_t>(data_.length()));
 
   ASSERT_FALSE(received_ == expected);
 }
 
 TEST_F(Fixture, ReceiveError_WhenIncorrectPayloadLength)
 {
-  auto payloadified = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() - 1)};
-  payloadified_ = append_crc_to_payload(payloadified);
-  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
+  payloadified_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() - 1)};
+  auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
 
-  received_ = sut_.Receive(static_cast<uint8_t>(data_.length() + kCRCSize));
+  received_ = sut_.Receive(static_cast<uint8_t>(data_.length()));
 
   ASSERT_FALSE(received_ == expected);
 }
