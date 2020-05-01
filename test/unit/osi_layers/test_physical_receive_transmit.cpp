@@ -56,7 +56,7 @@ TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
   auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
 
-  received_ = sut_.Receive(static_cast<uint8_t>(data_.length()));
+  received_ = sut_.Receive();
 
   ASSERT_EQ(received_, expected);
 }
@@ -66,7 +66,7 @@ TEST_F(Fixture, ReceiveCRCError_WhenCRCMismatch)
   payloadified_.data[payloadified_.size - 1] = payloadified_.data[payloadified_.size - 1] + 42;
   auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
 
-  received_ = sut_.Receive(static_cast<uint8_t>(data_.length()));
+  received_ = sut_.Receive();
 
   ASSERT_FALSE(received_ == expected);
 }
@@ -76,7 +76,7 @@ TEST_F(Fixture, ReceiveError_WhenIncorrectPayloadLength)
   payloadified_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() - 1)};
   auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
 
-  received_ = sut_.Receive(static_cast<uint8_t>(data_.length()));
+  received_ = sut_.Receive();
 
   ASSERT_FALSE(received_ == expected);
 }
@@ -85,7 +85,7 @@ TEST_F(Fixture, ReceiveError_WhenForgotCRCAppend)
 {
   auto expected = Payload{data_.c_str(), static_cast<uint8_t>(data_.length() + kCRCSize)};
 
-  sut_.Receive(static_cast<uint8_t>(data_.length() + kCRCSize));
+  sut_.Receive();
 
   ASSERT_FALSE(received_ == expected);
 }

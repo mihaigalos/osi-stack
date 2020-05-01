@@ -5,8 +5,8 @@
 
 struct Payload
 {
-    uint8_t data[kPayloadMaxSize];
     uint8_t size;
+    uint8_t data[kPayloadMaxSize];
 
     Payload()
     {

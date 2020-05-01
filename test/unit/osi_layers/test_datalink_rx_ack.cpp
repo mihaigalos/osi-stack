@@ -64,7 +64,7 @@ TEST_F(Fixture, ReceiveWithAcknowledgeWorks_WhenTypical)
     auto expected = Payload(data_.c_str(), static_cast<uint8_t>(data_.length()));
     expected = append_crc_to_payload(expected);
 
-    auto actual = sut_.ReceiveWithAcknowledge(expected.size);
+    auto actual = sut_.ReceiveWithAcknowledge();
 
     ASSERT_EQ(actual, expected);
 }

@@ -6,20 +6,26 @@
 void Transceiver::Transmit(const Payload &payload) const
 {
     log_dump_payload(payload, "Physical :: Transmit");
+    on_transmit_byte_(payload.size);
     for (uint8_t i = 0; i < payload.size; ++i)
     {
         on_transmit_byte_(payload.data[i]);
     }
 }
 
-Payload Transceiver::Receive(const uint8_t expected_count) const
+Payload Transceiver::Receive() const
 {
     auto payload = Payload{};
 
-    for (uint8_t i = 0; i < expected_count; ++i)
+    auto expected_count = on_receive_byte_();
+    if (expected_count < kPayloadMaxSize)
     {
-        payload.data[payload.size++] = on_receive_byte_();
+        for (uint8_t i = 0; i < expected_count; ++i)
+        {
+            payload.data[payload.size++] = on_receive_byte_();
+        }
+        log_dump_payload(payload, "Physical :: Receive");
+        return payload;
     }
-    log_dump_payload(payload, "Physical :: Receive");
-    return payload;
+    return {};
 }

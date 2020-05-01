@@ -85,7 +85,7 @@ TEST_F(Fixture, ReceiveWithNegativeAcknowledgeWorks_WhenTypical)
     auto expected = Payload(data_.c_str(), static_cast<uint8_t>(data_.length()));
     expected = append_crc_to_payload(expected);
 
-    auto actual = sut_.ReceiveWithAcknowledge(expected.size);
+    auto actual = sut_.ReceiveWithAcknowledge();
 
     ASSERT_EQ(actual, expected);
 }
@@ -101,7 +101,7 @@ TEST_F(Fixture, ReceiveWithNegativeAcknowledgeTransmissionWorks_WhenTypical)
 
     auto expected = Payload{nack_then_ack_with_crc, 6};
 
-    sut_.ReceiveWithAcknowledge(data_.length() + kCRCSize);
+    sut_.ReceiveWithAcknowledge();
     auto actual = transmitted_;
 
     log_dump_payload(actual, "actual");

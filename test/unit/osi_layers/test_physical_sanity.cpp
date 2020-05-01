@@ -33,7 +33,7 @@ TEST_F(Fixture, ReceiveDefaultPayload_WhenExpectedCountGreaterThanMaxPayloadSize
 {
   auto expected = Payload{};
 
-  auto actual = sut_.Receive(kPayloadMaxSize + 1);
+  auto actual = sut_.Receive();
 
   ASSERT_EQ(actual, expected);
 }
