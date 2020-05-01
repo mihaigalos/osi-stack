@@ -6,6 +6,7 @@ void log_dump_payload(const Payload &payload, const std::string header)
 {
 
     std::cout << "---------" << header << "---------" << std::endl;
+    std::cout << "[" << std::dec << static_cast<int>(payload.size) << "] " << std::hex;
     for (uint8_t i = 0; i < payload.size; ++i)
     {
         std::cout << std::dec << static_cast<int>(payload.data[i]) << " ";

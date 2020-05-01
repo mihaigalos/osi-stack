@@ -16,10 +16,14 @@ CommunicationStatus UartHandshake<>::TransmitWithAcknowledge(const Payload &payl
 
         log_dump_payload(response, "Datalink :: (response)");
 
-        if (response.size)
+        if (response.size && crc_match(response))
         {
             result = static_cast<CommunicationStatus>(response.data[0]);
             log("Received CommunicationStatus response: " + std::to_string(response.data[0]));
+        }
+        else
+        {
+            log("CRC mismatch!");
         }
     }
     return result;

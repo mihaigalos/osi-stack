@@ -24,17 +24,21 @@ public:
     static uint8_t generic_receive_byte()
     {
         static uint8_t call_count = 0;
+        constexpr uint8_t payload_size_byte_count{1};
 
-        if (++call_count <= 1 + kCRCSize)
-        {
-            return payloadified_negative_acknowledge_.data[received_.size++];
-        }
-        else if (call_count == 1 + kCRCSize + 1)
-        {
-            received_.size = 0;
-        }
+        std::map<uint8_t, uint8_t> lookup_map{
+            {0, payload_size_byte_count + kCRCSize},
+            {1, payloadified_negative_acknowledge_.data[0]},
+            {2, payloadified_negative_acknowledge_.data[1]},
+            {3, payloadified_negative_acknowledge_.data[2]},
 
-        return payloadified_acknowledge_.data[received_.size++];
+            {4, payload_size_byte_count + kCRCSize},
+            {5, payloadified_acknowledge_.data[0]},
+            {6, payloadified_acknowledge_.data[1]},
+            {7, payloadified_acknowledge_.data[2]},
+        };
+
+        return lookup_map[call_count++];
     }
 
 protected:
