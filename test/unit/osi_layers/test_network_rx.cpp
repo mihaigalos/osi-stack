@@ -25,7 +25,7 @@ public:
 
         if (call_count++ > 0)
         {
-            return payloadified_data_with_to_from_crc_.data[call_count - 2];
+            return payloadified_data_with_to_from_crc_.data[call_count - kSizeofLength - 1];
         }
         else
         {

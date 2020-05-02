@@ -12,7 +12,7 @@ constexpr uint8_t data_negative_acknowledge_[]{static_cast<uint8_t>(Communicatio
 constexpr uint8_t kOwnId{0x01};
 constexpr uint8_t kSourceId{0x02};
 constexpr uint8_t kDestinationId{0x02};
-
+constexpr uint8_t kSizeofLength{1};
 class UnitBase : public ::testing::Test
 {
 public:

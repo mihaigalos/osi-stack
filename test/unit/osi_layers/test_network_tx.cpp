@@ -16,7 +16,8 @@ class Fixture : public UnitBase
 public:
     static void generic_transmit_byte(const uint8_t payload)
     {
-        if (transmitted_.size == kPosDestinationIdInPayload && payload == kOwnId)
+
+        if (transmitted_.size == kPosSourceIdInPayload + kSizeofLength && payload == kOwnId)
         {
             to_field_matches_own_ = true;
         }
@@ -64,8 +65,8 @@ TEST_F(Fixture, NetworkTransmitToWorks_WhenTypical)
 
     sut_.TransmitTo(payloadified_data_, kDestinationId);
 
-    ASSERT_EQ(transmitted_.data[kPosDestinationIdInPayload - 1], kDestinationId);
-    ASSERT_EQ(transmitted_.data[kPosSourceIdInPayload - 1], kOwnId);
+    ASSERT_EQ(transmitted_.data[kPosDestinationIdInPayload + kSizeofLength], kDestinationId);
+    ASSERT_EQ(transmitted_.data[kPosSourceIdInPayload + kSizeofLength], kOwnId);
 }
 
 TEST_F(Fixture, NetworkTransmitToResultAcknowledge_WhenTypical)
