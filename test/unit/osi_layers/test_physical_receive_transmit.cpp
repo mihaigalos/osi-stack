@@ -50,7 +50,7 @@ protected:
   virtual void TearDown() override {}
 
   static Payload transmitted_, received_;
-  Transceiver sut_{generic_transmit_byte, generic_receive_byte};
+  Physical sut_{generic_transmit_byte, generic_receive_byte};
 
   static std::string data_;
   static Payload payloadified_;

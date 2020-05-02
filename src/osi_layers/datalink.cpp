@@ -3,7 +3,7 @@
 #include "crc.h"
 
 template <>
-CommunicationStatus UartHandshake<>::TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count) const
+CommunicationStatus Datalink<>::TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count) const
 {
     CommunicationStatus result{CommunicationStatus::Unknown};
     auto payload_with_crc = append_crc_to_payload(payload);
@@ -30,7 +30,7 @@ CommunicationStatus UartHandshake<>::TransmitWithAcknowledge(const Payload &payl
 }
 
 template <>
-Payload UartHandshake<>::ReceiveWithAcknowledge() const
+Payload Datalink<>::ReceiveWithAcknowledge() const
 {
     Payload received;
     CommunicationStatus status{CommunicationStatus::Unknown};

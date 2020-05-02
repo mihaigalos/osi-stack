@@ -3,7 +3,7 @@
 
 #include "utilities.h"
 
-void Transceiver::Transmit(const Payload &payload) const
+void Physical::Transmit(const Payload &payload) const
 {
     log_dump_payload(payload, "Physical :: Transmit");
 
@@ -14,7 +14,7 @@ void Transceiver::Transmit(const Payload &payload) const
     }
 }
 
-Payload Transceiver::Receive() const
+Payload Physical::Receive() const
 {
     auto payload = Payload{};
 

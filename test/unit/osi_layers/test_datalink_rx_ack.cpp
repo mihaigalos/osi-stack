@@ -40,7 +40,7 @@ protected:
             {6, payloadified_data_with_crc_.data[5]},
         };
     }
-    UartHandshake<> sut_{generic_transmit_byte, generic_receive_byte};
+    Datalink<> sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 TEST_F(Fixture, ReceiveWithAcknowledgeWorks_WhenTypical)

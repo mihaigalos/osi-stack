@@ -12,11 +12,11 @@ enum class CommunicationStatus : uint8_t
     NegativeAcknowledge = 0x15
 };
 
-template <typename T = Transceiver>
-class UartHandshake
+template <typename T = Physical>
+class Datalink
 {
 public:
-    UartHandshake(TVoidUint8 on_transmit, TUint8Void on_receive) : io_{on_transmit, on_receive} {}
+    Datalink(TVoidUint8 on_transmit, TUint8Void on_receive) : io_{on_transmit, on_receive} {}
     CommunicationStatus TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count = kMaxRetransmitCount) const;
     Payload ReceiveWithAcknowledge() const;
 

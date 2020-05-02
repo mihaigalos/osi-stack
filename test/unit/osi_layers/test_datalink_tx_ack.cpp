@@ -39,7 +39,7 @@ public:
     }
 
 protected:
-    UartHandshake<> sut_{generic_transmit_byte, generic_receive_byte};
+    Datalink<> sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 TEST_F(Fixture, TransmitWithAcknowledgeWorks_WhenTypical)

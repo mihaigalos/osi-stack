@@ -24,7 +24,7 @@ protected:
   virtual void TearDown() override {}
 
   static uint8_t data_;
-  Transceiver sut_{generic_transmit_byte, generic_receive_byte};
+  Physical sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 uint8_t Fixture::data_;
