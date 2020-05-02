@@ -30,7 +30,7 @@ public:
 
 protected:
     virtual void SetUp() override {}
-    Transport<> sut_{kOwnId, generic_transmit_byte, generic_receive_byte};
+    Transport<> sut_{kOwnId, Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}};
 };
 
 TEST_F(Fixture, TransportToWorks_WhenTypical)
