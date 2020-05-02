@@ -23,28 +23,8 @@ public:
 
     static uint8_t generic_receive_byte()
     {
-
         static uint8_t call_count{0};
-
-        std::map<uint8_t, uint8_t> lookup_map{
-            {0, payloadified_data_.size},
-            {1, payloadified_data_.data[0]},
-            {2, payloadified_data_.data[1] + 1},
-            {3, payloadified_data_.data[2]},
-            {4, payloadified_data_.data[3]},
-            {5, payloadified_data_.data[4]},
-            {6, payloadified_data_.data[5]},
-
-            {7, payloadified_data_.size},
-            {8, payloadified_data_.data[0]},
-            {9, payloadified_data_.data[1]},
-            {10, payloadified_data_.data[2]},
-            {11, payloadified_data_.data[3]},
-            {12, payloadified_data_.data[4]},
-            {13, payloadified_data_.data[5]},
-        };
-
-        return lookup_map[call_count++];
+        return lookup_map_[call_count++];
     }
 
 protected:
@@ -63,7 +43,24 @@ protected:
         payloadified_data_ = append_crc_to_payload(payloadified_data_);
 
         received_.size = 0;
-        call_count_ = 0;
+
+        lookup_map_ = {
+            {0, payloadified_data_.size},
+            {1, payloadified_data_.data[0]},
+            {2, payloadified_data_.data[1] + 1},
+            {3, payloadified_data_.data[2]},
+            {4, payloadified_data_.data[3]},
+            {5, payloadified_data_.data[4]},
+            {6, payloadified_data_.data[5]},
+
+            {7, payloadified_data_.size},
+            {8, payloadified_data_.data[0]},
+            {9, payloadified_data_.data[1]},
+            {10, payloadified_data_.data[2]},
+            {11, payloadified_data_.data[3]},
+            {12, payloadified_data_.data[4]},
+            {13, payloadified_data_.data[5]},
+        };
     }
     virtual void TearDown() override {}
 
@@ -74,7 +71,8 @@ protected:
     static Payload payloadified_acknowledge_;
     static Payload payloadified_data_;
     static Payload transmitted_;
-    static uint8_t call_count_;
+
+    static std::map<uint8_t, uint8_t> lookup_map_;
 };
 
 Payload Fixture::received_{};
@@ -85,7 +83,7 @@ Payload Fixture::payloadified_acknowledge_;
 Payload Fixture::payloadified_data_;
 
 Payload Fixture::transmitted_{};
-uint8_t Fixture::call_count_;
+std::map<uint8_t, uint8_t> Fixture::lookup_map_;
 
 TEST_F(Fixture, ReceiveWithNegativeAcknowledgeTransmissionWorks_WhenTypical)
 {

@@ -24,18 +24,7 @@ public:
     static uint8_t generic_receive_byte()
     {
         static uint8_t call_count{0};
-
-        std::map<uint8_t, uint8_t> lookup_map{
-            {0, payloadified_data_.size},
-            {1, payloadified_data_.data[0]},
-            {2, payloadified_data_.data[1]},
-            {3, payloadified_data_.data[2]},
-            {4, payloadified_data_.data[3]},
-            {5, payloadified_data_.data[4]},
-            {6, payloadified_data_.data[5]},
-        };
-
-        return lookup_map[call_count++];
+        return lookup_map_[call_count++];
     }
 
 protected:
@@ -49,8 +38,18 @@ protected:
         payloadified_negative_acknowledge_ = append_crc_to_payload(payloadified_negative_acknowledge_);
         payloadified_acknowledge_ = append_crc_to_payload(payloadified_acknowledge_);
 
-        payloadified_data_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
+        payloadified_data_ = append_crc_to_payload(Payload{data_.c_str(), static_cast<uint8_t>(data_.length())});
         received_.size = 0;
+
+        lookup_map_ = {
+            {0, payloadified_data_.size},
+            {1, payloadified_data_.data[0]},
+            {2, payloadified_data_.data[1]},
+            {3, payloadified_data_.data[2]},
+            {4, payloadified_data_.data[3]},
+            {5, payloadified_data_.data[4]},
+            {6, payloadified_data_.data[5]},
+        };
     }
     virtual void TearDown() override {}
 
@@ -61,6 +60,7 @@ protected:
     static Payload payloadified_negative_acknowledge_;
     static Payload payloadified_acknowledge_;
     static Payload payloadified_data_;
+    static std::map<uint8_t, uint8_t> lookup_map_;
 };
 
 Payload Fixture::received_{};
@@ -69,10 +69,10 @@ std::string Fixture::data_{"abcd"};
 Payload Fixture::payloadified_negative_acknowledge_;
 Payload Fixture::payloadified_acknowledge_;
 Payload Fixture::payloadified_data_;
+std::map<uint8_t, uint8_t> Fixture::lookup_map_;
 
 TEST_F(Fixture, ReceiveWithAcknowledgeWorks_WhenTypical)
 {
-    payloadified_data_ = append_crc_to_payload(payloadified_data_);
     auto expected = Payload(data_.c_str(), static_cast<uint8_t>(data_.length()));
     expected = append_crc_to_payload(expected);
 
