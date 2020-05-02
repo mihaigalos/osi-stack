@@ -18,6 +18,13 @@ template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC>
 class Datalink
 {
 public:
+    virtual ~Datalink() = default;
+
+    Datalink(const Datalink &other) = delete;
+    Datalink(Datalink &&other) = delete;
+    Datalink &operator=(const Datalink &other) = delete;
+    Datalink &operator=(Datalink &&other) = delete;
+
     Datalink(TVoidUint8 on_transmit, TUint8Void on_receive) : io_{on_transmit, on_receive} {}
     CommunicationStatus TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count = kMaxRetransmitCount) const;
     Payload ReceiveWithAcknowledge() const;
