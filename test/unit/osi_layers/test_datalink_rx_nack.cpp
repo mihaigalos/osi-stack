@@ -19,24 +19,32 @@ public:
     static void generic_transmit_byte(const uint8_t payload)
     {
         transmitted_.data[transmitted_.size++] = payload;
-        if (static_cast<CommunicationStatus>(payload) == CommunicationStatus::NegativeAcknowledge)
-        {
-            received_.size = 0;
-        }
     }
 
     static uint8_t generic_receive_byte()
     {
 
-        uint8_t invalid_data = 0xAA;
-        uint8_t invalid_byte_position = 2;
+        static uint8_t call_count{0};
 
-        if (++call_count_ == invalid_byte_position)
-        {
-            received_.size++;
-            return invalid_data;
-        }
-        return payloadified_data_.data[received_.size++];
+        std::map<uint8_t, uint8_t> lookup_map{
+            {0, payloadified_data_.size},
+            {1, payloadified_data_.data[0]},
+            {2, payloadified_data_.data[1] + 1},
+            {3, payloadified_data_.data[2]},
+            {4, payloadified_data_.data[3]},
+            {5, payloadified_data_.data[4]},
+            {6, payloadified_data_.data[5]},
+
+            {7, payloadified_data_.size},
+            {8, payloadified_data_.data[0]},
+            {9, payloadified_data_.data[1]},
+            {10, payloadified_data_.data[2]},
+            {11, payloadified_data_.data[3]},
+            {12, payloadified_data_.data[4]},
+            {13, payloadified_data_.data[5]},
+        };
+
+        return lookup_map[call_count++];
     }
 
 protected:
@@ -79,27 +87,17 @@ Payload Fixture::payloadified_data_;
 Payload Fixture::transmitted_{};
 uint8_t Fixture::call_count_;
 
-TEST_F(Fixture, ReceiveWithNegativeAcknowledgeWorks_WhenTypical)
-{
-
-    auto expected = Payload(data_.c_str(), static_cast<uint8_t>(data_.length()));
-    expected = append_crc_to_payload(expected);
-
-    auto actual = sut_.ReceiveWithAcknowledge();
-
-    ASSERT_EQ(actual, expected);
-}
-
 TEST_F(Fixture, ReceiveWithNegativeAcknowledgeTransmissionWorks_WhenTypical)
 {
-    uint8_t nack_then_ack_with_crc[]{static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge),
+    uint8_t nack_then_ack_with_crc[]{3, static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge),
                                      static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge),
                                      static_cast<uint8_t>(0),
-                                     static_cast<uint8_t>(CommunicationStatus::Acknowledge),
+
+                                     3, static_cast<uint8_t>(CommunicationStatus::Acknowledge),
                                      static_cast<uint8_t>(CommunicationStatus::Acknowledge),
                                      static_cast<uint8_t>(0)};
 
-    auto expected = Payload{nack_then_ack_with_crc, 6};
+    auto expected = Payload{nack_then_ack_with_crc, sizeof(nack_then_ack_with_crc)};
 
     sut_.ReceiveWithAcknowledge();
     auto actual = transmitted_;
