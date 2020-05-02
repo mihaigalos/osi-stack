@@ -25,7 +25,6 @@ public:
     Payload ReceiveWithAcknowledge() const;
 
     virtual ~Datalink() = default;
-
     Datalink &operator=(const Datalink &other) = delete;
     Datalink &operator=(Datalink &&other) = delete;
 

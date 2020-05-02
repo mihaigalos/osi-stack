@@ -17,13 +17,11 @@ public:
     on_receive_byte_ = other.on_receive_byte_;
   }
 
-  Physical(const Physical &other) = delete;
-
   void Transmit(const Payload &payload) const;
   Payload Receive() const;
 
   virtual ~Physical() = default;
-
+  Physical(const Physical &other) = delete;
   Physical &operator=(const Physical &other) = delete;
   Physical &operator=(Physical &&other) = delete;
 
