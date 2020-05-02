@@ -23,7 +23,7 @@ public:
 
     static uint8_t generic_receive_byte()
     {
-        static uint8_t call_count = 0;
+        static uint8_t call_count{0};
         constexpr uint8_t payload_size_byte_count{1};
 
         std::map<uint8_t, uint8_t> lookup_map{
