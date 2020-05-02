@@ -6,6 +6,9 @@
 
 #include "datalink.h"
 
+constexpr uint8_t kPosDestinationIdInPayload{4};
+constexpr uint8_t kPosSourceIdInPayload{5};
+
 template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC, typename DatalinkLayer = Datalink<Physical>>
 class Network
 {

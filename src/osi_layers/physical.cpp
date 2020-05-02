@@ -28,5 +28,9 @@ Payload Physical::Receive() const
         log_dump_payload(payload, "Physical :: Receive");
         return payload;
     }
+    else
+    {
+        log("Physical :: Receive expected_count >= kPayloadMaxSize, impossible to receive.");
+    }
     return {};
 }

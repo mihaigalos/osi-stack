@@ -11,12 +11,6 @@
 #include "utilities.h"
 #include "test_unit_base.h"
 
-constexpr uint8_t kOwnId{0x01};
-constexpr uint8_t kDestinationId{0x02};
-
-constexpr uint8_t kPosDestinationIdInPayload{6};
-constexpr uint8_t kPosSourceIdInPayload{7};
-
 class Fixture : public UnitBase
 {
 public:
