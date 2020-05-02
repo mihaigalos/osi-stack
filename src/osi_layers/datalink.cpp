@@ -11,8 +11,8 @@ CommunicationStatus Datalink<>::TransmitWithAcknowledge(const Payload &payload, 
     log_dump_payload(payload_with_crc, "Datalink :: TransmitWithAcknowledge");
     for (uint8_t i = 0; i < retransmit_count && result != CommunicationStatus::Acknowledge; ++i)
     {
-        io_.Transmit(payload_with_crc);
-        Payload response = io_.Receive();
+        physical_.Transmit(payload_with_crc);
+        Payload response = physical_.Receive();
 
         log_dump_payload(response, "Datalink :: (response)");
 
@@ -37,13 +37,13 @@ Payload Datalink<>::ReceiveWithAcknowledge() const
 
     for (uint8_t i = 0; i < kMaxRetransmitCount && status != CommunicationStatus::Acknowledge; ++i)
     {
-        received = io_.Receive();
+        received = physical_.Receive();
         log_dump_payload(received, " Datalink :: ReceiveWithAcknowledge :: received");
 
         status = crc_.crc_match(received) ? CommunicationStatus::Acknowledge : CommunicationStatus::NegativeAcknowledge;
 
         uint8_t data_response_[]{static_cast<uint8_t>(status)};
-        io_.Transmit(crc_.append_crc_to_payload(Payload{data_response_, 1}));
+        physical_.Transmit(crc_.append_crc_to_payload(Payload{data_response_, 1}));
     }
 
     return crc_.crc_match(received) ? received : Payload{};
