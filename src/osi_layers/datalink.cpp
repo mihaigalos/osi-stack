@@ -6,7 +6,7 @@ template <>
 CommunicationStatus Datalink<>::TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count) const
 {
     CommunicationStatus result{CommunicationStatus::Unknown};
-    auto payload_with_crc = append_crc_to_payload(payload);
+    auto payload_with_crc = crc_.append_crc_to_payload(payload);
 
     log_dump_payload(payload_with_crc, "Datalink :: TransmitWithAcknowledge");
     for (uint8_t i = 0; i < retransmit_count && result != CommunicationStatus::Acknowledge; ++i)
@@ -16,7 +16,7 @@ CommunicationStatus Datalink<>::TransmitWithAcknowledge(const Payload &payload, 
 
         log_dump_payload(response, "Datalink :: (response)");
 
-        if (response.size && crc_match(response))
+        if (response.size && crc_.crc_match(response))
         {
             result = static_cast<CommunicationStatus>(response.data[0]);
             log("Received CommunicationStatus response: " + std::to_string(response.data[0]));
@@ -40,11 +40,11 @@ Payload Datalink<>::ReceiveWithAcknowledge() const
         received = io_.Receive();
         log_dump_payload(received, " Datalink :: ReceiveWithAcknowledge :: received");
 
-        status = crc_match(received) ? CommunicationStatus::Acknowledge : CommunicationStatus::NegativeAcknowledge;
+        status = crc_.crc_match(received) ? CommunicationStatus::Acknowledge : CommunicationStatus::NegativeAcknowledge;
 
         uint8_t data_response_[]{static_cast<uint8_t>(status)};
-        io_.Transmit(append_crc_to_payload(Payload{data_response_, 1}));
+        io_.Transmit(crc_.append_crc_to_payload(Payload{data_response_, 1}));
     }
 
-    return crc_match(received) ? received : Payload{};
+    return crc_.crc_match(received) ? received : Payload{};
 }

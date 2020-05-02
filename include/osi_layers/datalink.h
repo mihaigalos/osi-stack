@@ -4,6 +4,8 @@
 #include "osi_layers/physical.h"
 #include "config.h"
 
+#include "crc.h"
+
 enum class CommunicationStatus : uint8_t
 {
     Unknown = 0x00,
@@ -12,7 +14,7 @@ enum class CommunicationStatus : uint8_t
     NegativeAcknowledge = 0x15
 };
 
-template <typename T = Physical>
+template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC>
 class Datalink
 {
 public:
@@ -21,5 +23,6 @@ public:
     Payload ReceiveWithAcknowledge() const;
 
 private:
-    T io_;
+    PhysicalLayer io_;
+    CRCFunctions crc_;
 };

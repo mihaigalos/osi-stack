@@ -2,12 +2,12 @@
 #include "config.h"
 #include "crc.h"
 
-inline CRCChecksum crc_update(CRCChecksum initial, uint8_t current)
+CRCChecksum CRC::crc_update(CRCChecksum initial, uint8_t current) const
 {
     return initial + current;
 }
 
-CRCChecksum received_crc(const Payload &payload)
+CRCChecksum CRC::received_crc(const Payload &payload) const
 {
     CRCChecksum crc = 0;
     for (uint8_t i = 0; i < kCRCSize; ++i)
@@ -18,7 +18,7 @@ CRCChecksum received_crc(const Payload &payload)
     return crc;
 }
 
-CRCChecksum computed_crc(const Payload &payload, uint8_t bytes_count)
+CRCChecksum CRC::computed_crc(const Payload &payload, uint8_t bytes_count) const
 {
     CRCChecksum crc = 0;
     for (uint8_t i = 0; i < bytes_count; ++i)
@@ -28,7 +28,7 @@ CRCChecksum computed_crc(const Payload &payload, uint8_t bytes_count)
     return crc;
 }
 
-bool crc_match(const Payload &payload)
+bool CRC::crc_match(const Payload &payload) const
 {
     if (payload.size <= kCRCSize)
     {
@@ -37,7 +37,7 @@ bool crc_match(const Payload &payload)
     return received_crc(payload) == computed_crc(payload, payload.size - kCRCSize);
 }
 
-Payload append_crc_to_payload(const Payload &payload)
+Payload CRC::append_crc_to_payload(const Payload &payload) const
 {
     Payload result{payload};
     if (!crc_match(payload))
