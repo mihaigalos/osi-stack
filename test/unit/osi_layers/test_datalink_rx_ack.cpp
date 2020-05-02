@@ -23,7 +23,19 @@ public:
 
     static uint8_t generic_receive_byte()
     {
-        return payloadified_data_.data[received_.size++];
+        static uint8_t call_count{0};
+
+        std::map<uint8_t, uint8_t> lookup_map{
+            {0, payloadified_data_.size},
+            {1, payloadified_data_.data[0]},
+            {2, payloadified_data_.data[1]},
+            {3, payloadified_data_.data[2]},
+            {4, payloadified_data_.data[3]},
+            {5, payloadified_data_.data[4]},
+            {6, payloadified_data_.data[5]},
+        };
+
+        return lookup_map[call_count++];
     }
 
 protected:
