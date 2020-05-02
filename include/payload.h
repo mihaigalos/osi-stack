@@ -5,8 +5,8 @@
 
 struct Payload
 {
-    uint8_t data[kPayloadMaxSize];
-    uint8_t size;
+    uint8_t size{0};
+    uint8_t data[kPayloadMaxSize]{};
 
     Payload()
     {
@@ -39,7 +39,8 @@ struct Payload
 
     void Reset()
     {
-        for (uint8_t i = 0; i < size; ++i)
+
+        for (uint8_t i = 0; i < kPayloadMaxSize; ++i)
         {
             data[i] = 0;
         }
@@ -53,6 +54,7 @@ struct Payload
         {
             for (uint8_t i = 0; i < size; ++i)
             {
+
                 if (data[i] != rhs.data[i])
                 {
 

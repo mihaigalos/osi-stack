@@ -9,11 +9,9 @@
 #include "osi_layers/datalink.h"
 
 #include "utilities.h"
+#include "test_unit_base.h"
 
-constexpr uint8_t data_negative_acknowledge_[]{static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge)};
-constexpr uint8_t data_acknowledge_[]{static_cast<uint8_t>(CommunicationStatus::Acknowledge)};
-
-class Fixture : public ::testing::Test
+class Fixture : public UnitBase
 {
 public:
     static void generic_transmit_byte(const uint8_t payload)
@@ -23,48 +21,34 @@ public:
 
     static uint8_t generic_receive_byte()
     {
-        return payloadified_data_.data[received_.size++];
+        static uint8_t call_count{0};
+        return lookup_map_[call_count++];
     }
 
 protected:
     virtual void SetUp() override
     {
-        received_.Reset();
+        UnitBase::SetUp();
 
-        payloadified_negative_acknowledge_ = Payload{data_negative_acknowledge_, 1};
-        payloadified_acknowledge_ = Payload{data_acknowledge_, 1};
-
-        payloadified_negative_acknowledge_ = append_crc_to_payload(payloadified_negative_acknowledge_);
-        payloadified_acknowledge_ = append_crc_to_payload(payloadified_acknowledge_);
-
-        payloadified_data_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
-        received_.size = 0;
+        lookup_map_ = {
+            {0, payloadified_data_with_crc_.size},
+            {1, payloadified_data_with_crc_.data[0]},
+            {2, payloadified_data_with_crc_.data[1]},
+            {3, payloadified_data_with_crc_.data[2]},
+            {4, payloadified_data_with_crc_.data[3]},
+            {5, payloadified_data_with_crc_.data[4]},
+            {6, payloadified_data_with_crc_.data[5]},
+        };
     }
-    virtual void TearDown() override {}
-
-    static Payload received_;
     UartHandshake<> sut_{generic_transmit_byte, generic_receive_byte};
-
-    static std::string data_;
-    static Payload payloadified_negative_acknowledge_;
-    static Payload payloadified_acknowledge_;
-    static Payload payloadified_data_;
 };
-
-Payload Fixture::received_{};
-
-std::string Fixture::data_{"abcd"};
-Payload Fixture::payloadified_negative_acknowledge_;
-Payload Fixture::payloadified_acknowledge_;
-Payload Fixture::payloadified_data_;
 
 TEST_F(Fixture, ReceiveWithAcknowledgeWorks_WhenTypical)
 {
-    payloadified_data_ = append_crc_to_payload(payloadified_data_);
     auto expected = Payload(data_.c_str(), static_cast<uint8_t>(data_.length()));
     expected = append_crc_to_payload(expected);
 
-    auto actual = sut_.ReceiveWithAcknowledge(expected.size);
+    auto actual = sut_.ReceiveWithAcknowledge();
 
     ASSERT_EQ(actual, expected);
 }

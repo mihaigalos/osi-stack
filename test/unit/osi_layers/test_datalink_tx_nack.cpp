@@ -9,10 +9,9 @@
 #include "osi_layers/datalink.h"
 
 #include "utilities.h"
+#include "test_unit_base.h"
 
-constexpr uint8_t data_negative_acknowledge_[]{static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge)};
-
-class Fixture : public ::testing::Test
+class Fixture : public UnitBase
 {
 public:
     static void generic_transmit_byte(const uint8_t payload)
@@ -22,42 +21,33 @@ public:
 
     static uint8_t generic_receive_byte()
     {
-        if (received_.size == 3)
-        {
-            received_.size = 0;
-        }
-        return payloadified_negative_acknowledge_.data[received_.size++];
+        static uint8_t call_count{0};
+
+        return lookup_map_[call_count++];
     }
 
 protected:
     virtual void SetUp() override
     {
-        received_.Reset();
+        UnitBase::SetUp();
 
-        payloadified_negative_acknowledge_ = Payload{data_negative_acknowledge_, 1};
+        lookup_map_ = {
+            {0, payload_size_byte_count + kCRCSize},
+            {1, payloadified_negative_acknowledge_.data[0]},
+            {2, payloadified_negative_acknowledge_.data[1]},
+            {3, payloadified_negative_acknowledge_.data[2]},
 
-        payloadified_negative_acknowledge_ = append_crc_to_payload(payloadified_negative_acknowledge_);
-
-        payloadified_data_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
-        received_.size = 0;
+            {4, payload_size_byte_count + kCRCSize},
+            {5, payloadified_negative_acknowledge_.data[0]},
+            {6, payloadified_negative_acknowledge_.data[1]},
+            {7, payloadified_negative_acknowledge_.data[2]},
+        };
     }
-    virtual void TearDown() override {}
 
-    static Payload received_;
     UartHandshake<> sut_{generic_transmit_byte, generic_receive_byte};
-
-    static std::string data_;
-    static Payload payloadified_negative_acknowledge_;
-    static Payload payloadified_data_;
 };
 
-Payload Fixture::received_{};
-
-std::string Fixture::data_{"abcd"};
-Payload Fixture::payloadified_negative_acknowledge_;
-Payload Fixture::payloadified_data_;
-
-TEST_F(Fixture, TransmitNegativeAcknowledgeWorks_WhenTypical)
+TEST_F(Fixture, TransmitWithAcknowledgeWorks_WhenTypical)
 {
     CommunicationStatus result = sut_.TransmitWithAcknowledge(payloadified_data_);
 
