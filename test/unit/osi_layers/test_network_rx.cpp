@@ -38,7 +38,7 @@ protected:
     {
         UnitBase::SetUp();
     }
-    Network<> sut_{kSourceId, Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}};
+    Network<> sut_{kOwnId, Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}};
 };
 
 TEST_F(Fixture, ReceiveFromWorks_WhenTypical)
@@ -46,5 +46,5 @@ TEST_F(Fixture, ReceiveFromWorks_WhenTypical)
     auto actual = sut_.ReceiveFrom(kSourceId);
 
     ASSERT_NE(actual.size, 0);
-    ASSERT_EQ(kSourceId, actual.data[kPosDestinationIdInPayload]);
+    ASSERT_EQ(kOwnId, actual.data[kPosDestinationIdInPayload]);
 }
