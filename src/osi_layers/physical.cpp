@@ -17,7 +17,6 @@ void Physical::Transmit(const Payload &payload) const
 Payload Physical::Receive() const
 {
     auto payload = Payload{};
-
     auto expected_count = on_receive_byte_();
 
     if (expected_count < kPayloadMaxSize)

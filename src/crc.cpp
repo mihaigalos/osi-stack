@@ -40,7 +40,6 @@ bool crc_match(const Payload &payload)
 Payload append_crc_to_payload(const Payload &payload)
 {
     Payload result{payload};
-
     if (!crc_match(payload))
     {
         auto crc = computed_crc(payload, payload.size);

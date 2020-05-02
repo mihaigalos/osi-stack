@@ -39,7 +39,6 @@ struct Payload
 
     void Reset()
     {
-
         for (uint8_t i = 0; i < kPayloadMaxSize; ++i)
         {
             data[i] = 0;
