@@ -30,7 +30,7 @@ TEST_F(Fixture, CRCFunctionWorks_WhenTypical)
     CRCChecksum current = 'b';
     CRCChecksum expected = initial + current;
 
-    auto actual = crc_function(initial, 'b');
+    auto actual = crc_update(initial, 'b');
 
     ASSERT_EQ(expected, actual);
 }

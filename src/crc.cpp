@@ -2,7 +2,7 @@
 #include "config.h"
 #include "crc.h"
 
-inline CRCChecksum crc_function(CRCChecksum initial, uint8_t current)
+inline CRCChecksum crc_update(CRCChecksum initial, uint8_t current)
 {
     return initial + current;
 }
@@ -23,7 +23,7 @@ CRCChecksum computed_crc(const Payload &payload, uint8_t bytes_count)
     CRCChecksum crc = 0;
     for (uint8_t i = 0; i < bytes_count; ++i)
     {
-        crc = crc_function(crc, payload.data[i]);
+        crc = crc_update(crc, payload.data[i]);
     }
     return crc;
 }
