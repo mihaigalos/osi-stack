@@ -1,10 +1,10 @@
 
-#include "osi_layers/transport.h"
+#include "osi_layers/network.h"
 #include "utilities.h"
 #include "crc.h"
 
 template <>
-CommunicationStatus Transport<>::TransmitTo(const Payload &payload, uint8_t to) const
+CommunicationStatus Network<>::TransmitTo(const Payload &payload, uint8_t to) const
 {
     CommunicationStatus result{CommunicationStatus::Unknown};
 
@@ -15,7 +15,7 @@ CommunicationStatus Transport<>::TransmitTo(const Payload &payload, uint8_t to) 
 }
 
 template <>
-Payload Transport<>::ReceiveFrom(uint8_t from) const
+Payload Network<>::ReceiveFrom(uint8_t from) const
 {
     Payload received;
     static_cast<void>(from);

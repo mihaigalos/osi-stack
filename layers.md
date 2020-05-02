@@ -8,7 +8,7 @@
 3  |  <div style="width:150px"> Network Layer </div>| `Length` | `To` | `From` | <div style="width:530px"> `Raw data`</div> | `CRC`
 -- | ------------- | -------- | ---- | ------ | ---------- | -----
 
-4  | <div style="width:150px">Transport Layer </div>| `Length` | `To` | `From` | `Segment` | <div style="width:435px"> `Raw data`</div> | `CRC`
+4  | <div style="width:150px">Network Layer </div>| `Length` | `To` | `From` | `Segment` | <div style="width:435px"> `Raw data`</div> | `CRC`
 -- | --------------- | -------- | ---- | ------ | --------- | ---------- | -----
 
 5  | <div style="width:150px">Session Layer </div>| `Length` | `To` | `From` | `Segment` | `Port` |<div style="width:365px"> `Raw data`</div> | `CRC`
