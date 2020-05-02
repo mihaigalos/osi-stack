@@ -9,11 +9,9 @@
 #include "osi_layers/datalink.h"
 
 #include "utilities.h"
+#include "test_unit_base.h"
 
-constexpr uint8_t data_negative_acknowledge_[]{static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge)};
-constexpr uint8_t data_acknowledge_[]{static_cast<uint8_t>(CommunicationStatus::Acknowledge)};
-
-class Fixture : public ::testing::Test
+class Fixture : public UnitBase
 {
 public:
     static void generic_transmit_byte(const uint8_t payload)
@@ -30,60 +28,28 @@ public:
 protected:
     virtual void SetUp() override
     {
-        transmitted_.Reset();
-        received_.Reset();
-
-        payloadified_negative_acknowledge_ = Payload{data_negative_acknowledge_, 1};
-        payloadified_acknowledge_ = Payload{data_acknowledge_, 1};
-
-        payloadified_negative_acknowledge_ = append_crc_to_payload(payloadified_negative_acknowledge_);
-        payloadified_acknowledge_ = append_crc_to_payload(payloadified_acknowledge_);
-
-        payloadified_data_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
-        payloadified_data_ = append_crc_to_payload(payloadified_data_);
-
-        received_.size = 0;
+        UnitBase::SetUp();
 
         lookup_map_ = {
-            {0, payloadified_data_.size},
-            {1, payloadified_data_.data[0]},
-            {2, payloadified_data_.data[1] + 1},
-            {3, payloadified_data_.data[2]},
-            {4, payloadified_data_.data[3]},
-            {5, payloadified_data_.data[4]},
-            {6, payloadified_data_.data[5]},
+            {0, payloadified_data_with_crc_.size},
+            {1, payloadified_data_with_crc_.data[0]},
+            {2, payloadified_data_with_crc_.data[1] + 1},
+            {3, payloadified_data_with_crc_.data[2]},
+            {4, payloadified_data_with_crc_.data[3]},
+            {5, payloadified_data_with_crc_.data[4]},
+            {6, payloadified_data_with_crc_.data[5]},
 
-            {7, payloadified_data_.size},
-            {8, payloadified_data_.data[0]},
-            {9, payloadified_data_.data[1]},
-            {10, payloadified_data_.data[2]},
-            {11, payloadified_data_.data[3]},
-            {12, payloadified_data_.data[4]},
-            {13, payloadified_data_.data[5]},
+            {7, payloadified_data_with_crc_.size},
+            {8, payloadified_data_with_crc_.data[0]},
+            {9, payloadified_data_with_crc_.data[1]},
+            {10, payloadified_data_with_crc_.data[2]},
+            {11, payloadified_data_with_crc_.data[3]},
+            {12, payloadified_data_with_crc_.data[4]},
+            {13, payloadified_data_with_crc_.data[5]},
         };
     }
-    virtual void TearDown() override {}
-
-    static Payload received_;
     UartHandshake<> sut_{generic_transmit_byte, generic_receive_byte};
-    static std::string data_;
-    static Payload payloadified_negative_acknowledge_;
-    static Payload payloadified_acknowledge_;
-    static Payload payloadified_data_;
-    static Payload transmitted_;
-
-    static std::map<uint8_t, uint8_t> lookup_map_;
 };
-
-Payload Fixture::received_{};
-
-std::string Fixture::data_{"abcd"};
-Payload Fixture::payloadified_negative_acknowledge_;
-Payload Fixture::payloadified_acknowledge_;
-Payload Fixture::payloadified_data_;
-
-Payload Fixture::transmitted_{};
-std::map<uint8_t, uint8_t> Fixture::lookup_map_;
 
 TEST_F(Fixture, ReceiveWithNegativeAcknowledgeTransmissionWorks_WhenTypical)
 {

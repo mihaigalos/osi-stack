@@ -25,6 +25,13 @@ cc_library(
     strip_include_prefix = "include",
 )
 
+cc_library(
+    name = "test_headers",
+    hdrs = glob(["test/**/*.h"]),
+    copts = DEFAULT_COMPILER_OPTIONS,
+    strip_include_prefix = "test/unit/osi_layers",
+)
+
 [
     cc_test(
         name = "unit/" + unit_name,
@@ -33,7 +40,7 @@ cc_library(
         ],
         copts = DEFAULT_COMPILER_OPTIONS,
         tags = ["unit"],
-        deps = DEFAULT_TEST_DEPS,
+        deps = DEFAULT_TEST_DEPS + [":test_headers"],
     )
     for unit_name in [
         file_name.replace("test/unit/", "").replace(".cpp", "")
