@@ -63,7 +63,7 @@ bool Fixture::to_field_matches_own_;
 TEST_F(Fixture, NetworkTransmitToWorks_WhenTypical)
 {
 
-    sut_.TransmitTo(payloadified_data_, kDestinationId);
+    sut_.TransmitTo(kDestinationId, payloadified_data_);
 
     ASSERT_EQ(transmitted_.data[kPosDestinationIdInPayload + kSizeofLength], kDestinationId);
     ASSERT_EQ(transmitted_.data[kPosSourceIdInPayload + kSizeofLength], kOwnId);
@@ -71,7 +71,7 @@ TEST_F(Fixture, NetworkTransmitToWorks_WhenTypical)
 
 TEST_F(Fixture, NetworkTransmitToResultAcknowledge_WhenTypical)
 {
-    CommunicationStatus result = sut_.TransmitTo(payloadified_data_, kDestinationId);
+    CommunicationStatus result = sut_.TransmitTo(kDestinationId, payloadified_data_);
 
     ASSERT_EQ(result, CommunicationStatus::Acknowledge);
 }

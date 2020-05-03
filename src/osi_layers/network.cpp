@@ -4,7 +4,7 @@
 #include "crc.h"
 
 template <>
-CommunicationStatus Network<>::TransmitTo(Payload &payload, uint8_t to) const
+CommunicationStatus Network<>::TransmitTo(uint8_t to, Payload &payload) const
 {
     payload.data[payload.size++] = to;
     payload.data[payload.size++] = own_id_;
