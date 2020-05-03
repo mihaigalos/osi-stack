@@ -13,8 +13,8 @@
 
 using ::testing::Return;
 
-void new_generic_transmit_byte(const uint8_t payload) { static_cast<void>(payload); }
-uint8_t new_generic_receive_byte() { return 0xFF; }
+void generic_transmit_byte(const uint8_t payload) { static_cast<void>(payload); }
+uint8_t generic_receive_byte() { return 0xFF; }
 
 template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC, typename DatalinkLayer = Datalink<Physical>>
 class MockNetwork : public Network<PhysicalLayer, CRCFunctions, DatalinkLayer>
@@ -26,16 +26,29 @@ public:
     MOCK_METHOD(Payload, ReceiveFrom, (uint8_t), (const override));
 };
 
-TEST(Bla, NetworkTransmitToWorks_WhenTypical)
+class FixtureWithMock : public ::testing::Test
 {
+public:
+    virtual void SetUp() override
+    {
+        payloadified_data_with_to_from_crc_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
+        payloadified_data_with_to_from_crc_.data[payloadified_data_with_to_from_crc_.size++] = kOwnId;
+        payloadified_data_with_to_from_crc_.data[payloadified_data_with_to_from_crc_.size++] = kSourceId;
+        payloadified_data_with_to_from_crc_ = crc_.append_crc_to_payload(payloadified_data_with_to_from_crc_);
+    }
+
+protected:
+    MockNetwork<> sut_{kOwnId, Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}};
+
+    Payload payloadified_data_with_to_from_crc_;
+
     CRC crc_;
     std::string data_{"abcd"};
-    auto payloadified_data_with_to_from_crc_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
-    payloadified_data_with_to_from_crc_.data[payloadified_data_with_to_from_crc_.size++] = kOwnId;
-    payloadified_data_with_to_from_crc_.data[payloadified_data_with_to_from_crc_.size++] = kSourceId;
-    payloadified_data_with_to_from_crc_ = crc_.append_crc_to_payload(payloadified_data_with_to_from_crc_);
+};
 
-    MockNetwork<> sut_{kOwnId, Datalink<>{Physical{new_generic_transmit_byte, new_generic_receive_byte}}};
+TEST_F(FixtureWithMock, NetworkTransmitToWorks_WhenTypical)
+{
+
     ON_CALL(sut_, TransmitTo).WillByDefault(Return(CommunicationStatus::Acknowledge));
 
     auto actual = sut_.TransmitTo(payloadified_data_with_to_from_crc_, kDestinationId);
