@@ -17,15 +17,12 @@ CommunicationStatus Transport<>::Transmit(uint8_t to, uint8_t *data, uint32_t si
             payload.data[j] = data[i + j];
         }
         payload.size = j - 1;
-        ++segment;
         i += j;
-
-        log(std::to_string(segment));
 
         payload.data[payload.size++] = static_cast<uint8_t>(segment);
         payload.data[payload.size++] = static_cast<uint8_t>(segment >> 8);
-
-        log_dump_payload(payload, "Transport :: Transmit");
+        log_dump_payload(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
+        ++segment;
 
         result = network_.Transmit(to, payload);
 

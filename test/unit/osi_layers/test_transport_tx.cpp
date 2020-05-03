@@ -18,7 +18,10 @@ public:
     {
         transmitted_data_[pos_++] = payload;
     }
-    static uint8_t generic_receive_byte() { return 0xFF; }
+    static uint8_t generic_receive_byte()
+    {
+        return lookup_map_[call_count_++ % 4];
+    }
 
 protected:
     virtual void SetUp() override
@@ -29,15 +32,24 @@ protected:
             transmitted_data_[i] = 0;
         }
         pos_ = 0;
+        call_count_ = 0;
+        lookup_map_ = {
+            {0, payload_size_byte_count + kCRCSize},
+            {1, payloadified_acknowledge_.data[0]},
+            {2, payloadified_acknowledge_.data[1]},
+            {3, payloadified_acknowledge_.data[2]},
+        };
     }
     Transport<> sut_{Network<>{kOwnId, Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}};
 
     static uint8_t transmitted_data_[255];
     static uint8_t pos_;
+    static uint8_t call_count_;
 };
 
 uint8_t Fixture::transmitted_data_[255];
 uint8_t Fixture::pos_;
+uint8_t Fixture::call_count_;
 
 TEST_F(Fixture, TransportTransmitWorks_WhenTypical)
 {
