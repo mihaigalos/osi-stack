@@ -70,5 +70,15 @@ TEST_F(Fixture, TransportTransmitWorks_WhenTypical)
 
 TEST_F(Fixture, TransportTransmitAcknowledge_WhenTypical)
 {
-    ASSERT_EQ(1, 1);
+
+    auto expected = CommunicationStatus::Acknowledge;
+    std::string data_to_transmit;
+    for (uint8_t i = 'A'; i < 'z'; ++i)
+    {
+        data_to_transmit += static_cast<char>(i);
+    }
+
+    auto actual = sut_.Transmit(kDestinationId, reinterpret_cast<uint8_t *>(const_cast<char *>(data_to_transmit.c_str())), data_to_transmit.length());
+
+    ASSERT_EQ(expected, actual);
 }
