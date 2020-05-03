@@ -6,13 +6,16 @@
 
 #include "network.h"
 
+using TSegment = uint16_t;
+
 template <typename NetworkLayer = Network<Datalink<Physical, CRC>>>
 class Transport
 {
+public:
     Transport(NetworkLayer &&network) : network_{std::forward<NetworkLayer>(network)} {}
 
-    CommunicationStatus TransmitWithSplit(uint8_t to, uint8_t *data, uint32_t size) const;
-    Payload ReceiveWithSplit(uint8_t from) const;
+    CommunicationStatus Transmit(uint8_t to, uint8_t *data, uint32_t size) const;
+    Payload Receive(uint8_t from) const;
 
     virtual ~Transport() = default;
     Transport(const Transport &other) = delete;

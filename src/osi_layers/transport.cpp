@@ -1,22 +1,38 @@
 #include "osi_layers/transport.h"
 
 template <>
-CommunicationStatus Transport<>::TransmitWithSplit(uint8_t to, uint8_t *data, uint32_t size) const
+CommunicationStatus Transport<>::Transmit(uint8_t to, uint8_t *data, uint32_t size) const
 {
     auto result{CommunicationStatus::Unknown};
-    Payload payload{};
+    TSegment segment{};
 
-    static_cast<void>(data);
     for (uint32_t i; i < size; ++i)
     {
-        network_.Transmit(to, payload);
+        uint8_t j{0};
+        Payload payload{};
+        for (j = 0; j < kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment) && i + j < size; ++j)
+        {
+            payload.data[j] = data[i + j];
+        }
+        ++segment;
+        i += j;
+
+        payload.data[j++] = static_cast<uint8_t>(segment);
+        payload.data[j++] = static_cast<uint8_t>(segment >> 8);
+
+        result = network_.Transmit(to, payload);
+
+        if (result != CommunicationStatus::Acknowledge)
+        {
+            break;
+        }
     }
 
     return result;
 }
 
 template <>
-Payload Transport<>::ReceiveWithSplit(uint8_t from) const
+Payload Transport<>::Receive(uint8_t from) const
 {
     static_cast<void>(from);
     return {};
