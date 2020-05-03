@@ -9,7 +9,7 @@
 constexpr uint8_t kPosDestinationIdInPayload{4};
 constexpr uint8_t kPosSourceIdInPayload{5};
 
-template <typename PhysicalLayer = Physical, typename DatalinkLayer = Datalink<PhysicalLayer>>
+template <typename DatalinkLayer = Datalink<Physical, CRC>>
 class Network
 {
 public:
