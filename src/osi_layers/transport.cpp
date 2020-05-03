@@ -8,16 +8,16 @@ CommunicationStatus Transport<>::Transmit(uint8_t to, uint8_t *data, uint32_t si
     auto result{CommunicationStatus::Unknown};
     TSegment segment{};
 
-    for (uint32_t i = 0; i < size; ++i)
+    for (uint32_t i = 0; i < size;)
     {
         uint8_t j{0};
         Payload payload{};
-        for (j = 0; j <= (kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment)) && (i + j < size); ++j)
+        for (j = 0; j <= (kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment)) && (i + j <= size); ++j)
         {
             payload.data[j] = data[i + j];
         }
         payload.size = j - 1;
-        i += j;
+        i += j - 1;
 
         payload.data[payload.size++] = static_cast<uint8_t>(segment);
         payload.data[payload.size++] = static_cast<uint8_t>(segment >> 8);
