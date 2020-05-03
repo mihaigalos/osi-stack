@@ -11,6 +11,38 @@
 #include "utilities.h"
 #include "test_unit_base.h"
 
+using ::testing::Return;
+
+void new_generic_transmit_byte(const uint8_t payload) { static_cast<void>(payload); }
+uint8_t new_generic_receive_byte() { return 0xFF; }
+
+template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC, typename DatalinkLayer = Datalink<Physical>>
+class MockNetwork : public Network<PhysicalLayer, CRCFunctions, DatalinkLayer>
+{
+public:
+    MockNetwork(uint8_t own_id, DatalinkLayer &&datalink) : Network<>{own_id, std::forward<DatalinkLayer>(datalink)} {}
+
+    MOCK_METHOD(CommunicationStatus, TransmitTo, (Payload &, uint8_t), (const override));
+    MOCK_METHOD(Payload, ReceiveFrom, (uint8_t), (const override));
+};
+
+TEST(Bla, NetworkTransmitToWorks_WhenTypical)
+{
+    CRC crc_;
+    std::string data_{"abcd"};
+    auto payloadified_data_with_to_from_crc_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
+    payloadified_data_with_to_from_crc_.data[payloadified_data_with_to_from_crc_.size++] = kOwnId;
+    payloadified_data_with_to_from_crc_.data[payloadified_data_with_to_from_crc_.size++] = kSourceId;
+    payloadified_data_with_to_from_crc_ = crc_.append_crc_to_payload(payloadified_data_with_to_from_crc_);
+
+    MockNetwork<> sut_{kOwnId, Datalink<>{Physical{new_generic_transmit_byte, new_generic_receive_byte}}};
+    ON_CALL(sut_, TransmitTo).WillByDefault(Return(CommunicationStatus::Acknowledge));
+
+    auto actual = sut_.TransmitTo(payloadified_data_with_to_from_crc_, kDestinationId);
+
+    EXPECT_EQ(actual, CommunicationStatus::Acknowledge);
+}
+
 class Fixture : public UnitBase
 {
 public:
