@@ -16,18 +16,18 @@ using ::testing::Return;
 void generic_transmit_byte(const uint8_t payload) { static_cast<void>(payload); }
 uint8_t generic_receive_byte() { return 0xFF; }
 
-template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC, typename DatalinkLayer = Datalink<Physical>>
-class MockNetwork : public Network<PhysicalLayer, CRCFunctions, DatalinkLayer>
+template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC>
+class MockDatalink : public Datalink<PhysicalLayer, CRCFunctions>
 {
 public:
-    MockNetwork(uint8_t own_id, DatalinkLayer &&datalink) : Network<>{own_id, std::forward<DatalinkLayer>(datalink)} {}
-
-    MOCK_METHOD(CommunicationStatus, TransmitTo, (Payload &, uint8_t), (const override));
-    MOCK_METHOD(Payload, ReceiveFrom, (uint8_t), (const override));
+    MockDatalink(PhysicalLayer &&physical) : Datalink<>{std::forward<PhysicalLayer>(physical)} {}
+    MOCK_METHOD(CommunicationStatus, TransmitWithAcknowledge, (const Payload &, uint8_t retransmit_count), (const override));
+    MOCK_METHOD(Payload, ReceiveWithAcknowledge, (), (const override));
 };
 
 class FixtureWithMock : public ::testing::Test
 {
+
 public:
     virtual void SetUp() override
     {
@@ -38,10 +38,10 @@ public:
     }
 
 protected:
-    MockNetwork<> sut_{kOwnId, Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}};
+    MockDatalink<> datalink_{Physical{generic_transmit_byte, generic_receive_byte}};
+    Network<> sut_{kOwnId, datalink_};
 
     Payload payloadified_data_with_to_from_crc_;
-
     CRC crc_;
     std::string data_{"abcd"};
 };
@@ -49,7 +49,7 @@ protected:
 TEST_F(FixtureWithMock, NetworkTransmitToWorks_WhenTypical)
 {
 
-    ON_CALL(sut_, TransmitTo).WillByDefault(Return(CommunicationStatus::Acknowledge));
+    ON_CALL(datalink_, TransmitWithAcknowledge).WillByDefault(Return(CommunicationStatus::Acknowledge));
 
     auto actual = sut_.TransmitTo(payloadified_data_with_to_from_crc_, kDestinationId);
 

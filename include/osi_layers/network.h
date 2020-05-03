@@ -14,6 +14,7 @@ class Network
 {
 public:
     Network(uint8_t own_id, DatalinkLayer &&datalink) : own_id_{own_id}, datalink_{std::forward<DatalinkLayer>(datalink)} {}
+    Network(uint8_t own_id, const DatalinkLayer &datalink) : own_id_{own_id}, datalink_{datalink} {}
 
     virtual CommunicationStatus TransmitTo(Payload &payload, uint8_t to) const;
     virtual Payload ReceiveFrom(uint8_t from) const;
