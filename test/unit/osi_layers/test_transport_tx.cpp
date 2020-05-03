@@ -62,9 +62,15 @@ TEST_F(Fixture, TransportTransmitWorks_WhenTypical)
 
     sut_.Transmit(kDestinationId, reinterpret_cast<uint8_t *>(const_cast<char *>(data_to_transmit.c_str())), data_to_transmit.length());
 
-    for (uint8_t i = 0; i < payload_without_metadata_size; ++i)
+    auto skip_past_metadata = kPayloadMaxSize - payload_without_metadata_size + kSizeofLength;
+    uint8_t skip_past_metadata_count{0};
+    for (uint8_t i = 0; i < 'z' - 'A'; ++i)
     {
-        ASSERT_EQ(transmitted_data_[i + kSizeofLength], 'A' + i);
+        if (i > 0 && i % payload_without_metadata_size == 0)
+        {
+            ++skip_past_metadata_count;
+        }
+        ASSERT_EQ(transmitted_data_[i + kSizeofLength + skip_past_metadata_count * skip_past_metadata], 'A' + i);
     }
 }
 
