@@ -1,14 +1,13 @@
 
 #include "osi_layers/network.h"
 #include "utilities.h"
-#include "crc.h"
 
 template <>
-CommunicationStatus Network<>::TransmitTo(uint8_t to, Payload &payload) const
+CommunicationStatus Network<>::Transmit(uint8_t to, Payload &payload) const
 {
     payload.data[payload.size++] = to;
     payload.data[payload.size++] = own_id_;
-    log_dump_payload(payload, "Network :: TransmitTo");
+    log_dump_payload(payload, "Network :: Transmit");
     return datalink_.TransmitWithAcknowledge(payload);
 }
 

@@ -9,13 +9,13 @@
 constexpr uint8_t kPosDestinationIdInPayload{4};
 constexpr uint8_t kPosSourceIdInPayload{5};
 
-template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC, typename DatalinkLayer = Datalink<Physical>>
+template <typename PhysicalLayer = Physical, typename DatalinkLayer = Datalink<PhysicalLayer>>
 class Network
 {
 public:
     Network(uint8_t own_id, DatalinkLayer &&datalink) : own_id_{own_id}, datalink_{std::forward<DatalinkLayer>(datalink)} {}
 
-    CommunicationStatus TransmitTo(uint8_t to, Payload &payload) const;
+    CommunicationStatus Transmit(uint8_t to, Payload &payload) const;
     Payload ReceiveFrom(uint8_t from) const;
 
     virtual ~Network() = default;
@@ -26,6 +26,5 @@ public:
 
 private:
     uint8_t own_id_{};
-    CRCFunctions crc_;
     DatalinkLayer datalink_;
 };
