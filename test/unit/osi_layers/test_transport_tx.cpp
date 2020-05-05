@@ -76,7 +76,6 @@ TEST_F(Fixture, TransportTransmitWorks_WhenTypical)
 
 TEST_F(Fixture, TransportTransmitAcknowledge_WhenTypical)
 {
-
     auto expected = CommunicationStatus::Acknowledge;
     std::string data_to_transmit;
     for (uint8_t i = 'A'; i < 'z'; ++i)
