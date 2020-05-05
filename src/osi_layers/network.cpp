@@ -3,7 +3,7 @@
 #include "utilities.h"
 
 template <>
-CommunicationStatus Network<>::Transmit(uint8_t to, Payload &payload) const
+CommunicationStatus Network<>::Transmit(const uint8_t to, Payload &payload) const
 {
     payload.data[payload.size++] = to;
     payload.data[payload.size++] = own_id_;
@@ -12,7 +12,7 @@ CommunicationStatus Network<>::Transmit(uint8_t to, Payload &payload) const
 }
 
 template <>
-Payload Network<>::Receive(uint8_t from) const
+Payload Network<>::Receive(const uint8_t from) const
 {
     Payload received = datalink_.Receive();
     bool is_expected_message{received.data[kPosDestinationIdInPayload] == own_id_ && received.data[kPosSourceIdInPayload] == from};

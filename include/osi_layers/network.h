@@ -19,7 +19,7 @@ public:
     Network(uint8_t own_id, DatalinkLayer &&datalink) : own_id_{own_id}, datalink_{std::forward<DatalinkLayer>(datalink)} {}
     Network(Network &&other) : datalink_{std::forward<DatalinkLayer>(other.datalink_)} {}
 
-    CommunicationStatus Transmit(uint8_t to, Payload &payload) const;
+    CommunicationStatus Transmit(const uint8_t to, Payload &payload) const;
     Payload Receive(uint8_t from) const;
 
     virtual ~Network() = default;

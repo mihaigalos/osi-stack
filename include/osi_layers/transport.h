@@ -14,8 +14,8 @@ class Transport
 public:
     Transport(NetworkLayer &&network) : network_{std::forward<NetworkLayer>(network)} {}
 
-    CommunicationStatus Transmit(uint8_t to, uint8_t *data, uint32_t size) const;
-    Payload Receive(uint8_t from) const;
+    CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t size) const;
+    uint32_t Receive(const uint8_t from, uint8_t *to) const;
 
     virtual ~Transport() = default;
     Transport(const Transport &other) = delete;

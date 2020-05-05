@@ -3,7 +3,7 @@
 #include "utilities.h"
 
 template <>
-CommunicationStatus Transport<>::Transmit(uint8_t to, uint8_t *data, uint32_t size) const
+CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint32_t size) const
 {
     auto result{CommunicationStatus::Unknown};
 
@@ -43,8 +43,29 @@ CommunicationStatus Transport<>::Transmit(uint8_t to, uint8_t *data, uint32_t si
 }
 
 template <>
-Payload Transport<>::Receive(uint8_t from) const
+uint32_t Transport<>::Receive(const uint8_t from, uint8_t *to) const
 {
+    uint32_t received_bytes{0};
+    TSegment segment{42};
 
-    return network_.Receive(from);
+    while (segment)
+    {
+
+        Payload received = network_.Receive(from);
+        if (!received.size)
+        {
+            return 0;
+        }
+
+        uint8_t segment_end{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize};
+
+        segment = received.data[segment_end - 1] << 8;
+        segment |= received.data[segment_end - 2];
+
+        for (uint8_t i = 0; i < segment_end - sizeof(TSegment); ++i, ++received_bytes)
+        {
+            to[received_bytes] = received.data[i];
+        }
+    }
+    return received_bytes;
 }
