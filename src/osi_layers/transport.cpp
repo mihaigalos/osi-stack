@@ -2,6 +2,16 @@
 
 #include "utilities.h"
 
+inline uint16_t getSementsCount(const uint32_t size, const uint8_t payload_without_metadata)
+{
+
+    uint16_t full_segments{static_cast<uint16_t>(size / payload_without_metadata)};
+    uint16_t partial_segments{static_cast<uint16_t>(size % payload_without_metadata)};
+    uint16_t make_last_segment_be_zero{1};
+
+    return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
+}
+
 template <>
 CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint32_t size) const
 {
@@ -9,10 +19,7 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 
     uint8_t payload_without_metadata{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment)};
 
-    uint16_t full_segments{static_cast<uint16_t>(size / payload_without_metadata)};
-    uint16_t partial_segments{static_cast<uint16_t>(size % payload_without_metadata)};
-    uint16_t make_last_segment_be_zero{1};
-    TSegment segment{static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
+    TSegment segment{getSementsCount(size, payload_without_metadata)};
 
     for (uint32_t i = 0; i < size;)
     {
