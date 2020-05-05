@@ -43,12 +43,12 @@ protected:
     Datalink<> sut_{Physical{generic_transmit_byte, generic_receive_byte}};
 };
 
-TEST_F(Fixture, ReceiveWithAcknowledgeWorks_WhenTypical)
+TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
     auto expected = Payload(data_.c_str(), static_cast<uint8_t>(data_.length()));
     expected = crc_.append_crc_to_payload(expected);
 
-    auto actual = sut_.ReceiveWithAcknowledge();
+    auto actual = sut_.Receive();
 
     ASSERT_EQ(actual, expected);
 }

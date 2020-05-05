@@ -45,6 +45,6 @@ CommunicationStatus Transport<>::Transmit(uint8_t to, uint8_t *data, uint32_t si
 template <>
 Payload Transport<>::Receive(uint8_t from) const
 {
-    static_cast<void>(from);
-    return {};
+
+    return network_.Receive(from);
 }

@@ -41,9 +41,9 @@ protected:
     Network<> sut_{kOwnId, Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}};
 };
 
-TEST_F(Fixture, ReceiveFromWorks_WhenTypical)
+TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
-    auto actual = sut_.ReceiveFrom(kSourceId);
+    auto actual = sut_.Receive(kSourceId);
 
     ASSERT_NE(actual.size, 0);
     ASSERT_EQ(kOwnId, actual.data[kPosDestinationIdInPayload]);

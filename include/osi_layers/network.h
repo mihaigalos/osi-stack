@@ -20,7 +20,7 @@ public:
     Network(Network &&other) : datalink_{std::forward<DatalinkLayer>(other.datalink_)} {}
 
     CommunicationStatus Transmit(uint8_t to, Payload &payload) const;
-    Payload ReceiveFrom(uint8_t from) const;
+    Payload Receive(uint8_t from) const;
 
     virtual ~Network() = default;
     Network(const Network &other) = delete;

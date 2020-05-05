@@ -63,7 +63,7 @@ TEST_F(Fixture, ReceiveWithNegativeAcknowledgeTransmissionWorks_WhenTypical)
 
     auto expected = Payload{nack_then_ack_with_crc, sizeof(nack_then_ack_with_crc)};
 
-    sut_.ReceiveWithAcknowledge();
+    sut_.Receive();
     auto actual = transmitted_;
 
     log_dump_payload(actual, "actual");

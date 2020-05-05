@@ -8,13 +8,13 @@ CommunicationStatus Network<>::Transmit(uint8_t to, Payload &payload) const
     payload.data[payload.size++] = to;
     payload.data[payload.size++] = own_id_;
     log_dump_payload(payload, "Network :: Transmit");
-    return datalink_.TransmitWithAcknowledge(payload);
+    return datalink_.Transmit(payload);
 }
 
 template <>
-Payload Network<>::ReceiveFrom(uint8_t from) const
+Payload Network<>::Receive(uint8_t from) const
 {
-    Payload received = datalink_.ReceiveWithAcknowledge();
+    Payload received = datalink_.Receive();
     bool is_expected_message{received.data[kPosDestinationIdInPayload] == own_id_ && received.data[kPosSourceIdInPayload] == from};
     log("Network :: ReceivedFrom received.data[kPosDestinationIdInPayload]: " + std::to_string(received.data[kPosDestinationIdInPayload]));
     log("Network :: ReceivedFrom received.data[kPosSourceIdInPayload]: " + std::to_string(received.data[kPosSourceIdInPayload]));
@@ -23,7 +23,7 @@ Payload Network<>::ReceiveFrom(uint8_t from) const
 
     if (is_expected_message)
     {
-        log_dump_payload(received, "Network :: ReceiveFrom");
+        log_dump_payload(received, "Network :: Receive");
     }
 
     return is_expected_message ? received : Payload{};
