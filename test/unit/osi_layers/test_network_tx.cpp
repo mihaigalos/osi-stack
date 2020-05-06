@@ -17,15 +17,17 @@ public:
     static void generic_transmit_byte(const uint8_t payload)
     {
 
-        if (transmitted_.size == kPosSourceIdInPayload + kSizeofLength && payload == kOwnId)
-        {
-            to_field_matches_own_ = true;
-        }
         transmitted_.data[transmitted_.size++] = payload;
     }
 
     static uint8_t generic_receive_byte()
     {
+
+        if (transmitted_.data[transmitted_.size - kPosFromEndDestinationIdInPayload] == kDestinationId)
+        {
+            to_field_matches_own_ = true;
+        }
+
         if (to_field_matches_own_)
         {
             return lookup_map_[call_count_++];
@@ -65,8 +67,8 @@ TEST_F(Fixture, NetworkTransmitWorks_WhenTypical)
 
     sut_.Transmit(kDestinationId, payloadified_data_);
 
-    ASSERT_EQ(transmitted_.data[kPosDestinationIdInPayload + kSizeofLength], kDestinationId);
-    ASSERT_EQ(transmitted_.data[kPosSourceIdInPayload + kSizeofLength], kOwnId);
+    ASSERT_EQ(transmitted_.data[transmitted_.size - kPosFromEndDestinationIdInPayload], kDestinationId);
+    ASSERT_EQ(transmitted_.data[transmitted_.size - kPosFromEndSourceIdInPayload], kOwnId);
 }
 
 TEST_F(Fixture, NetworkTransmitResultAcknowledge_WhenTypical)

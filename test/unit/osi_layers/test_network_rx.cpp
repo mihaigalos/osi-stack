@@ -46,5 +46,5 @@ TEST_F(Fixture, ReceiveWorks_WhenTypical)
     auto actual = sut_.Receive(kSourceId);
 
     ASSERT_NE(actual.size, 0);
-    ASSERT_EQ(kOwnId, actual.data[kPosDestinationIdInPayload]);
+    ASSERT_EQ(kOwnId, actual.data[actual.size - kPosFromEndDestinationIdInPayload]);
 }

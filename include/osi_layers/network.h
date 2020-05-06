@@ -6,8 +6,8 @@
 
 #include "datalink.h"
 
-constexpr uint8_t kPosDestinationIdInPayload{4};
-constexpr uint8_t kPosSourceIdInPayload{5};
+constexpr uint8_t kPosFromEndDestinationIdInPayload{3};
+constexpr uint8_t kPosFromEndSourceIdInPayload{4};
 
 constexpr uint8_t kSizeOfToField{1};
 constexpr uint8_t kSizeOfFromField{1};

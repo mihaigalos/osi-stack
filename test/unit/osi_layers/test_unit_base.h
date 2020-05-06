@@ -42,8 +42,6 @@ public:
         payloadified_data_with_segment_to_from_crc_.data[payloadified_data_with_segment_to_from_crc_.size++] = kOwnId;
         payloadified_data_with_segment_to_from_crc_.data[payloadified_data_with_segment_to_from_crc_.size++] = kSourceId;
         payloadified_data_with_segment_to_from_crc_ = crc_.append_crc_to_payload(payloadified_data_with_segment_to_from_crc_);
-
-        received_.size = 0;
     }
     virtual void TearDown() override {}
 
