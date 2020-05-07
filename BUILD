@@ -4,6 +4,7 @@ DEFAULT_COMPILER_OPTIONS = [
     "-fdiagnostics-color",
     "-DTESTING",
     "-DLOGGING",
+    "-fuse-ld=gold",
     "-Wall",
     "-Wextra",
     "-Wpedantic",
