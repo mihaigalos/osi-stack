@@ -1,15 +1,15 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 DEFAULT_COMPILER_OPTIONS = [
-    "-fdiagnostics-color",
-    "-DTESTING",
     "-DLOGGING",
+    "-DTESTING",
+    "-fdiagnostics-color",
     "-fuse-ld=gold",
+    "-std=c++14",
     "-Wall",
+    "-Werror",
     "-Wextra",
     "-Wpedantic",
-    "-Werror",
-    "-std=c++14",
 ]
 
 DEFAULT_TEST_DEPS = [
