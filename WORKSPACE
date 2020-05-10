@@ -33,3 +33,9 @@ llvm_toolchain(
 load("@llvm_toolchain//:toolchains.bzl", "llvm_register_toolchains")
 
 llvm_register_toolchains()
+
+git_repository(
+    name = "containers",
+    commit = "2756d0d4c5739a7bc01c887cc26843aa3df170a3",
+    remote = "https://github.com/mihaigalos/containers",
+)
