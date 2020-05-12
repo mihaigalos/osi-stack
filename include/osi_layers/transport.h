@@ -1,7 +1,10 @@
 #pragma once
 
 #include <cstdint>
+
+#include "containers/static_string.h"
 #include "osi_layers/physical.h"
+
 #include "config.h"
 
 #include "network.h"
