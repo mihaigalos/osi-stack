@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-#include "containers/static_string.h"
+#include <containers/static_map.h>
 #include "osi_layers/physical.h"
 
 #include "config.h"

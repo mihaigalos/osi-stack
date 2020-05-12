@@ -13,7 +13,7 @@ DEFAULT_COMPILER_OPTIONS = [
 
 DEFAULT_TEST_DEPS = [
     ":sut",
-    "@containers//:sources",
+    "@containers",
     "@gtest",
     "@gtest//:gtest_main",
 ]
