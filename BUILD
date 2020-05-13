@@ -13,7 +13,6 @@ DEFAULT_COMPILER_OPTIONS = [
 
 DEFAULT_TEST_DEPS = [
     ":sut",
-    "@containers",
     "@gtest",
     "@gtest//:gtest_main",
 ]
@@ -24,6 +23,7 @@ cc_library(
     hdrs = glob(["include/**/*.h"]),
     copts = DEFAULT_COMPILER_OPTIONS,
     strip_include_prefix = "include",
+    deps = ["@containers"],
 )
 
 cc_library(
