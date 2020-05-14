@@ -46,11 +46,9 @@ protected:
 
 TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
+    containers::static_string<uint8_t, 50> expected{"abcd"};
 
     auto actual = sut_.Receive(kSourceId);
 
-    static_cast<void>(actual);
-    // std::string received{actual.c_str()};
-
-    // ASSERT_NE(received, "");
+    ASSERT_EQ(expected, actual);
 }

@@ -64,16 +64,16 @@ containers::static_string<uint8_t, kSizeOfSegment> Transport<>::Receive(const ui
             return result;
         }
 
-        uint8_t segment_end{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize};
+        uint8_t segment_end = received.size - 1 - kSizeOfToField - kSizeOfFromField - kCRCSize;
 
-        segment = received.data[segment_end - 1] << 8;
-        segment |= received.data[segment_end - 2];
+        segment = received.data[segment_end] << 8;
+        segment |= received.data[segment_end - 1];
 
-        for (uint8_t i = 0; i < segment_end - sizeof(TSegment); ++i)
+        for (uint8_t i = 0; i <= segment_end - sizeof(TSegment); ++i)
         {
             const char character = static_cast<const char>(received.data[i]);
             result = result + character;
         }
-    } while (segment && watchdog--);
+    } while (--segment && --watchdog);
     return result;
 }

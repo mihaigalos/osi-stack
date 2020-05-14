@@ -19,10 +19,10 @@ Payload Network<>::Receive(const uint8_t from) const
         received.data[received.size - kPosFromEndDestinationIdInPayload] == own_id_ &&
         received.data[received.size - kPosFromEndSourceIdInPayload] == from};
 
-    log("Network :: ReceivedFrom received.data[received.size - kPosFromEndDestinationIdInPayload]: " + std::to_string(received.data[received.size - kPosFromEndDestinationIdInPayload]));
-    log("Network :: ReceivedFrom received.data[received.size - kPosFromEndSourceIdInPayload]: " + std::to_string(received.data[received.size - kPosFromEndSourceIdInPayload]));
-    log("Network :: ReceivedFrom own_id_: " + std::to_string(own_id_));
+    log("Network :: ReceivedFrom received.data [from]: " + std::to_string(received.data[received.size - kPosFromEndDestinationIdInPayload]));
+    log("Network :: ReceivedFrom received.data [to]: " + std::to_string(received.data[received.size - kPosFromEndSourceIdInPayload]));
     log("Network :: ReceivedFrom from: " + std::to_string(from));
+    log("Network :: ReceivedFrom own_id_: " + std::to_string(own_id_));
 
     if (is_expected_message)
     {
