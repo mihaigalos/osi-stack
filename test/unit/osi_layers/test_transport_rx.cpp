@@ -41,7 +41,6 @@ protected:
         UnitBase::SetUp();
     }
     Transport<> sut_{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}};
-    uint8_t buffer_[1024];
 };
 
 TEST_F(Fixture, ReceiveWorks_WhenTypical)
