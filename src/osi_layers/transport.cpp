@@ -50,18 +50,18 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 }
 
 template <>
-uint32_t Transport<>::Receive(const uint8_t from, uint8_t *to) const
+containers::static_string<uint8_t, kSizeOfSegment> Transport<>::Receive(const uint8_t from) const
 {
-    uint32_t received_bytes{0};
-    TSegment segment{42};
-
-    while (segment)
+    containers::static_string<uint8_t, kSizeOfSegment> result{};
+    TSegment segment{};
+    TSegment watchdog{kSizeOfSegment};
+    do
     {
 
         Payload received = network_.Receive(from);
         if (!received.size)
         {
-            return 0;
+            return result;
         }
 
         uint8_t segment_end{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize};
@@ -69,10 +69,11 @@ uint32_t Transport<>::Receive(const uint8_t from, uint8_t *to) const
         segment = received.data[segment_end - 1] << 8;
         segment |= received.data[segment_end - 2];
 
-        for (uint8_t i = 0; i < segment_end - sizeof(TSegment); ++i, ++received_bytes)
+        for (uint8_t i = 0; i < segment_end - sizeof(TSegment); ++i)
         {
-            to[received_bytes] = received.data[i];
+            const char character = static_cast<const char>(received.data[i]);
+            result = result + character;
         }
-    }
-    return received_bytes;
+    } while (segment && watchdog--);
+    return result;
 }

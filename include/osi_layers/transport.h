@@ -1,11 +1,10 @@
 #pragma once
-
 #include <cstdint>
 
-#include <containers/static_map.h>
 #include "osi_layers/physical.h"
 
 #include "config.h"
+#include <containers/static_string.h>
 
 #include "network.h"
 
@@ -18,7 +17,7 @@ public:
     Transport(NetworkLayer &&network) : network_{std::forward<NetworkLayer>(network)} {}
 
     CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t size) const;
-    uint32_t Receive(const uint8_t from, uint8_t *to) const;
+    containers::static_string<uint8_t, kSizeOfSegment> Receive(const uint8_t from) const;
 
     virtual ~Transport() = default;
     Transport(const Transport &other) = delete;
