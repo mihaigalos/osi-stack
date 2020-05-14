@@ -11,11 +11,7 @@ class Physical
 {
 public:
   Physical(TVoidUint8 on_transmit, TUint8Void on_receive) : on_transmit_byte_{on_transmit}, on_receive_byte_{on_receive} {}
-  Physical(Physical &&other)
-  {
-    on_transmit_byte_ = other.on_transmit_byte_;
-    on_receive_byte_ = other.on_receive_byte_;
-  }
+  Physical(Physical &&other) : on_transmit_byte_{other.on_transmit_byte_}, on_receive_byte_{other.on_receive_byte_} {}
 
   void Transmit(const Payload &payload) const;
   Payload Receive() const;

@@ -42,9 +42,9 @@ protected:
     Datalink<> sut_{Physical{generic_transmit_byte, generic_receive_byte}};
 };
 
-TEST_F(Fixture, TransmitWithAcknowledgeWorks_WhenTypical)
+TEST_F(Fixture, TransmitWorks_WhenTypical)
 {
-    CommunicationStatus result = sut_.TransmitWithAcknowledge(payloadified_data_);
+    CommunicationStatus result = sut_.Transmit(payloadified_data_);
 
     ASSERT_EQ(result, CommunicationStatus::Acknowledge);
 }

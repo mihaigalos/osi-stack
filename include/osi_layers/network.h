@@ -6,21 +6,26 @@
 
 #include "datalink.h"
 
-constexpr uint8_t kPosDestinationIdInPayload{4};
-constexpr uint8_t kPosSourceIdInPayload{5};
+constexpr uint8_t kPosFromEndDestinationIdInPayload{3};
+constexpr uint8_t kPosFromEndSourceIdInPayload{4};
+
+constexpr uint8_t kSizeOfToField{1};
+constexpr uint8_t kSizeOfFromField{1};
 
 template <typename DatalinkLayer = Datalink<Physical, CRC>>
 class Network
 {
 public:
-    Network(uint8_t own_id, DatalinkLayer &&datalink) : own_id_{own_id}, datalink_{std::forward<DatalinkLayer>(datalink)} {}
+    Network(uint8_t own_id, DatalinkLayer &&datalink) : own_id_{own_id},
+                                                        datalink_{std::forward<DatalinkLayer>(datalink)} {}
+    Network(Network &&other) : own_id_{other.own_id_}, datalink_{std::forward<DatalinkLayer>(other.datalink_)} {}
 
-    CommunicationStatus Transmit(uint8_t to, Payload &payload) const;
-    Payload ReceiveFrom(uint8_t from) const;
+    CommunicationStatus Transmit(const uint8_t to, Payload &payload) const;
+    Payload Receive(uint8_t from) const;
 
     virtual ~Network() = default;
     Network(const Network &other) = delete;
-    Network(Network &&other) = delete;
+
     Network &operator=(const Network &other) = delete;
     Network &operator=(Network &&other) = delete;
 

@@ -21,8 +21,8 @@ class Datalink
 public:
     Datalink(PhysicalLayer &&physical) : physical_{std::forward<PhysicalLayer>(physical)} {}
     Datalink(Datalink &&other) : physical_{std::forward<PhysicalLayer>(other.physical_)} {}
-    CommunicationStatus TransmitWithAcknowledge(const Payload &payload, uint8_t retransmit_count = kMaxRetransmitCount) const;
-    Payload ReceiveWithAcknowledge() const;
+    CommunicationStatus Transmit(const Payload &payload, uint8_t retransmit_count = kMaxRetransmitCount) const;
+    Payload Receive() const;
 
     virtual ~Datalink() = default;
     Datalink &operator=(const Datalink &other) = delete;

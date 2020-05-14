@@ -3,27 +3,30 @@
 #include "utilities.h"
 
 template <>
-CommunicationStatus Network<>::Transmit(uint8_t to, Payload &payload) const
+CommunicationStatus Network<>::Transmit(const uint8_t to, Payload &payload) const
 {
-    payload.data[payload.size++] = to;
     payload.data[payload.size++] = own_id_;
+    payload.data[payload.size++] = to;
     log_dump_payload(payload, "Network :: Transmit");
-    return datalink_.TransmitWithAcknowledge(payload);
+    return datalink_.Transmit(payload);
 }
 
 template <>
-Payload Network<>::ReceiveFrom(uint8_t from) const
+Payload Network<>::Receive(const uint8_t from) const
 {
-    Payload received = datalink_.ReceiveWithAcknowledge();
-    bool is_expected_message{received.data[kPosDestinationIdInPayload] == own_id_ && received.data[kPosSourceIdInPayload] == from};
-    log("Network :: ReceivedFrom received.data[kPosDestinationIdInPayload]: " + std::to_string(received.data[kPosDestinationIdInPayload]));
-    log("Network :: ReceivedFrom received.data[kPosSourceIdInPayload]: " + std::to_string(received.data[kPosSourceIdInPayload]));
-    log("Network :: ReceivedFrom own_id_: " + std::to_string(own_id_));
+    Payload received = datalink_.Receive();
+    bool is_expected_message{
+        received.data[received.size - kPosFromEndDestinationIdInPayload] == own_id_ &&
+        received.data[received.size - kPosFromEndSourceIdInPayload] == from};
+
+    log("Network :: ReceivedFrom received.data [from]: " + std::to_string(received.data[received.size - kPosFromEndDestinationIdInPayload]));
+    log("Network :: ReceivedFrom received.data [to]: " + std::to_string(received.data[received.size - kPosFromEndSourceIdInPayload]));
     log("Network :: ReceivedFrom from: " + std::to_string(from));
+    log("Network :: ReceivedFrom own_id_: " + std::to_string(own_id_));
 
     if (is_expected_message)
     {
-        log_dump_payload(received, "Network :: ReceiveFrom");
+        log_dump_payload(received, "Network :: Receive");
     }
 
     return is_expected_message ? received : Payload{};

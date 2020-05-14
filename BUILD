@@ -1,14 +1,14 @@
 load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 
 DEFAULT_COMPILER_OPTIONS = [
-    "-fdiagnostics-color",
-    "-DTESTING",
     "-DLOGGING",
+    "-DTESTING",
+    "-fdiagnostics-color",
+    "-std=c++14",
     "-Wall",
+    "-Werror",
     "-Wextra",
     "-Wpedantic",
-    "-Werror",
-    "-std=c++14",
 ]
 
 DEFAULT_TEST_DEPS = [
@@ -23,6 +23,7 @@ cc_library(
     hdrs = glob(["include/**/*.h"]),
     copts = DEFAULT_COMPILER_OPTIONS,
     strip_include_prefix = "include",
+    deps = ["@containers"],
 )
 
 cc_library(

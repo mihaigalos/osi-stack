@@ -12,3 +12,9 @@ git_repository(
     commit = "0eea2e9fc63461761dea5f2f517bd6af2ca024fa",
     remote = "https://github.com/google/googletest",
 )
+
+git_repository(
+    name = "containers",
+    commit = "5f5d66522c2cb292b7264f996d6741b22f211862",
+    remote = "https://github.com/mihaigalos/containers",
+)

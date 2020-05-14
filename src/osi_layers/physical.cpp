@@ -30,7 +30,7 @@ Payload Physical::Receive() const
     }
     else
     {
-        log("Physical :: Receive expected_count >= kPayloadMaxSize, impossible to receive.");
+        log("Physical :: Receive expected_count >= kPayloadMaxSize, impossible to receive " + std::to_string(expected_count) + " bytes.");
     }
     return {};
 }
