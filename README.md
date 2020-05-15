@@ -1,4 +1,4 @@
-### OSI Stack [![Build Status](https://travis-ci.org/mihaigalos/osi_stack.svg?branch=master)](https://travis-ci.org/mihaigalos/osi_stack)
+### OSI Stack [![Build Status](https://travis-ci.org/mihaigalos/osi_stack.svg?branch=master)](https://travis-ci.org/mihaigalos/osi_stack) [![license](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](LICENSE)
 
 Very rough model of an ISO/OSI communication stack.
 This implementation intentionally uses raw pointers instead of smart pointers.
