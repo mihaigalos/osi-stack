@@ -53,6 +53,7 @@ template <>
 containers::static_string<uint8_t, kSizeOfSegment> Transport<>::Receive(const uint8_t from) const
 {
     containers::static_string<uint8_t, kSizeOfSegment> result{};
+    containers::static_map<uint8_t, uint8_t, kSizeOfSegment> buffer{};
     TSegment segment{};
     TSegment watchdog{kSizeOfSegment};
     do
@@ -71,9 +72,16 @@ containers::static_string<uint8_t, kSizeOfSegment> Transport<>::Receive(const ui
 
         for (uint8_t i = 0; i <= segment_end - sizeof(TSegment); ++i)
         {
-            const char character = static_cast<const char>(received.data[i]);
-            result = result + character;
+            buffer[i] = static_cast<const char>(received.data[i]);
         }
+
     } while (--segment && --watchdog);
+
+    uint8_t buffer_size = buffer.size();
+    for (uint8_t i = 0; i < buffer_size; ++i)
+    {
+        result = result + static_cast<const char>(buffer[i]);
+    }
+
     return result;
 }
