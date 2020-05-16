@@ -72,7 +72,7 @@ containers::static_string<kSizeOfSegment> Transport<>::Receive(const uint8_t fro
 
         for (uint8_t i = 0; i <= segment_end - sizeof(TSegment); ++i)
         {
-            buffer[i] = static_cast<const char>(received.data[i]);
+            buffer[i] = received.data[i];
         }
 
     } while (--segment && --watchdog);
@@ -80,7 +80,7 @@ containers::static_string<kSizeOfSegment> Transport<>::Receive(const uint8_t fro
     uint8_t buffer_size = buffer.size();
     for (uint8_t i = 0; i < buffer_size; ++i)
     {
-        result = result + static_cast<const char>(buffer[i]);
+        result = result + buffer[i];
     }
 
     return result;
