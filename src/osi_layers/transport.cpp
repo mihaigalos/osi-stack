@@ -12,6 +12,17 @@ inline uint16_t getSementsCount(const uint32_t size, const uint8_t payload_witho
     return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
 }
 
+inline containers::static_string<kSizeOfSegment> reconstructStringFromMap(containers::static_map<uint8_t, uint8_t, kSizeOfSegment> &buffer)
+{
+    containers::static_string<kSizeOfSegment> result;
+    uint8_t buffer_size = buffer.size();
+    for (uint8_t i = 0; i < buffer_size; ++i)
+    {
+        result = result + buffer[i];
+    }
+    return result;
+}
+
 template <>
 CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint32_t size) const
 {
@@ -58,7 +69,6 @@ containers::static_string<kSizeOfSegment> Transport<>::Receive(const uint8_t fro
     TSegment watchdog{kSizeOfSegment};
     do
     {
-
         Payload received = network_.Receive(from);
         if (!received.size)
         {
@@ -77,11 +87,5 @@ containers::static_string<kSizeOfSegment> Transport<>::Receive(const uint8_t fro
 
     } while (--segment && --watchdog);
 
-    uint8_t buffer_size = buffer.size();
-    for (uint8_t i = 0; i < buffer_size; ++i)
-    {
-        result = result + buffer[i];
-    }
-
-    return result;
+    return reconstructStringFromMap(buffer);
 }
