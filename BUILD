@@ -48,3 +48,19 @@ cc_library(
         for file_name in glob(["test/unit/**/*.cpp"])
     ]
 ]
+
+[
+    cc_test(
+        name = "integration/" + integration_name,
+        srcs = [
+            "test/integration/" + integration_name + ".cpp",
+        ],
+        copts = DEFAULT_COMPILER_OPTIONS,
+        tags = ["integration"],
+        deps = DEFAULT_TEST_DEPS + [":test_headers"],
+    )
+    for integration_name in [
+        file_name.replace("test/integration/", "").replace(".cpp", "")
+        for file_name in glob(["test/integration/**/*.cpp"])
+    ]
+]
