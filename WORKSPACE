@@ -15,6 +15,6 @@ git_repository(
 
 git_repository(
     name = "containers",
-    commit = "7048898157eb8bba406632e4eb488f929815ad1e",
+    commit = "89394d809573ef7f5c4ea0785396015d7bd941ab",
     remote = "https://github.com/mihaigalos/containers",
 )

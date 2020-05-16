@@ -50,9 +50,9 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 }
 
 template <>
-containers::static_string<uint8_t, kSizeOfSegment> Transport<>::Receive(const uint8_t from) const
+containers::static_string<kSizeOfSegment> Transport<>::Receive(const uint8_t from) const
 {
-    containers::static_string<uint8_t, kSizeOfSegment> result{};
+    containers::static_string<kSizeOfSegment> result{};
     containers::static_map<uint8_t, uint8_t, kSizeOfSegment> buffer{};
     TSegment segment{};
     TSegment watchdog{kSizeOfSegment};
