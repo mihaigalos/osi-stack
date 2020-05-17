@@ -30,7 +30,7 @@ cc_library(
     name = "test_headers",
     hdrs = glob(["test/**/*.h"]),
     copts = DEFAULT_COMPILER_OPTIONS,
-    strip_include_prefix = "test/unit/osi_layers",
+    strip_include_prefix = "test",
 )
 
 [
