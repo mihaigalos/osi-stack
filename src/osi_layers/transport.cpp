@@ -23,7 +23,7 @@ inline TString reconstructStringFromMap(TMap &buffer)
     return result;
 }
 
-inline Payload constructPayloadFromData(uint8_t payload_without_metadata_size, uint32_t &serialized_bytes, uint32_t &total_size, uint8_t *data)
+inline Payload constructPayloadFromData(const uint8_t payload_without_metadata_size, const uint32_t &total_size, const uint8_t *data, uint32_t &serialized_bytes)
 {
     uint8_t i{0};
     Payload payload{};
@@ -62,7 +62,7 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 
     for (uint32_t serialized_bytes = 0; serialized_bytes < total_size;)
     {
-        Payload payload = constructPayloadFromData(payload_without_metadata_size, serialized_bytes, total_size, data);
+        Payload payload = constructPayloadFromData(payload_without_metadata_size, total_size, data, serialized_bytes);
         serializeSegment(segment, payload);
         log_dump_payload(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
         --segment;
