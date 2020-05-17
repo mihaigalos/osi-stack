@@ -2,11 +2,13 @@
 
 #include "utilities.h"
 
-inline uint16_t getSementsCount(const uint32_t size, const uint8_t payload_without_metadata)
+constexpr uint8_t payload_without_metadata_size{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment)};
+
+inline uint16_t getSegmentsCount(const uint32_t size)
 {
 
-    uint16_t full_segments{static_cast<uint16_t>(size / payload_without_metadata)};
-    uint16_t partial_segments{static_cast<uint16_t>(size % payload_without_metadata)};
+    uint16_t full_segments{static_cast<uint16_t>(size / payload_without_metadata_size)};
+    uint16_t partial_segments{static_cast<uint16_t>(size % payload_without_metadata_size)};
     uint16_t make_last_segment_be_zero{1};
 
     return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
@@ -51,19 +53,23 @@ inline TSegment deserializeSegment(const Payload &received, const uint8_t segmen
     return segment;
 }
 
+inline Payload serializeData(const uint32_t &total_size, const uint8_t *data, const TSegment &segment, uint32_t &serialized_bytes)
+{
+    Payload payload = constructPayloadFromData(payload_without_metadata_size, total_size, data, serialized_bytes);
+    serializeSegment(segment, payload);
+    return payload;
+}
+
 template <>
 CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const
 {
     auto result{CommunicationStatus::Unknown};
 
-    uint8_t payload_without_metadata_size{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment)};
-
-    TSegment segment{getSementsCount(total_size, payload_without_metadata_size)};
+    TSegment segment{getSegmentsCount(total_size)};
 
     for (uint32_t serialized_bytes = 0; serialized_bytes < total_size;)
     {
-        Payload payload = constructPayloadFromData(payload_without_metadata_size, total_size, data, serialized_bytes);
-        serializeSegment(segment, payload);
+        Payload payload = serializeData(total_size, data, segment, serialized_bytes);
         log_dump_payload(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
         --segment;
 
