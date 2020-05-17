@@ -12,7 +12,7 @@ inline uint16_t getSementsCount(const uint32_t size, const uint8_t payload_witho
     return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
 }
 
-inline containers::static_string<kSizeOfSegment> reconstructStringFromMap(containers::static_map<uint8_t, uint8_t, kSizeOfSegment> &buffer)
+inline TString reconstructStringFromMap(TMap &buffer)
 {
     containers::static_string<kSizeOfSegment> result;
     uint8_t buffer_size = buffer.size();
