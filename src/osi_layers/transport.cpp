@@ -25,7 +25,7 @@ inline TString reconstructStringFromMap(TMap &buffer)
     return result;
 }
 
-inline Payload constructPayloadFromData(const uint8_t payload_without_metadata_size, const uint32_t &total_size, const uint8_t *data, uint32_t &serialized_bytes)
+inline Payload constructPayloadFromData(const uint32_t &total_size, const uint8_t *data, uint32_t &serialized_bytes)
 {
     uint8_t i{0};
     Payload payload{};
@@ -55,7 +55,7 @@ inline TSegment deserializeSegment(const Payload &received, const uint8_t segmen
 
 inline Payload serializeData(const uint32_t &total_size, const uint8_t *data, const TSegment &segment, uint32_t &serialized_bytes)
 {
-    Payload payload = constructPayloadFromData(payload_without_metadata_size, total_size, data, serialized_bytes);
+    Payload payload = constructPayloadFromData(total_size, data, serialized_bytes);
     serializeSegment(segment, payload);
     return payload;
 }
