@@ -14,7 +14,7 @@ inline uint16_t getSementsCount(const uint32_t size, const uint8_t payload_witho
 
 inline TString reconstructStringFromMap(TMap &buffer)
 {
-    containers::static_string<kSizeOfSegment> result;
+    TString result;
     uint8_t buffer_size = buffer.size();
     for (uint8_t i = 0; i < buffer_size; ++i)
     {

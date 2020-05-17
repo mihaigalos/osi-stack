@@ -45,7 +45,7 @@ protected:
 
 TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
-    containers::static_string<kSizeOfSegment> expected{"abcd"};
+    TString expected{"abcd"};
 
     auto actual = sut_.Receive(kSourceId);
 
