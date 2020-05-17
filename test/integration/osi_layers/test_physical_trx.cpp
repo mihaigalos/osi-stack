@@ -25,7 +25,6 @@ public:
 protected:
     virtual void SetUp() override
     {
-        send_data_ = {};
         receive_data_ = {};
         pos_ = {};
     }
@@ -34,11 +33,12 @@ protected:
     static Payload transmitted_, received_;
     Physical sut_{generic_transmit_byte, generic_receive_byte};
 
-    static std::string send_data_, receive_data_;
+    static const std::string send_data_;
+    static std::string receive_data_;
     static uint8_t pos_;
 };
 
-std::string Fixture::send_data_{"abcd"};
+const std::string Fixture::send_data_{"abcd"};
 std::string Fixture::receive_data_{};
 uint8_t Fixture::pos_{};
 
