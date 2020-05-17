@@ -9,7 +9,7 @@ CommunicationStatus Datalink<>::Transmit(const Payload &payload, uint8_t retrans
     auto payload_with_crc = crc_.append_crc_to_payload(payload);
 
     log_dump_payload(payload_with_crc, "Datalink :: Transmit");
-    for (uint8_t i = 0; i < retransmit_count && result != CommunicationStatus::Acknowledge; ++i)
+    for (uint8_t i = 0; i <= retransmit_count && result != CommunicationStatus::Acknowledge; ++i)
     {
         physical_.Transmit(payload_with_crc);
         Payload response = physical_.Receive();
