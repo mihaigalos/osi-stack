@@ -23,17 +23,17 @@ inline TString reconstructStringFromMap(TMap &buffer)
     return result;
 }
 
-inline Payload constructPayloadFromData(uint8_t payload_without_metadata_size, uint32_t &i, uint32_t &total_size, uint8_t *data)
+inline Payload constructPayloadFromData(uint8_t payload_without_metadata_size, uint32_t &serialized_bytes, uint32_t &total_size, uint8_t *data)
 {
-    uint8_t j{0};
+    uint8_t i{0};
     Payload payload{};
-    for (j = 0; j <= (payload_without_metadata_size) && (i + j <= total_size); ++j)
+    for (i = 0; i <= (payload_without_metadata_size) && (serialized_bytes + i <= total_size); ++i)
     {
-        payload.data[j] = data[i + j];
+        payload.data[i] = data[serialized_bytes + i];
     }
-    payload.size = j - 1;
+    payload.size = i - 1;
 
-    i += j - 1;
+    serialized_bytes += i - 1;
 
     return payload;
 }
@@ -60,9 +60,9 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 
     TSegment segment{getSementsCount(total_size, payload_without_metadata_size)};
 
-    for (uint32_t i = 0; i < total_size;)
+    for (uint32_t serialized_bytes = 0; serialized_bytes < total_size;)
     {
-        Payload payload = constructPayloadFromData(payload_without_metadata_size, i, total_size, data);
+        Payload payload = constructPayloadFromData(payload_without_metadata_size, serialized_bytes, total_size, data);
         serializeSegment(segment, payload);
         log_dump_payload(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
         --segment;
