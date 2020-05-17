@@ -18,7 +18,6 @@ public:
 
     static uint8_t generic_receive_byte()
     {
-
         return io_data_.at(pos_in_io_data_++);
     }
 
