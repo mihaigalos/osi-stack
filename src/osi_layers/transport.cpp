@@ -60,6 +60,17 @@ inline Payload serializeData(const uint32_t &total_size, const uint8_t *data, co
     return payload;
 }
 
+inline void deserializeData(const Payload &received, TSegment &segment, TMap &buffer)
+{
+    uint8_t segment_end = received.size - 1 - kSizeOfToField - kSizeOfFromField - kCRCSize;
+    segment = deserializeSegment(received, segment_end);
+
+    for (uint8_t i = 0; i <= segment_end - sizeof(TSegment); ++i)
+    {
+        buffer[i] = received.data[i];
+    }
+}
+
 template <>
 CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const
 {
@@ -99,13 +110,7 @@ TString Transport<>::Receive(const uint8_t from) const
             return result;
         }
 
-        uint8_t segment_end = received.size - 1 - kSizeOfToField - kSizeOfFromField - kCRCSize;
-        segment = deserializeSegment(received, segment_end);
-
-        for (uint8_t i = 0; i <= segment_end - sizeof(TSegment); ++i)
-        {
-            buffer[i] = received.data[i];
-        }
+        deserializeData(received, segment, buffer);
 
     } while (--segment && --watchdog);
 
