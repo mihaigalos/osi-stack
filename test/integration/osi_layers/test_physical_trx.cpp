@@ -12,6 +12,8 @@
 
 class Fixture : public IntegrationBase
 {
+protected:
+    Physical sut_{generic_transmit_byte, generic_receive_byte};
 };
 
 TEST_F(Fixture, TRxWorks_WhenTypical)

@@ -3,7 +3,9 @@
 #include <cstdint>
 #include <string>
 
+#include "osi_layers/datalink.h"
 #include "osi_layers/physical.h"
+
 #include "crc.h"
 
 class IntegrationBase : public ::testing::Test
@@ -28,13 +30,14 @@ protected:
     virtual void TearDown() override {}
 
     static Payload transmitted_, received_;
-    Physical sut_{generic_transmit_byte, generic_receive_byte};
 
     static const std::string send_data_;
     static std::string io_data_;
     static uint8_t pos_in_io_data_;
+    static CRC crc_;
 };
 
 const std::string IntegrationBase::send_data_{"abcd"};
 std::string IntegrationBase::io_data_{};
 uint8_t IntegrationBase::pos_in_io_data_{};
+CRC IntegrationBase::crc_;
