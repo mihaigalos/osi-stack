@@ -23,6 +23,27 @@ inline TString reconstructStringFromMap(TMap &buffer)
     return result;
 }
 
+inline Payload constructPayloadFromData(uint8_t payload_without_metadata, uint32_t &i, uint32_t &size, uint8_t *data)
+{
+    uint8_t j{0};
+    Payload payload{};
+    for (j = 0; j <= (payload_without_metadata) && (i + j <= size); ++j)
+    {
+        payload.data[j] = data[i + j];
+    }
+    payload.size = j - 1;
+
+    i += j - 1;
+
+    return payload;
+}
+
+inline void appendSegment(const TSegment &segment, Payload &payload)
+{
+    payload.data[payload.size++] = static_cast<uint8_t>(segment);
+    payload.data[payload.size++] = static_cast<uint8_t>(segment >> 8);
+}
+
 template <>
 CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint32_t size) const
 {
@@ -34,18 +55,8 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 
     for (uint32_t i = 0; i < size;)
     {
-        uint8_t j{0};
-        Payload payload{};
-        for (j = 0; j <= (payload_without_metadata) && (i + j <= size); ++j)
-        {
-            payload.data[j] = data[i + j];
-        }
-        payload.size = j - 1;
-
-        i += j - 1;
-
-        payload.data[payload.size++] = static_cast<uint8_t>(segment);
-        payload.data[payload.size++] = static_cast<uint8_t>(segment >> 8);
+        Payload payload = constructPayloadFromData(payload_without_metadata, i, size, data);
+        appendSegment(segment, payload);
         log_dump_payload(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
         --segment;
 
