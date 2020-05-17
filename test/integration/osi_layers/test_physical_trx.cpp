@@ -13,19 +13,19 @@ class Fixture : public ::testing::Test
 public:
     static void generic_transmit_byte(const uint8_t payload)
     {
-        receive_data_ += static_cast<char>(payload);
+        io_data_ += static_cast<char>(payload);
     }
 
     static uint8_t generic_receive_byte()
     {
 
-        return receive_data_.at(pos_++);
+        return io_data_.at(pos_++);
     }
 
 protected:
     virtual void SetUp() override
     {
-        receive_data_ = {};
+        io_data_ = {};
         pos_ = {};
     }
     virtual void TearDown() override {}
@@ -34,12 +34,12 @@ protected:
     Physical sut_{generic_transmit_byte, generic_receive_byte};
 
     static const std::string send_data_;
-    static std::string receive_data_;
+    static std::string io_data_;
     static uint8_t pos_;
 };
 
 const std::string Fixture::send_data_{"abcd"};
-std::string Fixture::receive_data_{};
+std::string Fixture::io_data_{};
 uint8_t Fixture::pos_{};
 
 TEST_F(Fixture, TRxWorks_WhenTypical)
