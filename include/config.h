@@ -4,9 +4,9 @@
 
 #include <containers/static_string.h>
 
-using CRCChecksum = uint16_t;
+using TCRCChecksum = uint16_t;
 
-constexpr uint8_t kCRCSize{sizeof(CRCChecksum)};
+constexpr uint8_t kCRCSize{sizeof(TCRCChecksum)};
 constexpr uint8_t kMaxRetransmitCount{2};
 constexpr uint8_t kPayloadMaxSize{16};
 
