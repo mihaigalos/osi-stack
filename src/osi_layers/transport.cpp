@@ -5,8 +5,8 @@
 inline uint16_t getSegmentsCount(const uint32_t size)
 {
 
-    uint16_t full_segments{static_cast<uint16_t>(size / payload_without_metadata_size)};
-    uint16_t partial_segments{static_cast<uint16_t>(size % payload_without_metadata_size)};
+    uint16_t full_segments{static_cast<uint16_t>(size / transport_payload_size)};
+    uint16_t partial_segments{static_cast<uint16_t>(size % transport_payload_size)};
     uint16_t make_last_segment_be_zero{1};
 
     return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
@@ -27,7 +27,7 @@ inline Payload constructPayloadFromData(const uint32_t &total_size, const uint8_
 {
     uint8_t i{0};
     Payload payload{};
-    for (i = 0; i <= (payload_without_metadata_size) && (serialized_bytes + i <= total_size); ++i)
+    for (i = 0; i <= (transport_payload_size) && (serialized_bytes + i <= total_size); ++i)
     {
         payload.data[i] = data[serialized_bytes + i];
     }
