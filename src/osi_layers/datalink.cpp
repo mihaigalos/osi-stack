@@ -3,13 +3,13 @@
 #include "crc.h"
 
 template <>
-CommunicationStatus Datalink<>::Transmit(const Payload &payload, uint8_t retransmit_count) const
+CommunicationStatus Datalink<>::Transmit(const Payload &payload) const
 {
     CommunicationStatus result{CommunicationStatus::Unknown};
     auto payload_with_crc = crc_.append_crc_to_payload(payload);
 
     log_dump_payload(payload_with_crc, "Datalink :: Transmit");
-    for (uint8_t i = 0; i <= retransmit_count && result != CommunicationStatus::Acknowledge; ++i)
+    for (uint8_t i = 0; i <= retransmit_count_ && result != CommunicationStatus::Acknowledge; ++i)
     {
         physical_.Transmit(payload_with_crc);
         Payload response = physical_.Receive();
@@ -35,7 +35,7 @@ Payload Datalink<>::Receive() const
     Payload received;
     CommunicationStatus status{CommunicationStatus::Unknown};
 
-    for (uint8_t i = 0; i < kMaxRetransmitCount && status != CommunicationStatus::Acknowledge; ++i)
+    for (uint8_t i = 0; i <= retransmit_count_ && status != CommunicationStatus::Acknowledge; ++i)
     {
         received = physical_.Receive();
         log_dump_payload(received, " Datalink :: Receive :: received");

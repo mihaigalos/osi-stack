@@ -21,14 +21,17 @@ class Datalink
 public:
     Datalink(PhysicalLayer &&physical) : physical_{std::forward<PhysicalLayer>(physical)} {}
     Datalink(Datalink &&other) : physical_{std::forward<PhysicalLayer>(other.physical_)} {}
-    CommunicationStatus Transmit(const Payload &payload, uint8_t retransmit_count = kMaxRetransmitCount) const;
+    CommunicationStatus Transmit(const Payload &payload) const;
     Payload Receive() const;
 
     virtual ~Datalink() = default;
     Datalink &operator=(const Datalink &other) = delete;
     Datalink &operator=(Datalink &&other) = delete;
 
+    void SetRetransmitCount(uint8_t new_retransmit_count) { retransmit_count_ = new_retransmit_count; }
+
 private:
     PhysicalLayer physical_;
     CRCFunctions crc_;
+    uint8_t retransmit_count_{kMaxRetransmitCount};
 };
