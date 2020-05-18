@@ -101,7 +101,7 @@ TString Transport<>::Receive(const uint8_t from) const
     TString result{};
     TMap buffer{};
     TSegment segment{};
-    TSegment watchdog{kSizeOfSegment};
+    TSegment watchdog{kMaximumSegments};
     do
     {
         Payload received = network_.Receive(from);
