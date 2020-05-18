@@ -24,7 +24,7 @@ TEST_F(Fixture, TRxWorks_WhenTypical)
     expected.data[expected.size++] = kDestinationId;
     expected = crc_.append_crc_to_payload(expected);
 
-    sut1_.datalink_.SetRetransmitCount(retransmitCountInCaseOfNoAcknowledge);
+    sut1_.datalink_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
     sut1_.Transmit(kDestinationId, payload);
     pos_in_io_data_ = 0;
     auto actual = sut2_.Receive(kFromId);
@@ -39,7 +39,7 @@ TEST_F(Fixture, TRxFails_WhenBogusData)
     expected.data[expected.size++] = kDestinationId;
     expected = crc_.append_crc_to_payload(expected);
 
-    sut1_.datalink_.SetRetransmitCount(retransmitCountInCaseOfNoAcknowledge);
+    sut1_.datalink_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
     sut1_.Transmit(kDestinationId, payload);
     pos_in_io_data_ = 0;
     auto actual = sut2_.Receive(kFromId);
