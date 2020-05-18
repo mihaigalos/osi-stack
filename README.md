@@ -11,6 +11,11 @@ The reasoning is that it will be ported to small 8-bit hardware architectures su
 
 ### Build and Test
 
+First, get the sources:
+```
+git clone https://github.com/mihaigalos/osi_stack.git
+```
+
 #### Baremetal
 
 Building and testing is managed by `bazel`, including dependencies to other repos such as [containers](https://github.com/mihaigalos/containers) (transparent to the end-user).
