@@ -13,7 +13,7 @@ The reasoning is that it will be ported to small 8-bit hardware architectures su
 
 First, get the sources:
 ```
-git clone https://github.com/mihaigalos/osi_stack.git
+git clone https://github.com/mihaigalos/osi_stack.git && cd osi_stack
 ```
 
 #### Baremetal
