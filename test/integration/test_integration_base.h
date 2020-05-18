@@ -3,10 +3,16 @@
 #include <cstdint>
 #include <string>
 
+#define private public // For testing purposes only
+
+#include "osi_layers/network.h"
 #include "osi_layers/datalink.h"
 #include "osi_layers/physical.h"
 
 #include "crc.h"
+
+constexpr uint8_t kFromId{0x01};
+constexpr uint8_t kDestinationId{0x02};
 
 class IntegrationBase : public ::testing::Test
 {
