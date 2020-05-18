@@ -10,7 +10,17 @@ constexpr uint8_t kCRCSize{sizeof(TCRCChecksum)};
 constexpr uint8_t kMaxRetransmitCount{2};
 constexpr uint8_t kPayloadMaxSize{16};
 
-constexpr uint8_t kMaximumSegments{50};
+constexpr uint8_t kMaximumSegments{10};
+using TSegment = uint16_t;
 
-using TString = containers::static_string<kMaximumSegments>;
+constexpr uint8_t kPosFromEndDestinationIdInPayload{3};
+constexpr uint8_t kPosFromEndSourceIdInPayload{4};
+
+constexpr uint8_t kSizeOfToField{1};
+constexpr uint8_t kSizeOfFromField{1};
+
+constexpr uint8_t payload_without_metadata_size{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment)};
+
+//TODO: adjust this containers::static_string size depending on how much of the payload is actually available once the full stack is implemented (after subtracting the metadata).
+using TString = containers::static_string<kMaximumSegments *(kPayloadMaxSize - payload_without_metadata_size)>;
 using TMap = containers::static_map<uint8_t, uint8_t, kMaximumSegments>;

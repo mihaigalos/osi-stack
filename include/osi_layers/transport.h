@@ -7,8 +7,6 @@
 
 #include "network.h"
 
-using TSegment = uint16_t;
-
 template <typename NetworkLayer = Network<Datalink<Physical, CRC>>>
 class Transport
 {

@@ -2,8 +2,6 @@
 
 #include "utilities.h"
 
-constexpr uint8_t payload_without_metadata_size{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment)};
-
 inline uint16_t getSegmentsCount(const uint32_t size)
 {
 
