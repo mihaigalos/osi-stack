@@ -14,6 +14,23 @@
 constexpr uint8_t kFromId{0x01};
 constexpr uint8_t kDestinationId{0x02};
 
+bool contains(const Payload &a, const Payload &b)
+{
+    bool result{false};
+    if (b.size < a.size)
+    {
+        for (uint8_t i = 0; i < b.size; ++i)
+        {
+            if (a.data[i] != b.data[i])
+            {
+                return false;
+            }
+        }
+        result = true;
+    }
+    return result;
+}
+
 class IntegrationBase : public ::testing::Test
 {
 public:

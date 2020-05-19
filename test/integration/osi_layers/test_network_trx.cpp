@@ -19,31 +19,23 @@ protected:
 TEST_F(Fixture, TRxWorks_WhenTypical)
 {
     auto payload = Payload{send_data_.c_str(), static_cast<uint8_t>(send_data_.length())};
-    auto expected = payload;
-    expected.data[expected.size++] = kFromId;
-    expected.data[expected.size++] = kDestinationId;
-    expected = crc_.append_crc_to_payload(expected);
 
     sut1_.datalink_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
     sut1_.Transmit(kDestinationId, payload);
     pos_in_io_data_ = 0;
-    auto actual = sut2_.Receive(kFromId);
+    auto received = sut2_.Receive(kFromId);
 
-    ASSERT_EQ(actual, expected);
+    ASSERT_TRUE(contains(received, payload));
 }
 TEST_F(Fixture, TRxFails_WhenBogusData)
 {
     auto payload = Payload{send_data_.c_str(), static_cast<uint8_t>(send_data_.length())};
-    auto expected = payload;
-    expected.data[expected.size++] = kFromId;
-    expected.data[expected.size++] = kDestinationId;
-    expected = crc_.append_crc_to_payload(expected);
 
     sut1_.datalink_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
     sut1_.Transmit(kDestinationId, payload);
     pos_in_io_data_ = 0;
-    auto actual = sut2_.Receive(kFromId);
-    actual.data[actual.size++] = 'A';
+    auto received = sut2_.Receive(kFromId);
+    received.data[0] = '\x0A';
 
-    ASSERT_FALSE(actual == expected);
+    ASSERT_FALSE(contains(received, payload));
 }
