@@ -18,25 +18,23 @@ protected:
 TEST_F(Fixture, TRxWorks_WhenTypical)
 {
     auto payload = Payload{send_data_.c_str(), static_cast<uint8_t>(send_data_.length())};
-    auto expected = crc_.append_crc_to_payload(payload);
 
     sut_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
     sut_.Transmit(payload);
     pos_in_io_data_ = 0;
-    auto actual = sut_.Receive();
+    auto received = sut_.Receive();
 
-    ASSERT_EQ(actual, expected);
+    ASSERT_TRUE(contains(received, payload));
 }
 TEST_F(Fixture, TRxFails_WhenBogusData)
 {
     auto payload = Payload{send_data_.c_str(), static_cast<uint8_t>(send_data_.length())};
-    auto expected = crc_.append_crc_to_payload(payload);
 
     sut_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
     sut_.Transmit(payload);
     pos_in_io_data_ = 0;
-    auto actual = sut_.Receive();
-    actual.data[actual.size++] = 'A';
+    auto received = sut_.Receive();
+    received.data[0] = 'A';
 
-    ASSERT_FALSE(actual == expected);
+    ASSERT_FALSE(contains(received, payload));
 }
