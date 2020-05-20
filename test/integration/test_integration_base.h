@@ -5,6 +5,7 @@
 
 #define private public // For testing purposes only
 
+#include "osi_layers/transport.h"
 #include "osi_layers/network.h"
 #include "osi_layers/datalink.h"
 #include "osi_layers/physical.h"

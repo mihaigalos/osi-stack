@@ -110,7 +110,7 @@ TString Transport<>::Receive(const uint8_t from) const
 
         deserializeData(received, segment, buffer);
 
-    } while (--segment && --watchdog);
+    } while (segment && --watchdog);
 
     return reconstructStringFromMap(buffer);
 }
