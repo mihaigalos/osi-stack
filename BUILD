@@ -17,6 +17,18 @@ DEFAULT_TEST_DEPS = [
     "@gtest//:gtest_main",
 ]
 
+DEFAULT_TEST_COMPILE_OPTIONS = DEFAULT_COMPILER_OPTIONS + [
+    "-fsanitize=address",
+    "-DADDRESS_SANITIZER",
+    "-O1",
+    "-g",
+    "-fno-omit-frame-pointer",
+]
+
+DEFAULT_TEST_LINK_OPTIONS = [
+    "-fsanitize=address",
+]
+
 cc_library(
     name = "osi_stack",
     srcs = glob(["src/**/*.cpp"]),
@@ -29,7 +41,8 @@ cc_library(
 cc_library(
     name = "test_headers",
     hdrs = glob(["test/**/*.h"]),
-    copts = DEFAULT_COMPILER_OPTIONS,
+    copts = DEFAULT_TEST_COMPILE_OPTIONS,
+    linkopts = DEFAULT_TEST_LINK_OPTIONS,
     strip_include_prefix = "test",
 )
 
@@ -39,7 +52,8 @@ cc_library(
         srcs = [
             "test/unit/" + unit_name + ".cpp",
         ],
-        copts = DEFAULT_COMPILER_OPTIONS,
+        copts = DEFAULT_TEST_COMPILE_OPTIONS,
+        linkopts = DEFAULT_TEST_LINK_OPTIONS,
         tags = ["unit"],
         deps = DEFAULT_TEST_DEPS + [":test_headers"],
     )
@@ -55,7 +69,8 @@ cc_library(
         srcs = [
             "test/integration/" + integration_name + ".cpp",
         ],
-        copts = DEFAULT_COMPILER_OPTIONS,
+        copts = DEFAULT_TEST_COMPILE_OPTIONS,
+        linkopts = DEFAULT_TEST_LINK_OPTIONS,
         tags = ["integration"],
         deps = DEFAULT_TEST_DEPS + [":test_headers"],
     )
