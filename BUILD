@@ -12,13 +12,13 @@ DEFAULT_COMPILER_OPTIONS = [
 ]
 
 DEFAULT_TEST_DEPS = [
-    ":sut",
+    ":osi_stack",
     "@gtest",
     "@gtest//:gtest_main",
 ]
 
 cc_library(
-    name = "sut",
+    name = "osi_stack",
     srcs = glob(["src/**/*.cpp"]),
     hdrs = glob(["include/**/*.h"]),
     copts = DEFAULT_COMPILER_OPTIONS,
