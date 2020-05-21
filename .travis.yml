@@ -11,6 +11,7 @@ matrix:
           - ubuntu-toolchain-r-test
         packages:
           - g++-7
+          - lcov
           - pkg-config
     env:
       - MY_ENVIRONMENT="CC=gcc CXX=g++-7"
