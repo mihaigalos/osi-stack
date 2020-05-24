@@ -1,6 +1,6 @@
 # OSI Stack
 
-[![Build Status](https://travis-ci.org/mihaigalos/osi_stack.svg?branch=master)](https://travis-ci.org/mihaigalos/osi_stack) [![codecov](https://codecov.io/gh/mihaigalos/osi_stack/branch/master/graph/badge.svg)](https://codecov.io/gh/mihaigalos/osi_stack) [![license](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](LICENSE) [![HitCount](http://hits.dwyl.com/mihaigalos/osi_stack.svg)](http://hits.dwyl.com/mihaigalos/osi_stack) [![LoC](https://tokei.rs/b1/github/mihaigalos/osi_stack)](https://github.com/Aaronepower/tokei)
+[![Build Status](https://travis-ci.org/mihaigalos/osi_stack.svg?branch=master)](https://travis-ci.org/mihaigalos/osi_stack) [![codecov](https://codecov.io/gh/mihaigalos/osi_stack/branch/master/graph/badge.svg)](https://codecov.io/gh/mihaigalos/osi_stack) [![license](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](LICENSE) [![HitCount](http://hits.dwyl.com/mihaigalos/osi_stack.svg)](http://hits.dwyl.com/mihaigalos/osi_stack) [![LoC](https://tokei.rs/b1/github/mihaigalos/osi_stack?category=code)](https://github.com/Aaronepower/tokei)
 
 
 Very rough model of an ISO/OSI communication stack.
