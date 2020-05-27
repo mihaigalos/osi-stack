@@ -2,7 +2,7 @@
 
 pushd scripts
 
-invocation=$(grep https://app.buildbuddy.io/invocation /tmp/test.log | sed -e "s/.*\(invocation\)/\1/g")
+invocation=$(grep -m 1 https://app.buildbuddy.io/invocation /tmp/test.log | sed -e "s/.*\(invocation\)/\1/g")
 full_url="https://app.buildbuddy.io/${invocation}"
 json=\'{"schemaVersion":1,"label":"logs","message":"${full_url}","color":"green"}\'
 
