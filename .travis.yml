@@ -25,8 +25,9 @@ before_install:
   - pip3 install -r requirements.txt
 
 script:
-  - bazel test --config=buildbuddy --profile=/tmp/test_profile //...
+  - bazel test --config=buildbuddy --profile=/tmp/test_profile //... | tee -a /tmp/test.log
   - bazel coverage --combined_report=lcov //...
   - genhtml bazel-out/_coverage/_coverage_report.dat --output-directory coverage
   - ./scripts/push_test_coverage.sh
+  - ./scripts/cl1p_build_buddy_invocation.sh
   - ./scripts/profiling.sh
