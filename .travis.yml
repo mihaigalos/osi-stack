@@ -13,18 +13,21 @@ matrix:
           - g++-7
           - lcov
           - pkg-config
+          - "python3"
+          - "python3-pip"
     env:
       - MY_ENVIRONMENT="CC=gcc CXX=g++-7"
       - CODECOV_TOKEN="a7d6b39a-5cc2-492c-accd-2095a4e9d091"
 
 before_install:
-  - wget https://github.com/bazelbuild/bazel/releases/download/2.2.0/bazel_2.2.0-linux-x86_64.deb
-  - sudo dpkg -i bazel_2.2.0-linux-x86_64.deb
+  - wget https://github.com/bazelbuild/bazel/releases/download/3.1.0/bazel_3.1.0-linux-x86_64.deb
+  - sudo dpkg -i bazel_3.1.0-linux-x86_64.deb
+  - pip3 install -r requirements.txt
 
 script:
-  - bazel build --profile=/tmp/build_profile //...
-  - bazel test --profile=/tmp/test_profile //...
+  - bazel test --config=buildbuddy --profile=/tmp/test_profile //... > >(tee -a /tmp/test.log) 2>&1
   - bazel coverage --combined_report=lcov //...
   - genhtml bazel-out/_coverage/_coverage_report.dat --output-directory coverage
   - ./scripts/push_test_coverage.sh
+  - ./scripts/cl1p_build_buddy_invocation.sh
   - ./scripts/profiling.sh
