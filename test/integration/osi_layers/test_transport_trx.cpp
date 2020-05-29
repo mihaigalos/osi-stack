@@ -55,5 +55,5 @@ TEST_F(Fixture, TRxWorks_WhenPayloadLengthLongerThanPayloadMaxSize)
     auto received = sut2_.Receive(kFromId);
     auto actual = std::string{received.c_str()};
 
-    ASSERT_EQ(actual, send_data_);
+    ASSERT_EQ(actual, long_data);
 }

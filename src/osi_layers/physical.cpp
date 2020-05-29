@@ -19,7 +19,7 @@ Payload Physical::Receive() const
     auto payload = Payload{};
     auto expected_count = on_receive_byte_();
 
-    if (expected_count < kPayloadMaxSize)
+    if (expected_count <= kPayloadMaxSize)
     {
         for (uint8_t i = 0; i < expected_count; ++i)
         {
@@ -30,7 +30,7 @@ Payload Physical::Receive() const
     }
     else
     {
-        log("Physical :: Receive expected_count >= kPayloadMaxSize, impossible to receive " + std::to_string(expected_count) + " bytes.");
+        log("Physical :: Receive expected_count > kPayloadMaxSize, impossible to receive " + std::to_string(expected_count) + " bytes.");
     }
     return {};
 }
