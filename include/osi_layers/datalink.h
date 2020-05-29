@@ -11,8 +11,10 @@ enum class CommunicationStatus : uint8_t
 {
     Unknown = 0x00,
     Error = 0x01,
+    NoAcknowledgeRequired = 0x02,
+    CRCMismatch = 0x03,
     Acknowledge = 0x06,
-    NegativeAcknowledge = 0x15
+    NegativeAcknowledge = 0x15,
 };
 
 template <typename PhysicalLayer = Physical, typename CRCFunctions = CRC>
@@ -32,4 +34,6 @@ private:
     PhysicalLayer physical_;
     CRCFunctions crc_;
     uint8_t retransmit_count_{kMaxRetransmitCount};
+
+    Payload GetTransmitResponse() const;
 };

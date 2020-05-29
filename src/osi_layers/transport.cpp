@@ -84,7 +84,7 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 
         result = network_.Transmit(to, payload);
 
-        if (result != CommunicationStatus::Acknowledge)
+        if (result != CommunicationStatus::Acknowledge && result != CommunicationStatus::NoAcknowledgeRequired)
         {
             break;
         }
