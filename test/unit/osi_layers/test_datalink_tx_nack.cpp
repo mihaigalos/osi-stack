@@ -41,6 +41,11 @@ protected:
             {5, payloadified_negative_acknowledge_.data[0]},
             {6, payloadified_negative_acknowledge_.data[1]},
             {7, payloadified_negative_acknowledge_.data[2]},
+
+            {8, payload_size_byte_count + kCRCSize},
+            {9, payloadified_negative_acknowledge_.data[0]},
+            {10, payloadified_negative_acknowledge_.data[1]},
+            {11, payloadified_negative_acknowledge_.data[2]},
         };
     }
 
