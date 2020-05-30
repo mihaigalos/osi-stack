@@ -18,15 +18,15 @@ DEFAULT_TEST_DEPS = [
 ]
 
 DEFAULT_TEST_COMPILE_OPTIONS = DEFAULT_COMPILER_OPTIONS + [
-    # "-fsanitize=address",
-    # "-DADDRESS_SANITIZER",
-    # "-O1",
-    # "-g",
-    # "-fno-omit-frame-pointer",
+    "-fsanitize=address",
+    "-DADDRESS_SANITIZER",
+    "-O1",
+    "-g",
+    "-fno-omit-frame-pointer",
 ]
 
 DEFAULT_TEST_LINK_OPTIONS = [
-    # "-fsanitize=address",
+    "-fsanitize=address",
 ]
 
 cc_library(
