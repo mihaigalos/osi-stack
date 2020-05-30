@@ -3,6 +3,17 @@
 #include "crc.h"
 
 template <>
+inline Payload Datalink<>::GetTransmitResponse() const
+{
+    if (retransmit_count_)
+    {
+        return physical_.Receive();
+    }
+
+    return {};
+}
+
+template <>
 CommunicationStatus Datalink<>::Transmit(const Payload &payload) const
 {
     CommunicationStatus result{CommunicationStatus::Unknown};
@@ -12,18 +23,26 @@ CommunicationStatus Datalink<>::Transmit(const Payload &payload) const
     for (uint8_t i = 0; i <= retransmit_count_ && result != CommunicationStatus::Acknowledge; ++i)
     {
         physical_.Transmit(payload_with_crc);
-        Payload response = physical_.Receive();
+        Payload response = GetTransmitResponse();
 
         log_dump_payload(response, "Datalink :: (response)");
 
-        if (response.size && crc_.crc_match(response))
+        if (response.size)
         {
-            result = static_cast<CommunicationStatus>(response.data[0]);
-            log("Received CommunicationStatus response: " + std::to_string(response.data[0]));
+            if (crc_.crc_match(response))
+            {
+                result = static_cast<CommunicationStatus>(response.data[0]);
+                log("Received CommunicationStatus response: " + std::to_string(response.data[0]));
+            }
+            else
+            {
+                result = CommunicationStatus::CRCMismatch;
+                log("CRC mismatch!");
+            }
         }
         else
         {
-            log("CRC mismatch!");
+            result = CommunicationStatus::NoAcknowledgeRequired;
         }
     }
     return result;

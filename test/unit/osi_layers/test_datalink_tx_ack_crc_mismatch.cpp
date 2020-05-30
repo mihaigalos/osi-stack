@@ -33,28 +33,28 @@ protected:
 
         lookup_map_ = {
             {0, payload_size_byte_count + kCRCSize},
-            {1, payloadified_negative_acknowledge_.data[0]},
-            {2, payloadified_negative_acknowledge_.data[1]},
-            {3, payloadified_negative_acknowledge_.data[2]},
+            {1, payloadified_crc_mismatch_.data[0]},
+            {2, payloadified_crc_mismatch_.data[1]},
+            {3, payloadified_crc_mismatch_.data[2]},
 
             {4, payload_size_byte_count + kCRCSize},
-            {5, payloadified_negative_acknowledge_.data[0]},
-            {6, payloadified_negative_acknowledge_.data[1]},
-            {7, payloadified_negative_acknowledge_.data[2]},
+            {5, payloadified_crc_mismatch_.data[0]},
+            {6, payloadified_crc_mismatch_.data[1]},
+            {7, payloadified_crc_mismatch_.data[2]},
 
             {8, payload_size_byte_count + kCRCSize},
-            {9, payloadified_negative_acknowledge_.data[0]},
-            {10, payloadified_negative_acknowledge_.data[1]},
-            {11, payloadified_negative_acknowledge_.data[2]},
+            {9, payloadified_crc_mismatch_.data[0]},
+            {10, payloadified_crc_mismatch_.data[1]},
+            {11, payloadified_crc_mismatch_.data[2]},
         };
     }
 
     Datalink<> sut_{Physical{generic_transmit_byte, generic_receive_byte}};
 };
 
-TEST_F(Fixture, TransmitWorks_WhenTypical)
+TEST_F(Fixture, DatalinkTransmitErrorCRCMismatch_WhenTypical)
 {
     CommunicationStatus result = sut_.Transmit(payloadified_data_);
 
-    ASSERT_EQ(result, CommunicationStatus::NegativeAcknowledge);
+    ASSERT_EQ(result, CommunicationStatus::CRCMismatch);
 }

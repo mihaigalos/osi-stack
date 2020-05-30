@@ -5,8 +5,8 @@
 inline uint16_t getSegmentsCount(const uint32_t size)
 {
 
-    uint16_t full_segments{static_cast<uint16_t>(size / transport_payload_size)};
-    uint16_t partial_segments{static_cast<uint16_t>(size % transport_payload_size)};
+    uint16_t full_segments{static_cast<uint16_t>(size / kTransportPayloadSize)};
+    uint16_t partial_segments{static_cast<uint16_t>(size % kTransportPayloadSize)};
     uint16_t make_last_segment_be_zero{1};
 
     return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
@@ -16,9 +16,18 @@ inline TString reconstructStringFromMap(TMap &buffer)
 {
     TString result;
     uint8_t buffer_size = buffer.size();
-    for (uint8_t i = 0; i < buffer_size; ++i)
+    for (uint8_t i = buffer_size - 1;; --i)
     {
-        result = result + buffer[i];
+        Payload payload = buffer[i];
+        for (uint8_t j = 0; j < payload.size; ++j)
+        {
+            result = result + payload.data[j];
+        }
+
+        if (i == 0)
+        {
+            break;
+        }
     }
     return result;
 }
@@ -27,7 +36,7 @@ inline Payload constructPayloadFromData(const uint32_t &total_size, const uint8_
 {
     uint8_t i{0};
     Payload payload{};
-    for (i = 0; i <= (transport_payload_size) && (serialized_bytes + i <= total_size); ++i)
+    for (i = 0; i <= (kTransportPayloadSize) && (serialized_bytes + i <= total_size); ++i)
     {
         payload.data[i] = data[serialized_bytes + i];
     }
@@ -63,10 +72,12 @@ inline void deserializeData(const Payload &received, TSegment &segment, TMap &bu
     uint8_t segment_end = received.size - 1 - kSizeOfToField - kSizeOfFromField - kCRCSize;
     segment = deserializeSegment(received, segment_end);
 
+    Payload deserialized{};
     for (uint8_t i = 0; i <= segment_end - sizeof(TSegment); ++i)
     {
-        buffer[i] = received.data[i];
+        deserialized.data[deserialized.size++] = received.data[i];
     }
+    buffer[segment] = deserialized;
 }
 
 template <>
@@ -84,7 +95,7 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 
         result = network_.Transmit(to, payload);
 
-        if (result != CommunicationStatus::Acknowledge)
+        if (result != CommunicationStatus::Acknowledge && result != CommunicationStatus::NoAcknowledgeRequired)
         {
             break;
         }
