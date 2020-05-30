@@ -36,6 +36,12 @@ public:
         payloadified_data_with_to_from_crc_.data[payloadified_data_with_to_from_crc_.size++] = kOwnId;
         payloadified_data_with_to_from_crc_ = crc_.append_crc_to_payload(payloadified_data_with_to_from_crc_);
 
+        payloadified_crc_mismatch_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
+        payloadified_crc_mismatch_.data[payloadified_crc_mismatch_.size++] = kSourceId;
+        payloadified_crc_mismatch_.data[payloadified_crc_mismatch_.size++] = kOwnId;
+        payloadified_crc_mismatch_.data[payloadified_crc_mismatch_.size++] = 0xBE;
+        payloadified_crc_mismatch_.data[payloadified_crc_mismatch_.size++] = 0xEF;
+
         payloadified_data_with_segment_to_from_crc_ = Payload{data_.c_str(), static_cast<uint8_t>(data_.length())};
         payloadified_data_with_segment_to_from_crc_.data[payloadified_data_with_segment_to_from_crc_.size++] = 00;
         payloadified_data_with_segment_to_from_crc_.data[payloadified_data_with_segment_to_from_crc_.size++] = 00;
@@ -47,7 +53,7 @@ public:
 
 protected:
     static std::string data_;
-    static Payload payloadified_negative_acknowledge_, payloadified_acknowledge_, payloadified_data_;
+    static Payload payloadified_negative_acknowledge_, payloadified_acknowledge_, payloadified_data_, payloadified_crc_mismatch_;
     static Payload payloadified_data_with_crc_, payloadified_data_with_to_from_crc_, payloadified_data_with_segment_to_from_crc_;
     static Payload received_, transmitted_;
     static std::map<uint8_t, uint8_t> lookup_map_;
@@ -57,7 +63,7 @@ protected:
 Payload UnitBase::received_, UnitBase::transmitted_;
 
 std::string UnitBase::data_{"abcd"};
-Payload UnitBase::payloadified_negative_acknowledge_, UnitBase::payloadified_acknowledge_, UnitBase::payloadified_data_;
+Payload UnitBase::payloadified_negative_acknowledge_, UnitBase::payloadified_acknowledge_, UnitBase::payloadified_data_, UnitBase::payloadified_crc_mismatch_;
 Payload UnitBase::payloadified_data_with_crc_, UnitBase::payloadified_data_with_to_from_crc_, UnitBase::payloadified_data_with_segment_to_from_crc_;
 
 std::map<uint8_t, uint8_t> UnitBase::lookup_map_;
