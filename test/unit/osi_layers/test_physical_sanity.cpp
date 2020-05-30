@@ -29,15 +29,6 @@ protected:
 
 uint8_t Fixture::data_;
 
-// TEST_F(Fixture, ResetPayloadSizeWorks_WhenTypical)
-// {
-//   auto initial = Payload{"abc", 3};
-
-//   initial.Reset();
-
-//   ASSERT_EQ(initial.size, 0);
-// }
-
 TEST_F(Fixture, ResetPayloadDataWorks_WhenTypical)
 {
   auto initial = Payload{"abc", 3};
