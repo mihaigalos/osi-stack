@@ -81,7 +81,7 @@ inline void deserializeData(const Payload &received, TSegment &segment, TMap &bu
 }
 
 template <>
-CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const
+CommunicationStatus Transport<>::Transmit(const uint8_t to, const uint8_t *data, const uint32_t total_size) const
 {
     auto result{CommunicationStatus::Unknown};
 
@@ -105,7 +105,7 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, uint8_t *data, uint3
 }
 
 template <>
-CommunicationStatus Transport<>::Transmit(const uint8_t to, const char *data, uint32_t total_size) const
+CommunicationStatus Transport<>::Transmit(const uint8_t to, const char *data, const uint32_t total_size) const
 {
     return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size);
 }
