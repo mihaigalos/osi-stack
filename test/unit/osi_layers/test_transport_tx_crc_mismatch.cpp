@@ -53,7 +53,7 @@ uint8_t Fixture::call_count_;
 
 TEST_F(Fixture, TransportTransmitError_WhenCRCMismatch)
 {
-    CommunicationStatus result = sut_.Transmit(kDestinationId, data_.c_str(), data_.size());
+    CommunicationStatus result = sut_.Transmit(kDestinationId, data_.c_str(), data_.size(), kPort);
 
     ASSERT_EQ(result, CommunicationStatus::CRCMismatch);
 }

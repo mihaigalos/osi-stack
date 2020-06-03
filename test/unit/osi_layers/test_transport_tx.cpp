@@ -53,14 +53,13 @@ uint8_t Fixture::call_count_;
 
 TEST_F(Fixture, TransportTransmitWorks_WhenTypical)
 {
-    uint8_t kTransportPayloadSize = kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - kCRCSize - sizeof(TSegment);
     std::string data_to_transmit;
     for (uint8_t i = 'A'; i < 'z'; ++i)
     {
         data_to_transmit += static_cast<char>(i);
     }
 
-    sut_.Transmit(kDestinationId, reinterpret_cast<uint8_t *>(const_cast<char *>(data_to_transmit.c_str())), data_to_transmit.length());
+    sut_.Transmit(kDestinationId, reinterpret_cast<uint8_t *>(const_cast<char *>(data_to_transmit.c_str())), data_to_transmit.length(), kPort);
 
     auto skip_past_metadata = kPayloadMaxSize - kTransportPayloadSize + kSizeofLength;
     uint8_t skip_past_metadata_count{0};
@@ -83,7 +82,7 @@ TEST_F(Fixture, TransportTransmitAcknowledge_WhenTypical)
         data_to_transmit += static_cast<char>(i);
     }
 
-    auto actual = sut_.Transmit(kDestinationId, reinterpret_cast<uint8_t *>(const_cast<char *>(data_to_transmit.c_str())), data_to_transmit.length());
+    auto actual = sut_.Transmit(kDestinationId, reinterpret_cast<uint8_t *>(const_cast<char *>(data_to_transmit.c_str())), data_to_transmit.length(), kPort);
 
     ASSERT_EQ(expected, actual);
 }

@@ -12,7 +12,7 @@ inline uint16_t getSegmentsCount(const uint32_t size)
     return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
 }
 
-inline TString reconstructStringFromMap(TMap &buffer)
+inline TString reconstructStringFromMap(TMapSequencePayload &buffer)
 {
     TString result;
     uint8_t buffer_size = buffer.size();
@@ -53,6 +53,11 @@ inline void serializeSegment(const TSegment &segment, Payload &payload)
     payload.data[payload.size++] = static_cast<uint8_t>(segment >> 8);
 }
 
+inline void serializePort(const uint8_t port, Payload &payload)
+{
+    payload.data[payload.size++] = port;
+}
+
 inline TSegment deserializeSegment(const Payload &received, const uint8_t segment_end)
 {
     TSegment segment = received.data[segment_end] << 8;
@@ -60,28 +65,37 @@ inline TSegment deserializeSegment(const Payload &received, const uint8_t segmen
     return segment;
 }
 
-inline Payload serializeData(const uint32_t &total_size, const uint8_t *data, const TSegment &segment, uint32_t &serialized_bytes)
+inline uint8_t deserializePort(const Payload &received, const uint8_t port_end)
+{
+    return received.data[port_end];
+}
+
+inline Payload serializeData(const uint32_t &total_size, const uint8_t *data, const TSegment &segment, const uint8_t port, uint32_t &serialized_bytes)
 {
     Payload payload = constructPayloadFromData(total_size, data, serialized_bytes);
+    serializePort(port, payload);
     serializeSegment(segment, payload);
     return payload;
 }
 
-inline void deserializeData(const Payload &received, TSegment &segment, TMap &buffer)
+inline void deserializeData(const Payload &received, TSegment &segment, TMapPortSequencePayload &port_sequece_payload, uint8_t &port)
 {
     uint8_t segment_end = received.size - 1 - kSizeOfToField - kSizeOfFromField - kCRCSize;
+    uint8_t port_begining = segment_end - sizeof(TSegment);
+    // constexpr uint8_t kTransportPayloadSize{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - sizeof(TSegment) - kSizeOfPort - kCRCSize};
+    port = deserializePort(received, port_begining);
     segment = deserializeSegment(received, segment_end);
 
     Payload deserialized{};
-    for (uint8_t i = 0; i <= segment_end - sizeof(TSegment); ++i)
+    for (uint8_t i = 0; i < port_begining; ++i)
     {
         deserialized.data[deserialized.size++] = received.data[i];
     }
-    buffer[segment] = deserialized;
+    port_sequece_payload[port][segment] = deserialized;
 }
 
 template <>
-CommunicationStatus Transport<>::Transmit(const uint8_t to, const uint8_t *data, const uint32_t total_size) const
+CommunicationStatus Transport<>::Transmit(const uint8_t to, const uint8_t *data, const uint32_t total_size, const uint8_t port) const
 {
     auto result{CommunicationStatus::Unknown};
 
@@ -89,7 +103,7 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, const uint8_t *data,
 
     for (uint32_t serialized_bytes = 0; serialized_bytes < total_size;)
     {
-        Payload payload = serializeData(total_size, data, segment, serialized_bytes);
+        Payload payload = serializeData(total_size, data, segment, port, serialized_bytes);
         log_dump_payload(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
         --segment;
 
@@ -105,29 +119,29 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, const uint8_t *data,
 }
 
 template <>
-CommunicationStatus Transport<>::Transmit(const uint8_t to, const char *data, const uint32_t total_size) const
+CommunicationStatus Transport<>::Transmit(const uint8_t to, const char *data, const uint32_t total_size, const uint8_t port) const
 {
-    return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size);
+    return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size, port);
 }
 
 template <>
-TString Transport<>::Receive(const uint8_t from) const
+TString Transport<>::Receive(const uint8_t from_id, uint8_t port) const
 {
     TString result{};
-    TMap buffer{};
+    TMapPortSequencePayload port_sequece_payload{};
     TSegment segment{};
     TSegment watchdog{kMaximumSegments};
     do
     {
-        Payload received = network_.Receive(from);
+        Payload received = network_.Receive(from_id);
         if (!received.size)
         {
             return result;
         }
 
-        deserializeData(received, segment, buffer);
+        deserializeData(received, segment, port_sequece_payload, port);
 
     } while (segment && --watchdog);
 
-    return reconstructStringFromMap(buffer);
+    return reconstructStringFromMap(port_sequece_payload[port]);
 }

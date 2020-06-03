@@ -47,7 +47,7 @@ TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
     TString expected{"abcd"};
 
-    auto actual = sut_.Receive(kSourceId);
+    auto actual = sut_.Receive(kSourceId, kPort);
 
     ASSERT_EQ(expected, actual);
 }

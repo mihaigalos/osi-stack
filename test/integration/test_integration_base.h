@@ -14,6 +14,7 @@
 
 constexpr uint8_t kFromId{0x01};
 constexpr uint8_t kDestinationId{0x02};
+constexpr uint8_t kPort{0x03};
 
 bool contains(const Payload &a, const Payload &b)
 {
