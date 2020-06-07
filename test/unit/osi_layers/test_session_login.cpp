@@ -113,3 +113,15 @@ TEST_F(Fixture, CookieDeleted_WhenTypical)
 
     ASSERT_EQ(actual, expected);
 }
+
+TEST_F(Fixture, DeserealizationUserPassWorks_WhenTypical)
+{
+    TString user{"mihai"}, pass{"galos"};
+    TString credentials = user + TString{" "} + pass;
+
+    TString actual_user, actual_pass;
+    sut_.deserializeUserPassword(credentials, actual_user, actual_pass);
+
+    ASSERT_EQ(user, actual_user);
+    ASSERT_EQ(pass, actual_pass);
+}

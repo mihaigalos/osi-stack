@@ -22,10 +22,11 @@ public:
 
     CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const;
     CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const;
-    TString Receive(const uint8_t from) const;
+    TString Receive(const uint8_t from_id, uint8_t port) const;
 
     LoginStatus Login(const containers::static_string<> &user, const containers::static_string<> &pass);
     void Logout();
+    void deserializeUserPassword(TString &in, TString &user, TString &pass);
     bool IsLoggedIn() const { return cookie_ != decltype(cookie_){}; }
 
     virtual ~Session() = default;
