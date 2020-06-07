@@ -32,7 +32,7 @@ LoginStatus Session<>::Login(const containers::static_string<> &user, const cont
     LoginStatus result{};
     if (user_ == user && pass_ == pass)
     {
-        cookie_ += 0xDEADBEEF;
+        cookie_ += 0xBEEF;
         result = LoginStatus::Success;
     }
     else

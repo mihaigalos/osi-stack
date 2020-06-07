@@ -39,5 +39,5 @@ private:
     const containers::static_string<> user_;
     const containers::static_string<> pass_;
     uint8_t port_;
-    uint32_t cookie_;
+    uint16_t cookie_;
 };
