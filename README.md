@@ -45,9 +45,9 @@ The following code is a PlantUML diagram.
 
     actor User
     User -> "Session::Login()" : username & password
-    "Session::Login()" -> User : session token
+    "Session::Login()" -> User : session cookie
     activate "Session::Login()"
-    User -> "Session::Transmit()/Receive()" : session token, data
+    User -> "Session::Transmit()/Receive()" : session cookie, data
     "Session::Transmit()/Receive()" -> User : ok
     User -> "Session::Logout()"
     "Session::Logout()" -> User : ok

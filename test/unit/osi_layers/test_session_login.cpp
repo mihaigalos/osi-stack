@@ -42,14 +42,14 @@ protected:
     {
         UnitBase::SetUp();
     }
-    Session<> sut_{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}, {"mihai"}, {"galos"}, kPort};
+    Session<> sut_{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}, {"myUser"}, {"myPass"}, kPort};
 };
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
     auto expected = LoginStatus::Success;
 
-    auto actual = sut_.Login("mihai", "galos");
+    auto actual = sut_.Login("myUser", "myPass");
 
     ASSERT_EQ(actual, expected);
 }
@@ -58,7 +58,7 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidPass)
 {
     auto expected = LoginStatus::InvalidCredentials;
 
-    auto actual = sut_.Login("mihai", "watch_this");
+    auto actual = sut_.Login("myUser", "watch_this");
 
     ASSERT_EQ(actual, expected);
 }
@@ -67,7 +67,7 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidUser)
 {
     auto expected = LoginStatus::InvalidCredentials;
 
-    auto actual = sut_.Login("foo", "galos");
+    auto actual = sut_.Login("foo", "myPass");
 
     ASSERT_EQ(actual, expected);
 }
@@ -75,7 +75,7 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidUser)
 TEST_F(Fixture, IsLoggedIn_WhenTypical)
 {
     auto expected{true};
-    sut_.Login("mihai", "galos");
+    sut_.Login("myUser", "myPass");
 
     auto actual = sut_.IsLoggedIn();
 
@@ -85,7 +85,7 @@ TEST_F(Fixture, IsLoggedIn_WhenTypical)
 TEST_F(Fixture, IsNotLoggedIn_AfterLogout)
 {
     auto expected{false};
-    sut_.Login("mihai", "galos");
+    sut_.Login("myUser", "myPass");
     sut_.Logout();
 
     auto actual = sut_.IsLoggedIn();
@@ -97,7 +97,7 @@ TEST_F(Fixture, CookieUpdated_WhenTypical)
 {
     auto initial_cookie{sut_.cookie_};
 
-    sut_.Login("mihai", "galos");
+    sut_.Login("myUser", "myPass");
     auto current_cookie{sut_.cookie_};
 
     ASSERT_NE(current_cookie, initial_cookie);
@@ -107,16 +107,16 @@ TEST_F(Fixture, CookieDeleted_WhenTypical)
 {
     auto expected{decltype(sut_.cookie_){}};
 
-    sut_.Login("mihai", "galos");
+    sut_.Login("myUser", "myPass");
     sut_.Logout();
     auto actual{sut_.cookie_};
 
     ASSERT_EQ(actual, expected);
 }
 
-TEST_F(Fixture, DeserealizationUserPassWorks_WhenTypical)
+TEST_F(Fixture, DeserializationUserPassWorks_WhenTypical)
 {
-    TString user{"mihai"}, pass{"galos"};
+    TString user{"myUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
 
     TString actual_user, actual_pass;
