@@ -5,7 +5,7 @@
 
 void Physical::Transmit(const Payload &payload) const
 {
-    log_dump_payload(payload, "Physical :: Transmit");
+    log_dump_physical(payload, "Physical :: Transmit");
 
     on_transmit_byte_(payload.size);
     for (uint8_t i = 0; i < payload.size; ++i)
@@ -25,7 +25,7 @@ Payload Physical::Receive() const
         {
             payload.data[payload.size++] = on_receive_byte_();
         }
-        log_dump_payload(payload, "Physical :: Receive");
+        log_dump_physical(payload, "Physical :: Receive");
         return payload;
     }
     else
