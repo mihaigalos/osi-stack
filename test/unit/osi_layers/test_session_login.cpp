@@ -6,6 +6,8 @@
 
 #include <containers/static_string.h>
 
+#define private public // For testing purposes only
+
 #include "osi_layers/physical.h"
 #include "crc.h"
 #include "osi_layers/session.h"
@@ -87,6 +89,27 @@ TEST_F(Fixture, IsNotLoggedIn_AfterLogout)
     sut_.Logout();
 
     auto actual = sut_.IsLoggedIn();
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, CookieUpdated_WhenTypical)
+{
+    auto initial_cookie{sut_.cookie_};
+
+    sut_.Login("mihai", "galos");
+    auto current_cookie{sut_.cookie_};
+
+    ASSERT_NE(current_cookie, initial_cookie);
+}
+
+TEST_F(Fixture, CookieDeleted_WhenTypical)
+{
+    auto expected{decltype(sut_.cookie_){}};
+
+    sut_.Login("mihai", "galos");
+    sut_.Logout();
+    auto actual{sut_.cookie_};
 
     ASSERT_EQ(actual, expected);
 }
