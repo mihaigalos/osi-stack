@@ -5,16 +5,6 @@
 
 #ifdef LOGGING
 
-std::string payloadToString(const Payload &payload)
-{
-    std::string result;
-    for (size_t i = 0; i < payload.size; ++i)
-    {
-        result += static_cast<char>(payload.data[i]);
-    }
-    return result;
-}
-
 void printHeader(const std::string header)
 {
     std::cout << std::setfill(' ') << "           " << std::left << std::setw(35) << header << "           " << std::right << std::setw(15);
