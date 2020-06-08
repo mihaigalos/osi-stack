@@ -7,7 +7,7 @@ CommunicationStatus Network<>::Transmit(const uint8_t to, Payload &payload) cons
 {
     payload.data[payload.size++] = own_id_;
     payload.data[payload.size++] = to;
-    log_dump_payload(payload, "Network :: Transmit");
+    log_dump_network(payload, "Network :: Transmit");
     return datalink_.Transmit(payload);
 }
 
@@ -26,7 +26,7 @@ Payload Network<>::Receive(const uint8_t from) const
 
     if (is_expected_message)
     {
-        log_dump_payload(received, "Network :: Receive");
+        log_dump_network(received, "Network :: Receive");
     }
 
     return is_expected_message ? received : Payload{};

@@ -66,8 +66,8 @@ TEST_F(Fixture, ReceiveWithNegativeAcknowledgeTransmissionWorks_WhenTypical)
     sut_.Receive();
     auto actual = transmitted_;
 
-    log_dump_payload(actual, "actual");
-    log_dump_payload(expected, "expected");
+    log_dump_datalink(actual, "actual");
+    log_dump_datalink(expected, "expected");
 
     ASSERT_EQ(expected, actual);
 }

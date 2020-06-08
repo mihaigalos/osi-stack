@@ -19,13 +19,13 @@ CommunicationStatus Datalink<>::Transmit(const Payload &payload) const
     CommunicationStatus result{CommunicationStatus::Unknown};
     auto payload_with_crc = crc_.append_crc_to_payload(payload);
 
-    log_dump_payload(payload_with_crc, "Datalink :: Transmit");
+    log_dump_datalink(payload_with_crc, "Datalink :: Transmit");
     for (uint8_t i = 0; i <= retransmit_count_ && result != CommunicationStatus::Acknowledge; ++i)
     {
         physical_.Transmit(payload_with_crc);
         Payload response = GetTransmitResponse();
 
-        log_dump_payload(response, "Datalink :: (response)");
+        log_dump_datalink(response, "Datalink :: (response)");
 
         if (response.size)
         {
@@ -57,7 +57,7 @@ Payload Datalink<>::Receive() const
     for (uint8_t i = 0; i <= retransmit_count_ && status != CommunicationStatus::Acknowledge; ++i)
     {
         received = physical_.Receive();
-        log_dump_payload(received, " Datalink :: Receive :: received");
+        log_dump_datalink(received, "Datalink :: Receive :: received");
 
         status = crc_.crc_match(received) ? CommunicationStatus::Acknowledge : CommunicationStatus::NegativeAcknowledge;
 

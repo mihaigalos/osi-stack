@@ -27,6 +27,7 @@ DEFAULT_TEST_COMPILE_OPTIONS = DEFAULT_COMPILER_OPTIONS + [
 
 DEFAULT_TEST_LINK_OPTIONS = [
     "-fsanitize=address",
+    "-static-libasan",
 ]
 
 cc_library(
