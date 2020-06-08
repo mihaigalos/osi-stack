@@ -11,6 +11,7 @@
 #include "osi_layers/physical.h"
 
 #include "crc.h"
+#include "utilities.h"
 
 constexpr uint8_t kFromId{0x01};
 constexpr uint8_t kDestinationId{0x02};

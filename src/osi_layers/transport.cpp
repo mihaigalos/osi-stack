@@ -104,7 +104,7 @@ CommunicationStatus Transport<>::Transmit(const uint8_t to, const uint8_t *data,
     for (uint32_t serialized_bytes = 0; serialized_bytes < total_size;)
     {
         Payload payload = serializeData(total_size, data, segment, port, serialized_bytes);
-        log_dump_payload(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
+        log_dump_transport(payload, std::string{"Transport :: Transmit ["} + std::to_string(segment) + "]");
         --segment;
 
         result = network_.Transmit(to, payload);
