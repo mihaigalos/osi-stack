@@ -18,13 +18,13 @@ template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, containers::static_string<> &&user, containers::static_string<> &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{} {}
+    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{} {}
 
     CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const;
     CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const;
     TString Receive(const uint8_t from_id, uint8_t port) const;
 
-    LoginStatus Login(const containers::static_string<> &user, const containers::static_string<> &pass);
+    LoginStatus Login(const TString &user, const TString &pass);
     void Logout();
     void deserializeUserPassword(TString &in, TString &user, TString &pass);
     bool IsLoggedIn() const { return cookie_ != decltype(cookie_){}; }
@@ -37,8 +37,8 @@ public:
 
 private:
     TransportLayer transport_;
-    const containers::static_string<> user_;
-    const containers::static_string<> pass_;
+    TString user_;
+    TString pass_;
     uint8_t port_;
     uint16_t cookie_;
 };

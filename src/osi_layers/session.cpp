@@ -52,7 +52,7 @@ TString Session<>::Receive(const uint8_t from_id, uint8_t port) const
 }
 
 template <>
-LoginStatus Session<>::Login(const containers::static_string<> &user, const containers::static_string<> &pass)
+LoginStatus Session<>::Login(const TString &user, const TString &pass)
 {
     LoginStatus result{};
     if (user_ == user && pass_ == pass)
