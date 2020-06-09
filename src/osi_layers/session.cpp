@@ -2,8 +2,31 @@
 
 #include "utilities.h"
 
+TString loginStatusToString(LoginStatus status)
+{
+    TString result{};
+    switch (status)
+    {
+
+    case LoginStatus::Error:
+        result = "Error";
+        break;
+    case LoginStatus::InvalidCredentials:
+        result = "InvalidCredentials";
+        break;
+    case LoginStatus::Success:
+        result = "Success";
+        break;
+    default:
+    case LoginStatus::Unknown:
+        result = "Unknown";
+        break;
+    }
+    return result;
+}
+
 template <>
-void Session<>::deserializeUserPassword(TString &in, TString &user, TString &pass)
+void Session<>::deserializeUserPassword(TString &in, TString &user, TString &pass) const
 {
     TString *out{&user};
     for (uint8_t i = 0; i < in.size(); ++i)
@@ -16,6 +39,14 @@ void Session<>::deserializeUserPassword(TString &in, TString &user, TString &pas
         }
         out->push_back(in[i]);
     }
+}
+
+template <>
+TString Session<>::attemptLogin(TString &in) const
+{
+    TString user, pass;
+    deserializeUserPassword(in, user, pass);
+    return loginStatusToString(Login(user, pass));
 }
 
 template <>
@@ -46,24 +77,9 @@ TString Session<>::Receive(const uint8_t from_id, uint8_t port) const
     }
     else
     {
+        result = attemptLogin(result);
     }
 
-    return result;
-}
-
-template <>
-LoginStatus Session<>::Login(const TString &user, const TString &pass)
-{
-    LoginStatus result{};
-    if (user_ == user && pass_ == pass)
-    {
-        cookie_ += 0xBEEF;
-        result = LoginStatus::Success;
-    }
-    else
-    {
-        result = LoginStatus::InvalidCredentials;
-    }
     return result;
 }
 

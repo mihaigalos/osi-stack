@@ -11,7 +11,7 @@ enum class LoginStatus : uint8_t
     Unknown = 0x00,
     Error = 0x01,
     InvalidCredentials = 0x02,
-    Success = 0x02,
+    Success = 0x03,
 };
 
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
@@ -24,9 +24,22 @@ public:
     CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const;
     TString Receive(const uint8_t from_id, uint8_t port) const;
 
-    LoginStatus Login(const TString &user, const TString &pass);
+    LoginStatus Login(const TString &user, const TString &pass) const
+    {
+        LoginStatus result{};
+        if (user_ == user && pass_ == pass)
+        {
+            cookie_ += 0xBEEF;
+            result = LoginStatus::Success;
+        }
+        else
+        {
+            result = LoginStatus::InvalidCredentials;
+        }
+        return result;
+    }
+
     void Logout();
-    void deserializeUserPassword(TString &in, TString &user, TString &pass);
     bool IsLoggedIn() const { return cookie_ != decltype(cookie_){}; }
 
     virtual ~Session() = default;
@@ -36,9 +49,12 @@ public:
     Session &operator=(Session &&other) = delete;
 
 private:
+    TString attemptLogin(TString &in) const;
+    void deserializeUserPassword(TString &in, TString &user, TString &pass) const;
+
     TransportLayer transport_;
     TString user_;
     TString pass_;
     uint8_t port_;
-    uint16_t cookie_;
+    mutable uint16_t cookie_;
 };
