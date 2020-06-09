@@ -125,3 +125,36 @@ TEST_F(Fixture, DeserializationUserPassWorks_WhenTypical)
     ASSERT_EQ(user, actual_user);
     ASSERT_EQ(pass, actual_pass);
 }
+
+TEST_F(Fixture, AttemptLoginWorks_WhenTypical)
+{
+    TString user{"myUser"}, pass{"myPass"};
+    TString credentials = user + TString{" "} + pass;
+    TString expected{"Success"};
+
+    auto actual = sut_.attemptLogin(credentials);
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, AttemptLoginFails_WhenFalseUser)
+{
+    TString user{"myFalseUser"}, pass{"myPass"};
+    TString credentials = user + TString{" "} + pass;
+    TString expected{"InvalidCredentials"};
+
+    auto actual = sut_.attemptLogin(credentials);
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, AttemptLoginFails_WhenFalsePass)
+{
+    TString user{"myUser"}, pass{"myFalsePass"};
+    TString credentials = user + TString{" "} + pass;
+    TString expected{"InvalidCredentials"};
+
+    auto actual = sut_.attemptLogin(credentials);
+
+    ASSERT_EQ(actual, expected);
+}

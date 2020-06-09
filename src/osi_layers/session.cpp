@@ -77,7 +77,7 @@ TString Session<>::Receive(const uint8_t from_id, uint8_t port) const
     }
     else
     {
-        result = attemptLogin(result);
+        result = attemptLogin(received);
     }
 
     return result;
