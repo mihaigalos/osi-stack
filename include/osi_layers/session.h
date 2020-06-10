@@ -14,15 +14,63 @@ enum class LoginStatus : uint8_t
     Success = 0x03,
 };
 
+TString loginStatusToString(LoginStatus status)
+{
+    TString result{};
+    switch (status)
+    {
+
+    case LoginStatus::Error:
+        result = "Error";
+        break;
+    case LoginStatus::InvalidCredentials:
+        result = "InvalidCredentials";
+        break;
+    case LoginStatus::Success:
+        result = "Success";
+        break;
+    default:
+    case LoginStatus::Unknown:
+        result = "Unknown";
+        break;
+    }
+    return result;
+}
+
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
     Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{} {}
 
-    CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const;
-    CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const;
-    TString Receive(const uint8_t from_id, uint8_t port) const;
+    CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const
+    {
+        auto result{CommunicationStatus::Unknown};
+        static_cast<void>(to);
+        static_cast<void>(data);
+        static_cast<void>(total_size);
+        return result;
+    }
+    CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const
+    {
+        return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size);
+    }
+    TString Receive(const uint8_t from_id, uint8_t port) const
+    {
+        TString result{};
+
+        auto received = transport_.Receive(from_id, port);
+        if (IsLoggedIn())
+        {
+            result = received;
+        }
+        else
+        {
+            result = attemptLogin(received);
+        }
+
+        return result;
+    }
 
     LoginStatus Login(const TString &user, const TString &pass) const
     {
@@ -39,7 +87,10 @@ public:
         return result;
     }
 
-    void Logout();
+    void Logout()
+    {
+        cookie_ = {};
+    }
     bool IsLoggedIn() const { return cookie_ != decltype(cookie_){}; }
 
     virtual ~Session() = default;
@@ -49,8 +100,27 @@ public:
     Session &operator=(Session &&other) = delete;
 
 private:
-    TString attemptLogin(TString &in) const;
-    void deserializeUserPassword(TString &in, TString &user, TString &pass) const;
+    TString attemptLogin(TString &in) const
+    {
+        TString user, pass;
+        deserializeUserPassword(in, user, pass);
+        return loginStatusToString(Login(user, pass));
+    }
+    void deserializeUserPassword(TString &in, TString &user, TString &pass) const
+    {
+
+        TString *out{&user};
+        for (uint8_t i = 0; i < in.size(); ++i)
+        {
+            if (in[i] == ' ')
+            {
+                out->push_back('\0');
+                out = &pass;
+                continue;
+            }
+            out->push_back(in[i]);
+        }
+    }
 
     TransportLayer transport_;
     TString user_;
