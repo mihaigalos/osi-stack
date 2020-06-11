@@ -39,18 +39,23 @@ docker run -it --rm -v $(pwd):/src -v /tmp:/tmp/bazel remoteapistesting/bazel-bu
 #### Session Layer Authentification
 
 The following code is a PlantUML diagram.
+
 ```plantuml
 @startuml
     skinparam monochrome true
 
     actor User
-    User -> "Session::Login()" : username & password
-    "Session::Login()" -> User : session cookie
+    User -> "Session::Transmit()/Receive()" : username & password
+
+    "Session::Transmit()/Receive()"-> "Session::Login()" : username & password
     activate "Session::Login()"
-    User -> "Session::Transmit()/Receive()" : session cookie, data
-    "Session::Transmit()/Receive()" -> User : ok
-    User -> "Session::Logout()"
-    "Session::Logout()" -> User : ok
+    "Session::Login()" -> "Session::Transmit()/Receive()" : LoginStatus::Success
+    "Session::Transmit()/Receive()" -> User : "OK session_cookie"
+
+    User -> "Session::Transmit()/Receive()" : "Logout"
+    "Session::Transmit()/Receive()" -> "Session::Logout()"
+    "Session::Logout()" -> "Session::Login()": reset cookie
     deactivate "Session::Login()"
+
 @enduml
 ```
