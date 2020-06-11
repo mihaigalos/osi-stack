@@ -49,6 +49,7 @@ protected:
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
     TString expected = "OK \xBE\xEF";
+    sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     auto actual = sut_.Receive(kSourceId, kPort);
 

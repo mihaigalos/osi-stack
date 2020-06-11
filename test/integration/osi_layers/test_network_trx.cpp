@@ -7,8 +7,6 @@
 
 #include "integration/test_integration_base.h"
 
-constexpr uint8_t retransmitCountInCaseOfNoAcknowledge{0};
-
 class Fixture : public IntegrationBase
 {
 protected:
@@ -20,7 +18,7 @@ TEST_F(Fixture, TRxWorks_WhenTypical)
 {
     auto payload = Payload{send_data_.c_str(), static_cast<uint8_t>(send_data_.length())};
 
-    sut1_.datalink_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
+    sut1_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
     sut1_.Transmit(kDestinationId, payload);
     pos_in_io_data_ = 0;
     auto received = sut2_.Receive(kFromId);
@@ -31,7 +29,7 @@ TEST_F(Fixture, TRxFails_WhenBogusData)
 {
     auto payload = Payload{send_data_.c_str(), static_cast<uint8_t>(send_data_.length())};
 
-    sut1_.datalink_.retransmit_count_ = retransmitCountInCaseOfNoAcknowledge;
+    sut1_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
     sut1_.Transmit(kDestinationId, payload);
     pos_in_io_data_ = 0;
     auto received = sut2_.Receive(kFromId);

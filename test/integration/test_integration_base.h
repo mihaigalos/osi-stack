@@ -13,6 +13,7 @@
 #include "crc.h"
 #include "utilities.h"
 
+constexpr uint8_t kRetransmitCountInCaseOfNoAcknowledge{0};
 constexpr uint8_t kFromId{0x01};
 constexpr uint8_t kDestinationId{0x02};
 constexpr uint8_t kPort{0x03};
