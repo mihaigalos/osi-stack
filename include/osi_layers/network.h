@@ -14,14 +14,14 @@ public:
                                                         datalink_{std::forward<DatalinkLayer>(datalink)} {}
     Network(Network &&other) : own_id_{other.own_id_}, datalink_{std::forward<DatalinkLayer>(other.datalink_)} {}
 
-    CommunicationStatus Transmit(const uint8_t to, Payload &payload) const
+    virtual__ CommunicationStatus Transmit(const uint8_t to, Payload &payload) const
     {
         payload.data[payload.size++] = own_id_;
         payload.data[payload.size++] = to;
         log_dump_network(payload, "Network :: Transmit");
         return datalink_.Transmit(payload);
     }
-    Payload Receive(uint8_t from) const
+    virtual__ Payload Receive(uint8_t from) const
     {
 
         Payload received = datalink_.Receive();

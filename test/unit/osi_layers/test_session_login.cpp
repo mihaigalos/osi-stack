@@ -158,3 +158,44 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalsePass)
 
     ASSERT_EQ(actual, expected);
 }
+
+TEST_F(Fixture, LoginStatusToStringWorks_WhenError)
+{
+    TString expected{"ER"};
+
+    auto actual = sut_.loginStatusToString(LoginStatus::Error);
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, LoginStatusToStringWorks_WhenInvalidCredentials)
+{
+    TString expected{"IC"};
+
+    auto actual = sut_.loginStatusToString(LoginStatus::InvalidCredentials);
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, LoginStatusToStringWorks_WhenSuccess)
+{
+    decltype(sut_.cookie_) cookie{};
+    TString expected{"OK "};
+    for (uint8_t i = 0; i < sizeof(cookie); ++i)
+    {
+        expected += '\0';
+    }
+
+    auto actual = sut_.loginStatusToString(LoginStatus::Success);
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, LoginStatusToStringWorks_WhenUnknown)
+{
+    TString expected{"KO"};
+
+    auto actual = sut_.loginStatusToString(LoginStatus::Unknown);
+
+    ASSERT_EQ(actual, expected);
+}
