@@ -76,6 +76,12 @@ public:
         return crc_.crc_match(received) ? received : Payload{};
     }
 
+#ifdef TESTING
+    Datalink()
+    {
+    }
+#endif
+
     virtual ~Datalink() = default;
     Datalink &operator=(const Datalink &other) = delete;
     Datalink &operator=(Datalink &&other) = delete;

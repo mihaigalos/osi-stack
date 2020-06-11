@@ -9,7 +9,7 @@ http_archive(
 
 git_repository(
     name = "gtest",
-    commit = "0eea2e9fc63461761dea5f2f517bd6af2ca024fa",
+    commit = "13a433a94dd9c7e55907d7a9b75f44ff82f309eb",
     remote = "https://github.com/google/googletest",
 )
 

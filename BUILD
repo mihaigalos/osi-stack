@@ -4,6 +4,7 @@ DEFAULT_COMPILER_OPTIONS = [
     "-DLOGGING",
     "-DTESTING",
     "-fdiagnostics-color",
+    "-fmax-errors=3",
     "-std=c++14",
     "-Wall",
     "-Werror",

@@ -30,3 +30,9 @@ using TString = containers::static_string<kStaticStringSize>;
 class Payload;
 using TMapSequencePayload = containers::static_map<uint8_t, Payload, kMaximumSegments * kTransportPayloadSize>;
 using TMapPortSequencePayload = containers::static_map<uint8_t, TMapSequencePayload, kMaximumPorts>;
+
+#ifdef TESTING
+#define virtual__ virtual
+#else
+#define virtual__
+#endif

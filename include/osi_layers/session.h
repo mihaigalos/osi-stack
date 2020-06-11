@@ -43,6 +43,11 @@ class Session
 public:
     Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{} {}
 
+#ifdef TESTING
+    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}
+    { // constructor does not take transport parameter since transport is a mock which cannot be called directly
+    }
+#endif
     CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const
     {
         auto result{CommunicationStatus::Unknown};
@@ -55,6 +60,7 @@ public:
     {
         return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size);
     }
+
     TString Receive(const uint8_t from_id, uint8_t port) const
     {
         TString result{};

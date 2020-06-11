@@ -46,6 +46,12 @@ public:
     return {};
   }
 
+#ifdef TESTING
+  Physical()
+  {
+  }
+#endif
+
   virtual ~Physical() = default;
   Physical(const Physical &other) = delete;
   Physical &operator=(const Physical &other) = delete;

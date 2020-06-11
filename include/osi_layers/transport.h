@@ -133,7 +133,7 @@ public:
     {
         return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size, port);
     }
-    TString Receive(const uint8_t from_id, const uint8_t port) const
+    virtual__ TString Receive(const uint8_t from_id, const uint8_t port) const
     {
         TString result{};
         TMapPortSequencePayload port_sequece_payload{};
@@ -153,6 +153,12 @@ public:
 
         return reconstructStringFromMap(port_sequece_payload[port]);
     }
+
+#ifdef TESTING
+    Transport()
+    {
+    }
+#endif
 
     virtual ~Transport() = default;
     Transport(const Transport &other) = delete;

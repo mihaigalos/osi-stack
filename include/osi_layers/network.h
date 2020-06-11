@@ -42,6 +42,12 @@ public:
         return is_expected_message ? received : Payload{};
     }
 
+#ifdef TESTING
+    Network()
+    {
+    }
+#endif
+
     virtual ~Network() = default;
     Network(const Network &other) = delete;
 
