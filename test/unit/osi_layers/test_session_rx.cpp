@@ -48,7 +48,7 @@ protected:
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
-    TString expected = "Success";
+    TString expected = "OK";
 
     auto actual = sut_.Receive(kSourceId, kPort);
 

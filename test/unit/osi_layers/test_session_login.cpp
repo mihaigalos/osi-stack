@@ -130,7 +130,7 @@ TEST_F(Fixture, AttemptLoginWorks_WhenTypical)
 {
     TString user{"myUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"Success"};
+    TString expected{"OK"};
 
     auto actual = sut_.attemptLogin(credentials);
 
@@ -141,7 +141,7 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalseUser)
 {
     TString user{"myFalseUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"InvalidCredentials"};
+    TString expected{"IC"};
 
     auto actual = sut_.attemptLogin(credentials);
 
@@ -152,7 +152,7 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalsePass)
 {
     TString user{"myUser"}, pass{"myFalsePass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"InvalidCredentials"};
+    TString expected{"IC"};
 
     auto actual = sut_.attemptLogin(credentials);
 

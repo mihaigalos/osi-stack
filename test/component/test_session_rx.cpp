@@ -33,8 +33,9 @@ protected:
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
-    TString expected = "Success";
-    EXPECT_CALL(sut_.transport_, Receive(kSourceId, kPort)).WillOnce(Return("User Pass"));
+    TString expected = "OK";
+    EXPECT_CALL(sut_.transport_, Receive(kSourceId, kPort))
+        .WillOnce(Return("User Pass"));
 
     auto actual = sut_.Receive(kSourceId, kPort);
 

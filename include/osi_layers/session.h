@@ -21,17 +21,17 @@ TString loginStatusToString(LoginStatus status)
     {
 
     case LoginStatus::Error:
-        result = "Error";
+        result = "ER";
         break;
     case LoginStatus::InvalidCredentials:
-        result = "InvalidCredentials";
+        result = "IC";
         break;
     case LoginStatus::Success:
-        result = "Success";
+        result = "OK";
         break;
     default:
     case LoginStatus::Unknown:
-        result = "Unknown";
+        result = "KO";
         break;
     }
     return result;
@@ -112,9 +112,9 @@ private:
         deserializeUserPassword(in, user, pass);
         return loginStatusToString(Login(user, pass));
     }
+
     void deserializeUserPassword(TString &in, TString &user, TString &pass) const
     {
-
         TString *out{&user};
         for (uint8_t i = 0; i < in.size(); ++i)
         {

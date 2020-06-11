@@ -107,7 +107,7 @@ public:
     Transport(NetworkLayer &&network) : network_{std::forward<NetworkLayer>(network)} {}
     Transport(Transport &&other) : network_{std::forward<NetworkLayer>(other.network_)} {}
 
-    CommunicationStatus Transmit(const uint8_t to, const uint8_t *data, const uint32_t total_size, const uint8_t port) const
+    virtual__ CommunicationStatus Transmit(const uint8_t to, const uint8_t *data, const uint32_t total_size, const uint8_t port) const
     {
         auto result{CommunicationStatus::Unknown};
 
@@ -129,10 +129,12 @@ public:
 
         return result;
     }
-    CommunicationStatus Transmit(const uint8_t to, const char *data, const uint32_t total_size, const uint8_t port) const
+
+    virtual__ CommunicationStatus Transmit(const uint8_t to, const char *data, const uint32_t total_size, const uint8_t port) const
     {
         return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size, port);
     }
+
     virtual__ TString Receive(const uint8_t from_id, const uint8_t port) const
     {
         TString result{};
