@@ -14,29 +14,6 @@ enum class LoginStatus : uint8_t
     Success = 0x03,
 };
 
-TString loginStatusToString(LoginStatus status)
-{
-    TString result{};
-    switch (status)
-    {
-
-    case LoginStatus::Error:
-        result = "ER";
-        break;
-    case LoginStatus::InvalidCredentials:
-        result = "IC";
-        break;
-    case LoginStatus::Success:
-        result = "OK";
-        break;
-    default:
-    case LoginStatus::Unknown:
-        result = "KO";
-        break;
-    }
-    return result;
-}
-
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
@@ -48,13 +25,9 @@ public:
     { // constructor does not take transport parameter since transport is a mock which cannot be called directly
     }
 #endif
-    CommunicationStatus Transmit(const uint8_t to, uint8_t *data, uint32_t total_size) const
+    CommunicationStatus Transmit(const uint8_t to, const uint8_t *data, uint32_t total_size) const
     {
-        auto result{CommunicationStatus::Unknown};
-        static_cast<void>(to);
-        static_cast<void>(data);
-        static_cast<void>(total_size);
-        return result;
+        return transport_.Transmit(to, reinterpret_cast<const char *>(data), total_size, port_);
     }
     CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const
     {
@@ -73,6 +46,7 @@ public:
         else
         {
             result = attemptLogin(received);
+            Transmit(from_id, result.c_str(), result.size());
         }
 
         return result;
@@ -126,6 +100,32 @@ private:
             }
             out->push_back(in[i]);
         }
+    }
+
+    TString loginStatusToString(LoginStatus status) const
+    {
+        TString result{};
+        switch (status)
+        {
+
+        case LoginStatus::Error:
+            result = "ER";
+            break;
+        case LoginStatus::InvalidCredentials:
+            result = "IC";
+            break;
+        case LoginStatus::Success:
+            result = "OK";
+            result += ' ';
+            result += static_cast<char>(cookie_ >> 8);
+            result += static_cast<char>(cookie_);
+            break;
+        default:
+        case LoginStatus::Unknown:
+            result = "KO";
+            break;
+        }
+        return result;
     }
 
     TransportLayer transport_;

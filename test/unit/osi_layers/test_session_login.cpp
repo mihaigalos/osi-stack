@@ -130,7 +130,7 @@ TEST_F(Fixture, AttemptLoginWorks_WhenTypical)
 {
     TString user{"myUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"OK"};
+    TString expected{"OK \xBE\xEF"};
 
     auto actual = sut_.attemptLogin(credentials);
 
