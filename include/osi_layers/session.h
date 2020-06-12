@@ -25,13 +25,9 @@ public:
     {
     }
 #endif
-    CommunicationStatus Transmit(const uint8_t to, const uint8_t *data, uint32_t total_size) const
+    CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
-        return Transmit(to, reinterpret_cast<const char *>(data), total_size);
-    }
-    CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const
-    {
-        return transport_.Transmit(to, data, total_size, port_);
+        return transport_.Transmit(to, data.c_str(), data.size(), port_);
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const
@@ -46,7 +42,8 @@ public:
         else
         {
             result = attemptLogin(received);
-            Transmit(from_id, result.c_str(), result.size());
+            appendCookie(result);
+            Transmit(from_id, result);
         }
 
         return result;
@@ -72,6 +69,16 @@ public:
         cookie_ = {};
     }
     bool IsLoggedIn() const { return cookie_ != decltype(cookie_){}; }
+    auto DeserializeCookie(TString &in) const
+    {
+        decltype(cookie_) received_cookie{};
+        if (in[0] == 'O' && in[1] == 'K')
+        {
+            received_cookie = (in[3] << 8);
+            received_cookie |= in[4];
+        }
+        return received_cookie;
+    }
 
     virtual ~Session() = default;
     Session(const Session &other) = delete;
@@ -116,9 +123,6 @@ private:
             break;
         case LoginStatus::Success:
             result = "OK";
-            result += ' ';
-            result += static_cast<char>(cookie_ >> 8);
-            result += static_cast<char>(cookie_);
             break;
         default:
         case LoginStatus::Unknown:
@@ -126,6 +130,13 @@ private:
             break;
         }
         return result;
+    }
+
+    void appendCookie(TString &in) const
+    {
+        in += ' ';
+        in += static_cast<char>(cookie_ >> 8);
+        in += static_cast<char>(cookie_);
     }
 
     TransportLayer transport_;

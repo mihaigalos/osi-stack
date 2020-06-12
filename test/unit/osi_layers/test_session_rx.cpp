@@ -25,11 +25,9 @@ public:
 
     static uint8_t generic_receive_byte()
     {
-        static uint8_t call_count{0};
-
-        if (call_count++ > 0)
+        if (call_count_++ > 0)
         {
-            return payloadified_data_with_segment_to_from_crc_.data[call_count - kSizeofLength - 1];
+            return payloadified_data_with_segment_to_from_crc_.data[call_count_ - kSizeofLength - 1];
         }
         else
         {
@@ -40,11 +38,15 @@ public:
 protected:
     virtual void SetUp() override
     {
+        call_count_ = 0;
         data_ = std::string{"User"} + " " + "Pass";
         UnitBase::SetUp();
     }
+    static uint8_t call_count_;
     Session<> sut_{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}, {"User"}, {"Pass"}, kPort};
 };
+
+uint8_t Fixture::call_count_{};
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
@@ -54,4 +56,26 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
     auto actual = sut_.Receive(kSourceId, kPort);
 
     ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, CookieDeseralizeWorks_WhenTypical)
+{
+    decltype(sut_.cookie_) expected{0xBEEF};
+    sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+
+    auto response = sut_.Receive(kSourceId, kPort);
+    auto actual = sut_.DeserializeCookie(response);
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, CookieDeseralizeFails_WhenTypical)
+{
+    decltype(sut_.cookie_) expected{0xAAAA};
+    sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+
+    auto response = sut_.Receive(kSourceId, kPort);
+    auto actual = sut_.DeserializeCookie(response);
+
+    ASSERT_NE(actual, expected);
 }

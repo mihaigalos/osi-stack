@@ -130,7 +130,7 @@ TEST_F(Fixture, AttemptLoginWorks_WhenTypical)
 {
     TString user{"myUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"OK \xBE\xEF"};
+    TString expected{"OK"};
 
     auto actual = sut_.attemptLogin(credentials);
 
@@ -179,12 +179,7 @@ TEST_F(Fixture, LoginStatusToStringWorks_WhenInvalidCredentials)
 
 TEST_F(Fixture, LoginStatusToStringWorks_WhenSuccess)
 {
-    decltype(sut_.cookie_) cookie{};
-    TString expected{"OK "};
-    for (uint8_t i = 0; i < sizeof(cookie); ++i)
-    {
-        expected += '\0';
-    }
+    TString expected{"OK"};
 
     auto actual = sut_.loginStatusToString(LoginStatus::Success);
 
