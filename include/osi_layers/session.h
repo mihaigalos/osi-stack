@@ -22,16 +22,16 @@ public:
 
 #ifdef TESTING
     Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}
-    { // constructor does not take transport parameter since transport is a mock which cannot be called directly
+    {
     }
 #endif
     CommunicationStatus Transmit(const uint8_t to, const uint8_t *data, uint32_t total_size) const
     {
-        return transport_.Transmit(to, reinterpret_cast<const char *>(data), total_size, port_);
+        return Transmit(to, reinterpret_cast<const char *>(data), total_size);
     }
     CommunicationStatus Transmit(const uint8_t to, const char *data, uint32_t total_size) const
     {
-        return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size);
+        return transport_.Transmit(to, data, total_size, port_);
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const
