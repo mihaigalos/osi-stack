@@ -194,3 +194,12 @@ TEST_F(Fixture, LoginStatusToStringWorks_WhenUnknown)
 
     ASSERT_EQ(actual, expected);
 }
+
+TEST_F(Fixture, SerializeCredentials_WhenTypical)
+{
+    TString expected{"myUser myPass"};
+
+    auto actual = sut_.serializeUserPassword();
+
+    ASSERT_EQ(actual, expected);
+}

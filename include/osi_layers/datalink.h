@@ -15,6 +15,7 @@ enum class CommunicationStatus : uint8_t
     NoAcknowledgeRequired = 0x02,
     CRCMismatch = 0x03,
     Acknowledge = 0x06,
+    SessionCookieError = 0x07,
     NegativeAcknowledge = 0x15,
 };
 

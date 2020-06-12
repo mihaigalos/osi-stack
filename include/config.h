@@ -8,7 +8,7 @@ using TCRCChecksum = uint16_t;
 
 constexpr uint8_t kCRCSize{sizeof(TCRCChecksum)};
 constexpr uint8_t kMaxRetransmitCount{2};
-constexpr uint8_t kPayloadMaxSize{16};
+constexpr uint8_t kPayloadMaxSize{20};
 
 constexpr uint8_t kMaximumSegments{5};
 constexpr uint8_t kMaximumPorts{5};

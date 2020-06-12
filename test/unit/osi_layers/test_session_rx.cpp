@@ -64,7 +64,7 @@ TEST_F(Fixture, CookieDeseralizeWorks_WhenTypical)
     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     auto response = sut_.Receive(kSourceId, kPort);
-    auto actual = sut_.DeserializeCookie(response);
+    auto actual = sut_.deserializeCookie(response);
 
     ASSERT_EQ(actual, expected);
 }
@@ -75,7 +75,7 @@ TEST_F(Fixture, CookieDeseralizeFails_WhenTypical)
     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     auto response = sut_.Receive(kSourceId, kPort);
-    auto actual = sut_.DeserializeCookie(response);
+    auto actual = sut_.deserializeCookie(response);
 
     ASSERT_NE(actual, expected);
 }
