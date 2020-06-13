@@ -33,6 +33,8 @@ using TMapPortSequencePayload = containers::static_map<uint8_t, TMapSequencePayl
 
 #ifdef TESTING
 #define virtual__ virtual
+extern void onPreTransmitData();
 #else
 #define virtual__
+#define onPreTransmitData()
 #endif

@@ -6,6 +6,8 @@
 #include "config.h"
 #include "transport.h"
 
+using TVoidCommunicationStatus = void (*)(CommunicationStatus);
+
 enum class LoginStatus : uint8_t
 {
     Unknown = 0x00,
@@ -14,14 +16,18 @@ enum class LoginStatus : uint8_t
     Success = 0x03,
 };
 
+void defaultOnCookieReceived(CommunicationStatus)
+{
+}
+
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{} {}
+    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port, TVoidCommunicationStatus onCookieReceived = defaultOnCookieReceived) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{}, onCookieReceived_{onCookieReceived} {}
 
 #ifdef TESTING
-    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}
+    Session(TString &&user, TString &&pass, uint8_t port, TVoidCommunicationStatus onCookieReceived = defaultOnCookieReceived) : user_{user}, pass_{pass}, port_{port}, cookie_{}, onCookieReceived_{onCookieReceived}
     {
     }
 #endif
@@ -34,6 +40,7 @@ public:
             if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
             {
                 cookie_ = ReceiveCookie(to, port_);
+                onCookieReceived_(response);
             }
         }
         if (IsLoggedIn())
@@ -182,4 +189,5 @@ private:
     TString pass_;
     uint8_t port_;
     mutable uint16_t cookie_;
+    TVoidCommunicationStatus onCookieReceived_;
 };
