@@ -9,12 +9,12 @@ http_archive(
 
 git_repository(
     name = "gtest",
-    commit = "0eea2e9fc63461761dea5f2f517bd6af2ca024fa",
+    commit = "13a433a94dd9c7e55907d7a9b75f44ff82f309eb",
     remote = "https://github.com/google/googletest",
 )
 
 git_repository(
     name = "containers",
-    commit = "5e448e93a54dcb72910244211b75151340c31446",
+    commit = "707821b5f4dc19be05827a548ddbebe90f542852",
     remote = "https://github.com/mihaigalos/containers",
 )

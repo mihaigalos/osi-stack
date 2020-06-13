@@ -5,6 +5,7 @@
 #include "osi_layers/physical.h"
 #include "crc.h"
 
+constexpr uint8_t kRetransmitCountInCaseOfNoAcknowledge{0};
 constexpr uint8_t payload_size_byte_count{1};
 constexpr uint8_t data_acknowledge_[]{static_cast<uint8_t>(CommunicationStatus::Acknowledge)};
 constexpr uint8_t data_negative_acknowledge_[]{static_cast<uint8_t>(CommunicationStatus::NegativeAcknowledge)};

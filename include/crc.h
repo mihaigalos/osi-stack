@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-
+#include "osi_layers/physical.h"
 class CRC
 {
 public:

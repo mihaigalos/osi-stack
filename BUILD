@@ -4,6 +4,7 @@ DEFAULT_COMPILER_OPTIONS = [
     "-DLOGGING",
     "-DTESTING",
     "-fdiagnostics-color",
+    "-fmax-errors=3",
     "-std=c++14",
     "-Wall",
     "-Werror",
@@ -78,5 +79,22 @@ cc_library(
     for integration_name in [
         file_name.replace("test/integration/", "").replace(".cpp", "")
         for file_name in glob(["test/integration/**/*.cpp"])
+    ]
+]
+
+[
+    cc_test(
+        name = "component/" + component_name,
+        srcs = [
+            "test/component/" + component_name + ".cpp",
+        ],
+        copts = DEFAULT_TEST_COMPILE_OPTIONS,
+        linkopts = DEFAULT_TEST_LINK_OPTIONS,
+        tags = ["component"],
+        deps = DEFAULT_TEST_DEPS + [":test_headers"],
+    )
+    for component_name in [
+        file_name.replace("test/component/", "").replace(".cpp", "")
+        for file_name in glob(["test/component/**/*.cpp"])
     ]
 ]

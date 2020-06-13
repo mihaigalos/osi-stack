@@ -35,3 +35,27 @@ bazel test //...
 ```bash
 docker run -it --rm -v $(pwd):/src -v /tmp:/tmp/bazel remoteapistesting/bazel-build /bin/bash -c "bazel --output_base=/tmp/bazel test //..."
 ```
+
+#### Session Layer Authentification
+
+The following code is a PlantUML diagram.
+
+```plantuml
+@startuml
+    skinparam monochrome true
+
+    actor User
+    User -> "Session::Transmit()/Receive()" : username & password
+
+    "Session::Transmit()/Receive()"-> "Session::Login()" : username & password
+    activate "Session::Login()"
+    "Session::Login()" -> "Session::Transmit()/Receive()" : LoginStatus::Success
+    "Session::Transmit()/Receive()" -> User : "OK session_cookie"
+
+    User -> "Session::Transmit()/Receive()" : "Logout"
+    "Session::Transmit()/Receive()" -> "Session::Logout()"
+    "Session::Logout()" -> "Session::Login()": reset cookie
+    deactivate "Session::Login()"
+
+@enduml
+```
