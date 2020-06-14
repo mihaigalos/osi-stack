@@ -21,7 +21,7 @@ DEFAULT_TEST_DEPS = [
 DEFAULT_TEST_COMPILE_OPTIONS = DEFAULT_COMPILER_OPTIONS + [
     "-fsanitize=address",
     "-DADDRESS_SANITIZER",
-    "-O1",
+    "-O0",
     "-g",
     "-fno-omit-frame-pointer",
 ]
