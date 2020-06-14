@@ -67,3 +67,15 @@ TEST_F(Fixture, LoginSuccessTransmitCookie_WhenTypical)
 
     ASSERT_EQ(actual, expected);
 }
+
+TEST_F(Fixture, ReceiveWorks_WhenLoggedIn)
+{
+    TString expected = "abcdef";
+    EXPECT_CALL(sut_.transport_, Receive(_, _))
+        .WillOnce(Return("abcdef"));
+    sut_.cookie_ = 0xBEEF;
+
+    auto actual = sut_.Receive(kSourceId, kPort);
+
+    ASSERT_EQ(actual, expected);
+}
