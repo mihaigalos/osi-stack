@@ -130,7 +130,8 @@ TEST_F(Fixture, AttemptLoginWorks_WhenTypical)
 {
     TString user{"myUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"OK"};
+    TString expected{};
+    expected += static_cast<char>(CommunicationStatus::Acknowledge);
 
     auto actual = sut_.attemptLogin(credentials);
 
@@ -179,7 +180,8 @@ TEST_F(Fixture, LoginStatusToStringWorks_WhenInvalidCredentials)
 
 TEST_F(Fixture, LoginStatusToStringWorks_WhenSuccess)
 {
-    TString expected{"OK"};
+    TString expected;
+    expected += static_cast<char>(CommunicationStatus::Acknowledge);
 
     auto actual = sut_.loginStatusToString(LoginStatus::Success);
 

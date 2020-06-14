@@ -50,7 +50,9 @@ uint8_t Fixture::call_count_{};
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
-    TString expected = "OK \xBE\xEF";
+    TString expected;
+    expected += static_cast<char>(CommunicationStatus::Acknowledge);
+    expected += " \xBE\xEF";
     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     auto actual = sut_.Receive(kSourceId, kPort);

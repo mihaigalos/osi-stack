@@ -40,12 +40,15 @@ protected:
 TEST_F(Fixture, TransmitCredentials_WhenTypical)
 {
     auto expected = CommunicationStatus::Acknowledge;
+    TString acknowledege_with_cookie;
+    acknowledege_with_cookie += static_cast<char>(CommunicationStatus::Acknowledge);
+    acknowledege_with_cookie += " \xBE\xEF";
 
     EXPECT_CALL(sut_.transport_, Transmit(_, _, _, _))
         .WillOnce(
             Return(CommunicationStatus::NoAcknowledgeRequired))    // credentials
         .WillRepeatedly(Return(CommunicationStatus::Acknowledge)); // data
-    EXPECT_CALL(sut_.transport_, Receive(_, _)).WillOnce(Return("OK \xBE\xEF"));
+    EXPECT_CALL(sut_.transport_, Receive(_, _)).WillOnce(Return(acknowledege_with_cookie));
 
     TString to_send{"abcd"};
     sut_.transport_.network_.datalink_.retransmit_count_ =

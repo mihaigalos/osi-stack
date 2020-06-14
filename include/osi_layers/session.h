@@ -151,7 +151,7 @@ private:
             result = "IC";
             break;
         case LoginStatus::Success:
-            result = "OK";
+            result += static_cast<char>(CommunicationStatus::Acknowledge);
             break;
         default:
         case LoginStatus::Unknown:
@@ -163,15 +163,15 @@ private:
 
     bool isSuccess(TString &in) const
     {
-        return (in[0] == 'O' && in[1] == 'K');
+        return (in[0] == static_cast<char>(CommunicationStatus::Acknowledge) && in[1] == ' ');
     }
     auto deserializeCookie(TString &in) const
     {
         decltype(cookie_) received_cookie{};
         if (isSuccess(in))
         {
-            received_cookie = (in[3] << 8);
-            received_cookie |= in[4];
+            received_cookie = (in[2] << 8);
+            received_cookie |= in[3];
         }
         return received_cookie;
     }
