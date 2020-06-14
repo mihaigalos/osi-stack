@@ -35,18 +35,12 @@ public:
     {
         if (!IsLoggedIn())
         {
-            TString credentials{serializeUserPassword()};
-            auto response = transport_.Transmit(to, credentials.c_str(), credentials.size(), port_);
-            if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
-            {
-                cookie_ = ReceiveCookie(to, port_);
-                onCookieReceived_(response);
-            }
+            login(to, port_);
         }
         if (IsLoggedIn())
         {
             serializeCookie(data);
-            return TransmitWithCookie(to, data);
+            return transmitWithCookie(to, data);
         }
         return CommunicationStatus::SessionCookieError;
     }
@@ -65,7 +59,7 @@ public:
             result = attemptLogin(received);
 
             serializeCookie(result);
-            TransmitWithCookie(from_id, result);
+            transmitWithCookie(from_id, result);
         }
 
         return result;
@@ -99,6 +93,21 @@ public:
     Session &operator=(Session &&other) = delete;
 
 private:
+    void login(const uint8_t from, uint8_t port) const
+    {
+        auto response = transmitCredentials(from);
+        if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
+        {
+            cookie_ = receiveCookie(from, port);
+            onCookieReceived_(response);
+        }
+    }
+    CommunicationStatus transmitCredentials(const uint8_t to) const
+    {
+        TString credentials{serializeUserPassword()};
+        return transport_.Transmit(to, credentials.c_str(), credentials.size(), port_);
+    }
+
     TString attemptLogin(TString &in) const
     {
         TString user, pass;
@@ -174,12 +183,12 @@ private:
         in += static_cast<char>(cookie_);
     }
 
-    auto ReceiveCookie(const uint8_t from_id, uint8_t port) const
+    auto receiveCookie(const uint8_t from_id, uint8_t port) const
     {
         auto cookie = transport_.Receive(from_id, port);
         return deserializeCookie(cookie);
     }
-    CommunicationStatus TransmitWithCookie(const uint8_t to, TString &data) const
+    CommunicationStatus transmitWithCookie(const uint8_t to, TString &data) const
     {
         return transport_.Transmit(to, data.c_str(), data.size(), port_);
     }

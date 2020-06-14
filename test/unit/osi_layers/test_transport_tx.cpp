@@ -73,6 +73,28 @@ TEST_F(Fixture, TransportTransmitWorks_WhenTypical)
     }
 }
 
+TEST_F(Fixture, TransportTransmitCharPointerWorks_WhenTypical)
+{
+    std::string data_to_transmit;
+    for (uint8_t i = 'A'; i < 'z'; ++i)
+    {
+        data_to_transmit += static_cast<char>(i);
+    }
+
+    sut_.Transmit(kDestinationId, data_to_transmit.c_str(), data_to_transmit.length(), kPort);
+
+    auto skip_past_metadata = kPayloadMaxSize - kTransportPayloadSize + kSizeofLength;
+    uint8_t skip_past_metadata_count{0};
+    for (uint8_t i = 0; i < 'z' - 'A'; ++i)
+    {
+        if (i > 0 && i % kTransportPayloadSize == 0)
+        {
+            ++skip_past_metadata_count;
+        }
+        ASSERT_EQ(transmitted_data_[i + kSizeofLength + skip_past_metadata_count * skip_past_metadata], 'A' + i);
+    }
+}
+
 TEST_F(Fixture, TransportTransmitAcknowledge_WhenTypical)
 {
     auto expected = CommunicationStatus::Acknowledge;
