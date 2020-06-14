@@ -43,27 +43,3 @@ TEST_F(Fixture, ReturnsNothing_WhenSizeZero)
 
     ASSERT_EQ(actual, expected);
 }
-
-// TEST_F(Fixture, LoginSuccessTransmitCookie_WhenTypical)
-// {
-//     TString expected = "OK \xBE\xEF";
-//     TString actual{};
-//     EXPECT_CALL(sut_.transport_, Receive(_, _))
-//         .WillOnce(Return("User Pass"));
-
-//     ON_CALL(sut_.transport_, Transmit(_, _, _, _)).WillByDefault(Invoke([&](const uint8_t to, const char *data, const uint32_t total_size, const uint8_t port) {
-//         static_cast<void>(to);
-//         static_cast<void>(port);
-
-//         for (uint8_t i = 0; i < total_size - 1; ++i)
-//         {
-//             actual += data[i];
-//         }
-
-//         return CommunicationStatus::Acknowledge;
-//     }));
-
-//     sut_.Receive(kSourceId, kPort);
-
-//     ASSERT_EQ(actual, expected);
-// }

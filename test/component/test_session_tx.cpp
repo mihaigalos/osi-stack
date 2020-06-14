@@ -42,7 +42,8 @@ TEST_F(Fixture, TransmitCredentials_WhenTypical)
     auto expected = CommunicationStatus::Acknowledge;
     TString acknowledege_with_cookie;
     acknowledege_with_cookie += static_cast<char>(CommunicationStatus::Acknowledge);
-    acknowledege_with_cookie += " \xBE\xEF";
+    acknowledege_with_cookie += " ";
+    acknowledege_with_cookie += kCookieBaseValue;
 
     EXPECT_CALL(sut_.transport_, Transmit(_, _, _, _))
         .WillOnce(
