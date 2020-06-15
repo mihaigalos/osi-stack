@@ -148,7 +148,7 @@ private:
             result = "ER";
             break;
         case LoginStatus::InvalidCredentials:
-            result = "IC";
+            result += static_cast<char>(CommunicationStatus::InvalidCredentials);
             break;
         case LoginStatus::Success:
             result += static_cast<char>(CommunicationStatus::Acknowledge);
