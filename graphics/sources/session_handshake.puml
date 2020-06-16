@@ -7,7 +7,7 @@ skinparam monochrome true
     "Session::Transmit()/Receive()"-> "Session::Login()" : username & password
     activate "Session::Login()"
     "Session::Login()" -> "Session::Transmit()/Receive()" : LoginStatus::Success
-    "Session::Transmit()/Receive()" -> User : "OK session_cookie"
+    "Session::Transmit()/Receive()" -> User : "ACK session_cookie"
 
     User -> "Session::Transmit()/Receive()" : "Logout"
     "Session::Transmit()/Receive()" -> "Session::Logout()"
