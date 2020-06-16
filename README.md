@@ -12,7 +12,7 @@ This implementation intentionally uses raw pointers instead of smart pointers.
 The reasoning is that it will be ported to small 8-bit hardware architectures such as AVR/Arduino, with limited support for modern C++.
 
 
-![alt text](screenshots/iso_osi_layers.png "ISO/OSI Layers (Rough Model).")
+![alt text](graphics/iso_osi_layers.png "ISO/OSI Layers (Rough Model).")
 
 ### Build and Test
 
@@ -38,24 +38,6 @@ docker run -it --rm -v $(pwd):/src -v /tmp:/tmp/bazel remoteapistesting/bazel-bu
 
 #### Session Layer Authentification
 
-The following code is a PlantUML diagram.
+The Session handshake is described in the following diagram:
 
-```plantuml
-@startuml
-    skinparam monochrome true
-
-    actor User
-    User -> "Session::Transmit()/Receive()" : username & password
-
-    "Session::Transmit()/Receive()"-> "Session::Login()" : username & password
-    activate "Session::Login()"
-    "Session::Login()" -> "Session::Transmit()/Receive()" : LoginStatus::Success
-    "Session::Transmit()/Receive()" -> User : "OK session_cookie"
-
-    User -> "Session::Transmit()/Receive()" : "Logout"
-    "Session::Transmit()/Receive()" -> "Session::Logout()"
-    "Session::Logout()" -> "Session::Login()": reset cookie
-    deactivate "Session::Login()"
-
-@enduml
-```
+![alt text](graphics/session_handshake.png "ISO/OSI Layers (Rough Model).")
