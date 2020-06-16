@@ -155,7 +155,7 @@ private:
             break;
         default:
         case LoginStatus::Unknown:
-            result = "KO";
+            result += static_cast<char>(CommunicationStatus::Unknown);
             break;
         }
         return result;

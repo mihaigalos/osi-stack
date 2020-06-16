@@ -10,7 +10,7 @@
 
 enum class CommunicationStatus : uint8_t
 {
-    Unknown = 0x00,
+    Unknown = 0xFF,
     Error = 0x01,
     NoAcknowledgeRequired = 0x02,
     CRCMismatch = 0x03,

@@ -193,7 +193,8 @@ TEST_F(Fixture, LoginStatusToStringWorks_WhenSuccess)
 
 TEST_F(Fixture, LoginStatusToStringWorks_WhenUnknown)
 {
-    TString expected{"KO"};
+    TString expected;
+    expected += static_cast<char>(CommunicationStatus::Unknown);
 
     auto actual = sut_.loginStatusToString(LoginStatus::Unknown);
 
