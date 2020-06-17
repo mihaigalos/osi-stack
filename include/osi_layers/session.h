@@ -145,7 +145,7 @@ private:
         {
 
         case LoginStatus::Error:
-            result = "ER";
+            result += static_cast<char>(CommunicationStatus::Error);
             break;
         case LoginStatus::InvalidCredentials:
             result += static_cast<char>(CommunicationStatus::InvalidCredentials);

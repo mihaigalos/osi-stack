@@ -164,7 +164,8 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalsePass)
 
 TEST_F(Fixture, LoginStatusToStringWorks_WhenError)
 {
-    TString expected{"ER"};
+    TString expected{};
+    expected += static_cast<char>(CommunicationStatus::Error);
 
     auto actual = sut_.loginStatusToString(LoginStatus::Error);
 
