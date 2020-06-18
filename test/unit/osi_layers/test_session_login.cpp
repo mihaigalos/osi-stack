@@ -47,7 +47,7 @@ protected:
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
-    auto expected = LoginStatus::Success;
+    auto expected = CommunicationStatus::Acknowledge;
 
     auto actual = sut_.Login("myUser", "myPass");
 
@@ -56,7 +56,7 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
 
 TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidPass)
 {
-    auto expected = LoginStatus::InvalidCredentials;
+    auto expected = CommunicationStatus::InvalidCredentials;
 
     auto actual = sut_.Login("myUser", "watch_this");
 
@@ -65,7 +65,7 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidPass)
 
 TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidUser)
 {
-    auto expected = LoginStatus::InvalidCredentials;
+    auto expected = CommunicationStatus::InvalidCredentials;
 
     auto actual = sut_.Login("foo", "myPass");
 
@@ -158,46 +158,6 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalsePass)
     expected += static_cast<char>(CommunicationStatus::InvalidCredentials);
 
     auto actual = sut_.attemptLogin(credentials);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenError)
-{
-    TString expected{};
-    expected += static_cast<char>(CommunicationStatus::Error);
-
-    auto actual = sut_.loginStatusToString(LoginStatus::Error);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenInvalidCredentials)
-{
-    TString expected{};
-    expected += static_cast<char>(CommunicationStatus::InvalidCredentials);
-
-    auto actual = sut_.loginStatusToString(LoginStatus::InvalidCredentials);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenSuccess)
-{
-    TString expected;
-    expected += static_cast<char>(CommunicationStatus::Acknowledge);
-
-    auto actual = sut_.loginStatusToString(LoginStatus::Success);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenUnknown)
-{
-    TString expected;
-    expected += static_cast<char>(CommunicationStatus::Unknown);
-
-    auto actual = sut_.loginStatusToString(LoginStatus::Unknown);
 
     ASSERT_EQ(actual, expected);
 }
