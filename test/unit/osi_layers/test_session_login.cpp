@@ -47,7 +47,7 @@ protected:
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
-    auto expected = LoginStatus::Success;
+    auto expected = CommunicationStatus::Acknowledge;
 
     auto actual = sut_.Login("myUser", "myPass");
 
@@ -56,7 +56,7 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
 
 TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidPass)
 {
-    auto expected = LoginStatus::InvalidCredentials;
+    auto expected = CommunicationStatus::InvalidCredentials;
 
     auto actual = sut_.Login("myUser", "watch_this");
 
@@ -65,7 +65,7 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidPass)
 
 TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidUser)
 {
-    auto expected = LoginStatus::InvalidCredentials;
+    auto expected = CommunicationStatus::InvalidCredentials;
 
     auto actual = sut_.Login("foo", "myPass");
 
@@ -130,7 +130,8 @@ TEST_F(Fixture, AttemptLoginWorks_WhenTypical)
 {
     TString user{"myUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"OK"};
+    TString expected{};
+    expected += static_cast<char>(CommunicationStatus::Acknowledge);
 
     auto actual = sut_.attemptLogin(credentials);
 
@@ -141,7 +142,8 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalseUser)
 {
     TString user{"myFalseUser"}, pass{"myPass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"IC"};
+    TString expected{};
+    expected += static_cast<char>(CommunicationStatus::InvalidCredentials);
 
     auto actual = sut_.attemptLogin(credentials);
 
@@ -152,45 +154,10 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalsePass)
 {
     TString user{"myUser"}, pass{"myFalsePass"};
     TString credentials = user + TString{" "} + pass;
-    TString expected{"IC"};
+    TString expected{};
+    expected += static_cast<char>(CommunicationStatus::InvalidCredentials);
 
     auto actual = sut_.attemptLogin(credentials);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenError)
-{
-    TString expected{"ER"};
-
-    auto actual = sut_.loginStatusToString(LoginStatus::Error);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenInvalidCredentials)
-{
-    TString expected{"IC"};
-
-    auto actual = sut_.loginStatusToString(LoginStatus::InvalidCredentials);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenSuccess)
-{
-    TString expected{"OK"};
-
-    auto actual = sut_.loginStatusToString(LoginStatus::Success);
-
-    ASSERT_EQ(actual, expected);
-}
-
-TEST_F(Fixture, LoginStatusToStringWorks_WhenUnknown)
-{
-    TString expected{"KO"};
-
-    auto actual = sut_.loginStatusToString(LoginStatus::Unknown);
 
     ASSERT_EQ(actual, expected);
 }

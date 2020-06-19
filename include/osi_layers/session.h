@@ -8,14 +8,6 @@
 
 using TVoidCommunicationStatus = void (*)(CommunicationStatus);
 
-enum class LoginStatus : uint8_t
-{
-    Unknown = 0x00,
-    Error = 0x01,
-    InvalidCredentials = 0x02,
-    Success = 0x03,
-};
-
 void defaultOnCookieReceived(CommunicationStatus)
 {
 }
@@ -65,17 +57,17 @@ public:
         return result;
     }
 
-    LoginStatus Login(const TString &user, const TString &pass) const
+    CommunicationStatus Login(const TString &user, const TString &pass) const
     {
-        LoginStatus result{};
+        CommunicationStatus result{};
         if (user_ == user && pass_ == pass)
         {
             cookie_ += 0xBEEF;
-            result = LoginStatus::Success;
+            result = CommunicationStatus::Acknowledge;
         }
         else
         {
-            result = LoginStatus::InvalidCredentials;
+            result = CommunicationStatus::InvalidCredentials;
         }
         return result;
     }
@@ -110,9 +102,13 @@ private:
 
     TString attemptLogin(TString &in) const
     {
-        TString user, pass;
+        TString user{}, pass{};
+        TString result{};
+
         deserializeUserPassword(in, user, pass);
-        return loginStatusToString(Login(user, pass));
+        result += static_cast<char>(Login(user, pass));
+
+        return result;
     }
 
     void deserializeUserPassword(TString &in, TString &user, TString &pass) const
@@ -138,40 +134,17 @@ private:
         return credentials;
     }
 
-    TString loginStatusToString(LoginStatus status) const
-    {
-        TString result{};
-        switch (status)
-        {
-
-        case LoginStatus::Error:
-            result = "ER";
-            break;
-        case LoginStatus::InvalidCredentials:
-            result = "IC";
-            break;
-        case LoginStatus::Success:
-            result = "OK";
-            break;
-        default:
-        case LoginStatus::Unknown:
-            result = "KO";
-            break;
-        }
-        return result;
-    }
-
     bool isSuccess(TString &in) const
     {
-        return (in[0] == 'O' && in[1] == 'K');
+        return (in[0] == static_cast<char>(CommunicationStatus::Acknowledge) && in[1] == ' ');
     }
     auto deserializeCookie(TString &in) const
     {
         decltype(cookie_) received_cookie{};
         if (isSuccess(in))
         {
-            received_cookie = (in[3] << 8);
-            received_cookie |= in[4];
+            received_cookie = (in[2] << 8);
+            received_cookie |= in[3];
         }
         return received_cookie;
     }

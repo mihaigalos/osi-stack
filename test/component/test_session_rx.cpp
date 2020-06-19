@@ -35,7 +35,10 @@ protected:
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
-    TString expected = "OK \xBE\xEF";
+    TString expected;
+    expected += static_cast<char>(CommunicationStatus::Acknowledge);
+    expected += " ";
+    expected += kCookieBaseValue;
     EXPECT_CALL(sut_.transport_, Receive(_, _))
         .WillOnce(Return("User Pass"));
 
@@ -46,7 +49,10 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
 
 TEST_F(Fixture, LoginSuccessTransmitCookie_WhenTypical)
 {
-    TString expected = "OK \xBE\xEF";
+    TString expected;
+    expected += static_cast<char>(CommunicationStatus::Acknowledge);
+    expected += " ";
+    expected += kCookieBaseValue;
     TString actual{};
     EXPECT_CALL(sut_.transport_, Receive(_, _))
         .WillOnce(Return("User Pass"));

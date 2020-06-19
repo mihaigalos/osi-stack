@@ -10,12 +10,13 @@
 
 enum class CommunicationStatus : uint8_t
 {
-    Unknown = 0x00,
+    Unknown = 0xFF,
     Error = 0x01,
     NoAcknowledgeRequired = 0x02,
     CRCMismatch = 0x03,
     Acknowledge = 0x06,
     SessionCookieError = 0x07,
+    InvalidCredentials = 0x08,
     NegativeAcknowledge = 0x15,
 };
 
