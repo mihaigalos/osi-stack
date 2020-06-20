@@ -6,13 +6,11 @@
 #include "config.h"
 #include "transport.h"
 
-using TVoidCommunicationStatus = void (*)(CommunicationStatus);
-
 enum class SessionState
 {
     Unknown,
-    TransmittingCredentials,
-    ReceivingCookie,
+    SentCredentials,
+    ReceivedCookie,
     TransmittingData
 };
 
@@ -20,10 +18,10 @@ template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{} {}
+    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{}, state_{} {}
 
 #ifdef TESTING
-    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}
+    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}, state_{}
     {
     }
 #endif
@@ -35,6 +33,7 @@ public:
         }
         if (IsLoggedIn())
         {
+            state_ = SessionState::TransmittingData;
             serializeCookie(data);
             return transmitWithCookie(to, data);
         }
@@ -92,6 +91,7 @@ private:
     void login(const uint8_t from, uint8_t port) const
     {
         auto response = transmitCredentials(from);
+        state_ = SessionState::SentCredentials;
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
             cookie_ = receiveCookie(from, port);
@@ -162,6 +162,7 @@ private:
     auto receiveCookie(const uint8_t from_id, uint8_t port) const
     {
         auto cookie = transport_.Receive(from_id, port);
+        state_ = SessionState::ReceivedCookie;
         return deserializeCookie(cookie);
     }
     CommunicationStatus transmitWithCookie(const uint8_t to, TString &data) const
@@ -174,4 +175,5 @@ private:
     TString pass_;
     uint8_t port_;
     mutable uint16_t cookie_;
+    mutable SessionState state_;
 };

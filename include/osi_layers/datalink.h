@@ -72,7 +72,10 @@ public:
             status = crc_.crc_match(received) ? CommunicationStatus::Acknowledge : CommunicationStatus::NegativeAcknowledge;
 
             uint8_t data_response_[]{static_cast<uint8_t>(status)};
-            physical_.Transmit(crc_.append_crc_to_payload(Payload{data_response_, 1}));
+            if (retransmit_count_)
+            {
+                physical_.Transmit(crc_.append_crc_to_payload(Payload{data_response_, 1}));
+            }
         }
 
         return crc_.crc_match(received) ? received : Payload{};
