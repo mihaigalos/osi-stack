@@ -8,18 +8,22 @@
 
 using TVoidCommunicationStatus = void (*)(CommunicationStatus);
 
-void defaultOnCookieReceived(CommunicationStatus)
+enum class SessionState
 {
-}
+    Unknown,
+    TransmittingCredentials,
+    ReceivingCookie,
+    TransmittingData
+};
 
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port, TVoidCommunicationStatus onCookieReceived = defaultOnCookieReceived) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{}, onCookieReceived_{onCookieReceived} {}
+    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{} {}
 
 #ifdef TESTING
-    Session(TString &&user, TString &&pass, uint8_t port, TVoidCommunicationStatus onCookieReceived = defaultOnCookieReceived) : user_{user}, pass_{pass}, port_{port}, cookie_{}, onCookieReceived_{onCookieReceived}
+    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}
     {
     }
 #endif
@@ -91,7 +95,6 @@ private:
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
             cookie_ = receiveCookie(from, port);
-            onCookieReceived_(response);
         }
     }
     CommunicationStatus transmitCredentials(const uint8_t to) const
@@ -171,5 +174,4 @@ private:
     TString pass_;
     uint8_t port_;
     mutable uint16_t cookie_;
-    TVoidCommunicationStatus onCookieReceived_;
 };
