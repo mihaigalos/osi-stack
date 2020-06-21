@@ -36,24 +36,18 @@ protected:
         }
 
         static uint8_t call_count{0};
-        uint8_t total_payload_size{static_cast<uint8_t>(channel_[0])};
 
         char character = channel_[index_in_channel_++];
 
-        if (call_count++ == total_payload_size)
-        {
-            channel_.clear();
-            index_in_channel_ = 0;
-            call_count = 0;
-        }
+        ResetChannel(call_count);
 
         return static_cast<uint8_t>(character);
     }
 
     static void generic_transmit_byte2(const uint8_t payload)
     {
-        static uint8_t call_count{0};
         channel_ += static_cast<char>(payload);
+        static uint8_t call_count{0};
         uint8_t total_payload_size{static_cast<uint8_t>(channel_[0])};
 
         if (call_count++ == total_payload_size)
@@ -68,6 +62,18 @@ protected:
         char character = channel_[index_in_channel_++];
 
         static uint8_t call_count{0};
+        ResetChannel(call_count);
+        return static_cast<uint8_t>(character);
+    }
+
+    Session<> sut1_{Transport<>{Network<>{kFromId, Datalink<>{Physical{generic_transmit_byte1, generic_receive_byte1}}}}, {"User"}, {"Pass"}, kPort};
+    Session<> sut2_{Transport<>{Network<>{kDestinationId, Datalink<>{Physical{generic_transmit_byte2, generic_receive_byte2}}}}, {"User"}, {"Pass"}, kPort};
+    static std::string channel_;
+    static uint8_t index_in_channel_;
+
+private:
+    static void ResetChannel(uint8_t &call_count)
+    {
         uint8_t total_payload_size{static_cast<uint8_t>(channel_[0])};
 
         if (call_count++ == total_payload_size)
@@ -76,13 +82,7 @@ protected:
             index_in_channel_ = 0;
             call_count = 0;
         }
-        return static_cast<uint8_t>(character);
     }
-
-    Session<> sut1_{Transport<>{Network<>{kFromId, Datalink<>{Physical{generic_transmit_byte1, generic_receive_byte1}}}}, {"User"}, {"Pass"}, kPort};
-    Session<> sut2_{Transport<>{Network<>{kDestinationId, Datalink<>{Physical{generic_transmit_byte2, generic_receive_byte2}}}}, {"User"}, {"Pass"}, kPort};
-    static std::string channel_;
-    static uint8_t index_in_channel_;
 };
 
 std::string Fixture::channel_;
