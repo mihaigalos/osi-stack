@@ -16,5 +16,5 @@
 2  | <div style="width:150px"> Datalink Layer </div> | `Length` | <div style="width:695px"> `Raw data`</div> | `CRC`
 -- | -------------- | -------- | ---------- | -----
 
-1  | <div style="width:150px"> Physical Layer </div>| `Length`|<div style="width:755px"> `Raw data`</div>
+1  | <div style="width:150px"> Physical Layer </div>| `Length`|<div style="width:758px"> `Raw data`</div>
 -- | ------- |-------------- | ----------
