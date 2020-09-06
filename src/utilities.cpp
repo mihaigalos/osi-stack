@@ -44,15 +44,7 @@ void log_dump_network(const Payload &payload, const std::string header)
     for (uint8_t i = 0; i < payload.size; ++i)
     {
 
-        if (i == payload.size - kSizeOfFromField - kSizeOfToField - sizeof(TSegment) - kSizeOfPort)
-        {
-            std::cout << "\033[1;31m";
-        }
-        else if (i == payload.size - kSizeOfFromField - kSizeOfToField - sizeof(TSegment))
-        {
-            std::cout << "\033[1;35m";
-        }
-        else if (i == payload.size - kCRCSize)
+        if (i == payload.size - kCRCSize)
         {
             std::cout << "\033[1;33m";
         }
