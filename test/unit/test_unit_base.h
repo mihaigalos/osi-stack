@@ -17,8 +17,6 @@ constexpr uint8_t kSizeofLength{1};
 
 constexpr uint8_t kPort{0x01};
 
-void onPreTransmitData() {}
-
 class UnitBase : public ::testing::Test
 {
 public:
