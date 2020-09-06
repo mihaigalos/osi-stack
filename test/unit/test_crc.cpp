@@ -54,8 +54,8 @@ TEST_F(Fixture, AppendCRCToPayloadWorks_WhenTypical)
 {
     TCRCChecksum computed_checksum = sut_.computed_crc(payloadified_, payloadified_.size);
     auto expected = payloadified_;
-    expected.data[expected.size++] = static_cast<uint8_t>(computed_checksum);
-    expected.data[expected.size++] = static_cast<uint8_t>(computed_checksum >> 8);
+    expected.stuctured.crc[0] = static_cast<uint8_t>(computed_checksum);
+    expected.stuctured.crc[1] = static_cast<uint8_t>(computed_checksum >> 8);
 
     payloadified_ = sut_.append_crc_to_payload(payloadified_);
 

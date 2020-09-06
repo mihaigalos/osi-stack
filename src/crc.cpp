@@ -12,8 +12,9 @@ TCRCChecksum CRC::received_crc(const Payload &payload) const
     TCRCChecksum crc = 0;
     for (uint8_t i = 0; i < kCRCSize; ++i)
     {
-        uint8_t current_crc_byte = payload.data[payload.size - kCRCSize + i];
-        crc |= current_crc_byte << i * 8;
+        // uint8_t current_crc_byte = payload.data[payload.size - kCRCSize + i];
+        // crc |= current_crc_byte << i * 8;
+        crc |= payload.stuctured.crc[i] << i * 8;
     }
     return crc;
 }
@@ -47,7 +48,8 @@ Payload CRC::append_crc_to_payload(const Payload &payload) const
         for (uint8_t i = 0; i < kCRCSize; ++i)
         {
             uint8_t one_crc_byte = static_cast<uint8_t>(crc >> i * 8);
-            result.data[result.size++] = one_crc_byte;
+            result.stuctured.crc[i] = one_crc_byte;
+            // result.data[result.size++] = one_crc_byte;
         }
     }
     return result;

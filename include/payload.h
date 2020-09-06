@@ -6,7 +6,14 @@
 struct Payload
 {
     uint8_t size{0};
-    uint8_t data[kPayloadMaxSize]{};
+    union {
+        uint8_t data[kPayloadMaxSize]{};
+        struct
+        {
+            uint8_t data[kPayloadMaxSize - kCRCSize]{};
+            uint8_t crc[kCRCSize];
+        } stuctured;
+    };
 
     Payload()
     {
