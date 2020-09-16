@@ -33,7 +33,7 @@ bazel test //...
 #### Using Docker
 
 ```bash
-docker run -it --rm -v $(pwd):/src -v /tmp:/tmp/bazel remoteapistesting/bazel-build /bin/bash -c "bazel --output_base=/tmp/bazel test //..."
+docker run -it --rm --privileged -v $(pwd):/src -v /tmp:/tmp/bazel mihaigalos/dockerized_bazel /bin/zsh -c "cd /src && bazel --output_base=/tmp/bazel test //..."
 ```
 
 #### Session Layer Authentification
