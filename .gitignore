@@ -34,3 +34,6 @@
 # Project-specific
 bazel-*
 .vscode
+.swp
+coverage
+patch.diff
