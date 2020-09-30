@@ -40,4 +40,4 @@ docker run -it --rm --cap-add SYS_PTRACE -v $(pwd):/src -v /tmp:/tmp/bazel docke
 
 The Session handshake is described in the following diagram:
 
-![alt text](graphics/session_handshake.png "ISO/OSI Layers (Rough Model).")
+<img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/mihaigalos/osi_stack/master/graphics/sources/session_handshake.puml" alt="ISO/OSI Layers (Rough Model)." />
