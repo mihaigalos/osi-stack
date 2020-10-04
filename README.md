@@ -41,3 +41,21 @@ docker run -it --rm --cap-add SYS_PTRACE -v $(pwd):/src -v /tmp:/tmp/bazel docke
 The Session handshake is described in the following diagram:
 
 <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/mihaigalos/osi_stack/master/graphics/sources/session_handshake.puml" alt="ISO/OSI Layers (Rough Model)." />
+
+#### Matter of principles
+
+This code respects many of the Clean Code & Architecture Principles:
+
+* Composition over inheritance
+* Dependency injection
+* DMT
+* Docs as code
+* DRY
+* FIRST
+* GRASP
+* KISS
+* Single source of truth
+* SoC
+* SOLID
+* TDD
+* Testing pyramid
