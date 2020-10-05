@@ -1,0 +1,12 @@
+@startuml
+title
+
+  | 7 | Application Layer  |= Length |= To |= From |= Segment |= Port |= Public Key |= Metadata |= Encrypted Raw Data |= CRC |
+  | 6 | Presentation Layer |= Length |= To |= From |= Segment |= Port |= Public Key |           |= Encrypted Raw Data |= CRC |
+  | 5 | Session Layer      |= Length |= To |= From |= Segment |= Port |= Public Key |           |=           Raw Data |= CRC |
+  | 4 | Transport Layer    |= Length |= To |= From |= Segment |= Port |             |           |=           Raw Data |= CRC |
+  | 3 | Network Layer      |= Length |= To |= From |          |       |             |           |=           Raw Data |= CRC |
+  | 2 | Datalink Layer     |= Length |     |       |          |       |             |           |=           Raw Data |= CRC |
+  | 1 | Physical Layer     |= Length |     |       |          |       |             |           |=           Raw Data |      |
+end title
+@enduml
