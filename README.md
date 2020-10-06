@@ -11,7 +11,7 @@ This implementation intentionally uses raw pointers instead of smart pointers.
 
 The reasoning is that it will be ported to small 8-bit hardware architectures such as AVR/Arduino, with limited support for modern C++.
 
-<img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/mihaigalos/osi_stack/master/graphics/sources/iso_osi_layers.puml" alt="ISO/OSI Layers (Rough Model)." />
+<img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/mihaigalos/osi_stack/master/doc/sources/iso_osi_layers.puml" alt="ISO/OSI Layers (Rough Model)." />
 
 ### Build and Test
 
@@ -39,7 +39,7 @@ docker run -it --rm --cap-add SYS_PTRACE -v $(pwd):/src -v /tmp:/tmp/bazel docke
 
 The Session handshake is described in the following diagram:
 
-<img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/mihaigalos/osi_stack/master/graphics/sources/session_handshake.puml" alt="ISO/OSI Layers (Rough Model)." />
+<img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/mihaigalos/osi_stack/master/doc/sources/session_handshake.puml" alt="ISO/OSI Layers (Rough Model)." />
 
 #### Matter of principles
 
