@@ -16,7 +16,7 @@ matrix:
           - "python3"
           - "python3-pip"
     env:
-      - MY_ENVIRONMENT="CC=gcc CXX=g++-7"
+      - MY_ENVIRONMENT="CC=gcc CXX=g++-9"
       - CODECOV_TOKEN="a7d6b39a-5cc2-492c-accd-2095a4e9d091"
 
 before_install:
