@@ -1,6 +1,6 @@
 # yamllint disable-line rule:line-length
 
-dist: bionic
+dist: focal
 
 matrix:
   include:
@@ -10,7 +10,7 @@ matrix:
         sources:
           - ubuntu-toolchain-r-test
         packages:
-          - g++-7
+          - g++-9
           - lcov
           - pkg-config
           - "python3"
