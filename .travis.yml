@@ -25,6 +25,7 @@ before_install:
   - pip3 install -r requirements.txt
 
 script:
+  - df -h
   - bazel test --color=yes --config=buildbuddy //... > >(tee -a /tmp/test.log) 2>&1
   - bazel coverage --combined_report=lcov --sandbox_base=/run/shm //...
   - genhtml bazel-out/_coverage/_coverage_report.dat --output-directory coverage
