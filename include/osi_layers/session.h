@@ -37,6 +37,7 @@ public:
             serializeCookie(data);
             return transmitWithCookie(to, data);
         }
+        log("Cannot login, false credentials.");
         return CommunicationStatus::SessionCookieError;
     }
 
