@@ -11,7 +11,7 @@
 #include <thread>
 
 using namespace std::chrono_literals;
-bool hasCookie{false};
+bool thread2_transmit_finished{false};
 std::mutex mutex;
 
 class Fixture : public IntegrationBase
@@ -35,12 +35,12 @@ protected:
 
     static uint8_t generic_receive_byte1()
     {
-        while (!hasCookie)
+        while (!thread2_transmit_finished)
         {
             std::this_thread::sleep_for(20ms);
         }
-
         mutex.lock();
+
         static uint8_t call_count{0};
 
         char character = io_data_[pos_in_io_data_++];
@@ -60,7 +60,7 @@ protected:
 
         if (call_count++ == total_payload_size)
         {
-            hasCookie = true;
+            thread2_transmit_finished = true;
             pos_in_io_data_ = 0;
         }
         mutex.unlock();
@@ -102,7 +102,7 @@ TEST_F(Fixture, TRxWorks_WhenTypical)
     sut2_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     std::thread t1([&] { sut1_.Transmit(kDestinationId, expected); });
-    std::thread t2([&] { actual = sut2_.Receive(kFromId, kPort); });
+    std::thread t2([&] { std::this_thread::sleep_for(50ms);actual = sut2_.Receive(kFromId, kPort); });
     t1.join();
     t2.join();
     actual = sut2_.Receive(kFromId, kPort);
