@@ -27,7 +27,7 @@ jobs:
 
       - name: Read secrets
         run: |
-          - CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
+          CODECOV_TOKEN="${{ secrets.CODECOV_TOKEN }}"
 
       - name: Build and Test
         run: |
