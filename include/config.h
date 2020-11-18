@@ -17,9 +17,11 @@ using TSegment = uint16_t;
 constexpr uint8_t kPosFromEndDestinationIdInPayload{3};
 constexpr uint8_t kPosFromEndSourceIdInPayload{4};
 
+constexpr uint8_t kSizeOfSizeField{1};
 constexpr uint8_t kSizeOfToField{1};
 constexpr uint8_t kSizeOfFromField{1};
 constexpr uint8_t kSizeOfPort{1};
+constexpr uint8_t kSizeOfCookie{2};
 
 constexpr uint8_t kTransportPayloadSize{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - sizeof(TSegment) - kSizeOfPort - kCRCSize};
 

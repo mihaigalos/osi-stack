@@ -6,20 +6,22 @@
 #include "config.h"
 #include "transport.h"
 
-using TVoidCommunicationStatus = void (*)(CommunicationStatus);
-
-void defaultOnCookieReceived(CommunicationStatus)
+enum class SessionState
 {
-}
+    Unknown,
+    SentCredentials,
+    ReceivedCookie,
+    TransmittingData
+};
 
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port, TVoidCommunicationStatus onCookieReceived = defaultOnCookieReceived) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{}, onCookieReceived_{onCookieReceived} {}
+    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{}, state_{} {}
 
 #ifdef TESTING
-    Session(TString &&user, TString &&pass, uint8_t port, TVoidCommunicationStatus onCookieReceived = defaultOnCookieReceived) : user_{user}, pass_{pass}, port_{port}, cookie_{}, onCookieReceived_{onCookieReceived}
+    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}, state_{}
     {
     }
 #endif
@@ -31,9 +33,17 @@ public:
         }
         if (IsLoggedIn())
         {
+            state_ = SessionState::TransmittingData;
             serializeCookie(data);
-            return transmitWithCookie(to, data);
+            return transmit(to, data);
         }
+
+        log("Cannot login, false credentials.");
+
+        data = {};
+        data += static_cast<uint8_t>(CommunicationStatus::SessionCookieError);
+        transmit(to, data);
+
         return CommunicationStatus::SessionCookieError;
     }
 
@@ -51,7 +61,7 @@ public:
             result = attemptLogin(received);
 
             serializeCookie(result);
-            transmitWithCookie(from_id, result);
+            transmit(from_id, result);
         }
 
         return result;
@@ -88,10 +98,10 @@ private:
     void login(const uint8_t from, uint8_t port) const
     {
         auto response = transmitCredentials(from);
+        state_ = SessionState::SentCredentials;
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
             cookie_ = receiveCookie(from, port);
-            onCookieReceived_(response);
         }
     }
     CommunicationStatus transmitCredentials(const uint8_t to) const
@@ -159,9 +169,10 @@ private:
     auto receiveCookie(const uint8_t from_id, uint8_t port) const
     {
         auto cookie = transport_.Receive(from_id, port);
+        state_ = SessionState::ReceivedCookie;
         return deserializeCookie(cookie);
     }
-    CommunicationStatus transmitWithCookie(const uint8_t to, TString &data) const
+    CommunicationStatus transmit(const uint8_t to, TString &data) const
     {
         return transport_.Transmit(to, data.c_str(), data.size(), port_);
     }
@@ -171,5 +182,5 @@ private:
     TString pass_;
     uint8_t port_;
     mutable uint16_t cookie_;
-    TVoidCommunicationStatus onCookieReceived_;
+    mutable SessionState state_;
 };
