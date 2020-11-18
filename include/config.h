@@ -33,7 +33,8 @@ class Payload;
 using TMapSequencePayload = containers::static_map<uint8_t, Payload, kMaximumSegments * kTransportPayloadSize>;
 using TMapPortSequencePayload = containers::static_map<uint8_t, TMapSequencePayload, kMaximumPorts>;
 
-constexpr char kCookieBaseValue[]{"\xBE\xEF"};
+constexpr uint16_t kCookieBaseValue = 0xBEEF;
+constexpr char kCookieBaseValueStringified[]{static_cast<char>((kCookieBaseValue >> 8) & 0xFF), static_cast<char>(kCookieBaseValue & 0x00FF), '\0'};
 
 #ifdef TESTING
 #define virtual__ virtual

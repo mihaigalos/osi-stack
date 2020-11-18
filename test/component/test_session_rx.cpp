@@ -38,7 +38,7 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
     TString expected;
     expected += static_cast<char>(CommunicationStatus::Acknowledge);
     expected += " ";
-    expected += kCookieBaseValue;
+    expected += kCookieBaseValueStringified;
     EXPECT_CALL(sut_.transport_, Receive(_, _))
         .WillOnce(Return("User Pass"));
 
@@ -52,7 +52,7 @@ TEST_F(Fixture, LoginSuccessTransmitCookie_WhenTypical)
     TString expected;
     expected += static_cast<char>(CommunicationStatus::Acknowledge);
     expected += " ";
-    expected += kCookieBaseValue;
+    expected += kCookieBaseValueStringified;
     TString actual{};
     EXPECT_CALL(sut_.transport_, Receive(_, _))
         .WillOnce(Return("User Pass"));

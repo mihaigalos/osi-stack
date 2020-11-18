@@ -53,7 +53,7 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
     TString expected;
     expected += static_cast<char>(CommunicationStatus::Acknowledge);
     expected += " ";
-    expected += kCookieBaseValue;
+    expected += kCookieBaseValueStringified;
     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     auto actual = sut_.Receive(kSourceId, kPort);

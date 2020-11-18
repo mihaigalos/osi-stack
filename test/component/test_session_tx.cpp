@@ -43,7 +43,7 @@ TEST_F(Fixture, TransmitCredentials_WhenTypical)
     TString acknowledege_with_cookie;
     acknowledege_with_cookie += static_cast<char>(CommunicationStatus::Acknowledge);
     acknowledege_with_cookie += " ";
-    acknowledege_with_cookie += kCookieBaseValue;
+    acknowledege_with_cookie += kCookieBaseValueStringified;
 
     EXPECT_CALL(sut_.transport_, Transmit(_, _, _, _))
         .WillOnce(
