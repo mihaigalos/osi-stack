@@ -72,7 +72,6 @@ cc_library(
             "test/integration/" + integration_name + ".cpp",
         ],
         copts = DEFAULT_TEST_COMPILE_OPTIONS,
-        flaky = True,
         linkopts = DEFAULT_TEST_LINK_OPTIONS,
         tags = ["integration"],
         deps = DEFAULT_TEST_DEPS + [":test_headers"],
