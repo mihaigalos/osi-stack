@@ -109,3 +109,21 @@ TEST_F(Fixture, TRxWorks_WhenTypical)
 
     ASSERT_EQ(actual, expected);
 }
+
+TEST_F(Fixture, TRxFails_WhenInvalidCredentials)
+{
+    Session<> sut1{Transport<>{Network<>{kFromId, Datalink<>{Physical{generic_transmit_byte1, generic_receive_byte1}}}}, {"usr"}, {"ps"}, kPort};
+    TString to_transmit{"abcde"};
+    CommunicationStatus actual{CommunicationStatus::Unknown};
+    CommunicationStatus expected{CommunicationStatus::SessionCookieError};
+
+    sut1.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+    sut2_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+
+    std::thread t1([&] { actual = sut1.Transmit(kDestinationId, to_transmit); });
+    std::thread t2([&] { std::this_thread::sleep_for(50ms);sut2_.Receive(kFromId, kPort); });
+    t1.join();
+    t2.join();
+
+    ASSERT_EQ(actual, expected);
+}

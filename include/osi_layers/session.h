@@ -35,9 +35,15 @@ public:
         {
             state_ = SessionState::TransmittingData;
             serializeCookie(data);
-            return transmitWithCookie(to, data);
+            return transmit(to, data);
         }
+
         log("Cannot login, false credentials.");
+
+        data = {};
+        data += static_cast<uint8_t>(CommunicationStatus::SessionCookieError);
+        transmit(to, data);
+
         return CommunicationStatus::SessionCookieError;
     }
 
@@ -55,7 +61,7 @@ public:
             result = attemptLogin(received);
 
             serializeCookie(result);
-            transmitWithCookie(from_id, result);
+            transmit(from_id, result);
         }
 
         return result;
@@ -166,7 +172,7 @@ private:
         state_ = SessionState::ReceivedCookie;
         return deserializeCookie(cookie);
     }
-    CommunicationStatus transmitWithCookie(const uint8_t to, TString &data) const
+    CommunicationStatus transmit(const uint8_t to, TString &data) const
     {
         return transport_.Transmit(to, data.c_str(), data.size(), port_);
     }
