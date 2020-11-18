@@ -32,6 +32,9 @@ jobs:
       - name: Build and Test
         run: |
           bazel test --color=yes --config=buildbuddy //... > >(tee -a /tmp/test.log) 2>&1
+      
+      - name: Compute and publish Coverage Report
+        run: |
           bazel coverage --combined_report=lcov --sandbox_base=/run/shm //...
           genhtml bazel-out/_coverage/_coverage_report.dat --output-directory coverage
           ./scripts/push_test_coverage.sh
