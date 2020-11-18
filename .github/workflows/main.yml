@@ -19,11 +19,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          - wget https://github.com/bazelbuild/bazel/releases/download/3.4.1/bazel_3.4.1-linux-x86_64.deb
-          - sudo dpkg -i bazel_3.4.1-linux-x86_64.deb
-          - pip3 install -r requirements.txt
-          - sudo apt install lcov
-          - sudo apt install pkg-config
+          wget https://github.com/bazelbuild/bazel/releases/download/3.4.1/bazel_3.4.1-linux-x86_64.deb
+          sudo dpkg -i bazel_3.4.1-linux-x86_64.deb
+          pip3 install -r requirements.txt
+          sudo apt install lcov
+          sudo apt install pkg-config
 
       - name: Read secrets
         run: |
@@ -31,9 +31,9 @@ jobs:
 
       - name: Build and Test
         run: |
-          - bazel test --color=yes --config=buildbuddy //... > >(tee -a /tmp/test.log) 2>&1
-          - bazel coverage --combined_report=lcov --sandbox_base=/run/shm //...
-          - genhtml bazel-out/_coverage/_coverage_report.dat --output-directory coverage
-          - ./scripts/push_test_coverage.sh
-          - ./scripts/cl1p_build_buddy_invocation.sh
-          - ./scripts/profiling.sh
+          bazel test --color=yes --config=buildbuddy //... > >(tee -a /tmp/test.log) 2>&1
+          bazel coverage --combined_report=lcov --sandbox_base=/run/shm //...
+          genhtml bazel-out/_coverage/_coverage_report.dat --output-directory coverage
+          ./scripts/push_test_coverage.sh
+          ./scripts/cl1p_build_buddy_invocation.sh
+          ./scripts/profiling.sh
