@@ -72,7 +72,7 @@ public:
         CommunicationStatus result{};
         if (user_ == user && pass_ == pass)
         {
-            cookie_ += 0xBEEF;
+            cookie_ += kCookieBaseValue;
             result = CommunicationStatus::Acknowledge;
         }
         else

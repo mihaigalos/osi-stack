@@ -63,7 +63,7 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
 
 TEST_F(Fixture, CookieDeseralizeWorks_WhenTypical)
 {
-    decltype(sut_.cookie_) expected{0xBEEF};
+    decltype(sut_.cookie_) expected{kCookieBaseValue};
     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     auto response = sut_.Receive(kSourceId, kPort);
