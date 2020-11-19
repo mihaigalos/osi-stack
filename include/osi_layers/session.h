@@ -14,6 +14,8 @@ enum class SessionState
     TransmittingData
 };
 
+constexpr uint8_t kSelf{0xFA};
+
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
@@ -60,7 +62,7 @@ public:
         {
             result = attemptLogin(received, from_id);
 
-            serializeCookie(result);
+            serializeCookie(result, from_id);
             transmit(from_id, result);
         }
 
@@ -87,7 +89,10 @@ public:
         own_cookie_ = decltype(own_cookie_){};
     }
     bool IsSelfLoggedIn() const { return own_cookie_ != decltype(own_cookie_){}; }
-    bool IsLoggedIn(const uint8_t from_id) const { return !clients_cookies_[from_id]; }
+    bool IsLoggedIn(const uint8_t from_id) const
+    {
+        return clients_cookies_[from_id] != decltype(own_cookie_){};
+    }
 
     virtual ~Session() = default;
     Session(const Session &other) = delete;
@@ -160,11 +165,19 @@ private:
         return received_cookie;
     }
 
-    void serializeCookie(TString &in) const
+    void serializeCookie(TString &in, uint8_t from_id = kSelf) const
     {
         in += ' ';
-        in += static_cast<char>(own_cookie_ >> 8);
-        in += static_cast<char>(own_cookie_);
+        if (from_id == kSelf)
+        {
+            in += static_cast<char>(own_cookie_ >> 8);
+            in += static_cast<char>(own_cookie_);
+        }
+        else
+        {
+            in += static_cast<char>(clients_cookies_[from_id] >> 8);
+            in += static_cast<char>(clients_cookies_[from_id]);
+        }
     }
 
     auto receiveCookie(const uint8_t from_id, uint8_t port) const
