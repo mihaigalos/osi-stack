@@ -77,7 +77,7 @@ TEST_F(Fixture, IsLoggedIn_WhenTypical)
     auto expected{true};
     sut_.Login("myUser", "myPass", kOwnId);
 
-    auto actual = sut_.IsSelfLoggedIn();
+    auto actual = sut_.IsLoggedIn(kOwnId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -95,10 +95,11 @@ TEST_F(Fixture, IsNotLoggedIn_AfterLogout)
 
 TEST_F(Fixture, CookieUpdated_WhenTypical)
 {
-    auto initial_cookie{sut_.own_cookie_};
+    sut_.clients_cookies_[kOwnId] = kCookieBaseValue;
+    auto initial_cookie = sut_.clients_cookies_[kOwnId];
 
     sut_.Login("myUser", "myPass", kOwnId);
-    auto current_cookie{sut_.own_cookie_};
+    auto current_cookie{sut_.clients_cookies_[kOwnId]};
 
     ASSERT_NE(current_cookie, initial_cookie);
 }
