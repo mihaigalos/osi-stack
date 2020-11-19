@@ -29,6 +29,8 @@ constexpr uint8_t kStaticStringSize{kMaximumSegments * (kPayloadMaxSize - kTrans
 //TODO: adjust this containers::static_string size depending on how much of the payload is actually available once the full stack is implemented (after subtracting the metadata).
 using TString = containers::static_string<kStaticStringSize>;
 
+using TMapClientsCookies = containers::static_map<uint8_t, uint16_t, kMaximumPorts>;
+
 class Payload;
 using TMapSequencePayload = containers::static_map<uint8_t, Payload, kMaximumSegments * kTransportPayloadSize>;
 using TMapPortSequencePayload = containers::static_map<uint8_t, TMapSequencePayload, kMaximumPorts>;
