@@ -8,7 +8,7 @@ template <uint8_t PayloadSize, uint8_t Delta = kEncryptionDelta>
 class SimpleTEA
 {
 public:
-    void encrypt(uint8_t num_rounds, uint8_t const key[kEncryptionKeySize], uint8_t payload[])
+    void encrypt(uint8_t num_rounds, uint8_t const (&key)[kEncryptionKeySize], uint8_t payload[])
     {
         for (uint8_t i = 2; i <= PayloadSize; i = i + 2)
         {
@@ -24,7 +24,7 @@ public:
         }
     }
 
-    void decrypt(uint8_t num_rounds, uint8_t const key[kEncryptionKeySize], uint8_t payload[])
+    void decrypt(uint8_t num_rounds, uint8_t const (&key)[kEncryptionKeySize], uint8_t payload[])
     {
         for (uint8_t i = 2; i <= PayloadSize; i = i + 2)
         {
