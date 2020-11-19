@@ -17,7 +17,7 @@ protected:
 
     uint8_t rounds_{16};
 
-    SimpleTEA<kPayloadSize,kEncryptionDelta> sut_;
+    SimpleTEA<kPayloadSize, kEncryptionDelta> sut_;
 };
 
 TEST_F(Fixture, EncryptTookPlace_WhenTypical)
