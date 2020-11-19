@@ -4,13 +4,13 @@
 
 #include "config.h"
 
-template <uint8_t PayloadSize, uint8_t Delta = kEncryptionDelta>
+template <uint8_t Delta = kEncryptionDelta>
 class SimpleTEA
 {
 public:
-    void encrypt(uint8_t num_rounds, uint8_t const (&key)[kEncryptionKeySize], uint8_t payload[])
+    void encrypt(uint8_t num_rounds, uint8_t const (&key)[kEncryptionKeySize], uint8_t payload[], uint8_t payload_size) const
     {
-        for (uint8_t i = 0; i < PayloadSize; i += 2)
+        for (uint8_t i = 0; i < payload_size; i += 2)
         {
             uint8_t p0 = payload[i], p1 = payload[i + 1], sum = 0;
             for (uint8_t j = 0; j < num_rounds; ++j)
@@ -24,9 +24,9 @@ public:
         }
     }
 
-    void decrypt(uint8_t num_rounds, uint8_t const (&key)[kEncryptionKeySize], uint8_t payload[])
+    void decrypt(uint8_t num_rounds, uint8_t const (&key)[kEncryptionKeySize], uint8_t payload[], uint8_t payload_size) const
     {
-        for (uint8_t i = 0; i < PayloadSize; i += 2)
+        for (uint8_t i = 0; i < payload_size; i += 2)
         {
             uint8_t p0 = payload[i], p1 = payload[i + 1], sum = Delta * num_rounds;
             for (uint8_t j = 0; j < num_rounds; ++j)

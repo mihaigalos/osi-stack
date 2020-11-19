@@ -17,7 +17,7 @@ protected:
 
     uint8_t rounds_{16};
 
-    SimpleTEA<kPayloadSize, kEncryptionDelta> sut_;
+    SimpleTEA<kEncryptionDelta> sut_;
 };
 
 TEST_F(Fixture, EncryptTookPlace_WhenTypical)
@@ -28,7 +28,7 @@ TEST_F(Fixture, EncryptTookPlace_WhenTypical)
     {
         uint8_t v[kPayloadSize] = {static_cast<uint8_t>(i), static_cast<uint8_t>(i >> 8)};
 
-        sut_.encrypt(rounds_, kEncryptionKey, v);
+        sut_.encrypt(rounds_, kEncryptionKey, v, kPayloadSize);
         auto actual = static_cast<uint16_t>(v[0]) | (static_cast<uint16_t>(v[1]) << 8);
 
         if (actual == i)
@@ -47,8 +47,8 @@ TEST_F(Fixture, EncryptDecryptTwoBytesWorks_WhenTypical)
         auto expected = i;
         uint8_t v[kPayloadSize] = {static_cast<uint8_t>(i), static_cast<uint8_t>(i >> 8)};
 
-        sut_.encrypt(rounds_, kEncryptionKey, v);
-        sut_.decrypt(rounds_, kEncryptionKey, v);
+        sut_.encrypt(rounds_, kEncryptionKey, v, kPayloadSize);
+        sut_.decrypt(rounds_, kEncryptionKey, v, kPayloadSize);
 
         auto actual = static_cast<uint16_t>(v[0]) | (static_cast<uint16_t>(v[1]) << 8);
         ASSERT_EQ(expected, actual);
@@ -63,8 +63,8 @@ TEST_F(Fixture, EncryptDecryptTwoBytesFails_WhenImproperContent)
         auto expected = i;
         uint8_t v[kPayloadSize] = {static_cast<uint8_t>(i), static_cast<uint8_t>(i >> 8)};
 
-        sut_.encrypt(rounds_, kEncryptionKey, v);
-        sut_.decrypt(rounds_, kEncryptionKey, v);
+        sut_.encrypt(rounds_, kEncryptionKey, v, kPayloadSize);
+        sut_.decrypt(rounds_, kEncryptionKey, v, kPayloadSize);
         v[0] = v[0] + 1;
 
         auto actual = static_cast<uint16_t>(v[0]) | (static_cast<uint16_t>(v[1]) << 8);

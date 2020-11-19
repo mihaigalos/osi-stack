@@ -21,6 +21,7 @@ class Session
 {
 public:
     Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port} {}
+    Session(Session &&other) : transport_{std::forward<TransportLayer>(other.transport_)}, user_{TString{other.user_}}, pass_{TString{other.pass_}}, port_{other.port_} {}
 
 #ifdef TESTING
     Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}
@@ -96,7 +97,7 @@ public:
 
     virtual ~Session() = default;
     Session(const Session &other) = delete;
-    Session(Session &&other) = delete;
+
     Session &operator=(const Session &other) = delete;
     Session &operator=(Session &&other) = delete;
 
