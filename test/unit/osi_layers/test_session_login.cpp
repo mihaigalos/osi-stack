@@ -82,6 +82,32 @@ TEST_F(Fixture, IsLoggedIn_WhenTypical)
     ASSERT_EQ(actual, expected);
 }
 
+TEST_F(Fixture, IsMultiLoggedIn_WhenTypical)
+{
+    auto expected1{true}, expected2{true};
+    sut_.Login("myUser", "myPass", 1);
+    sut_.Login("myUser", "myPass", 2);
+
+    auto actual1 = sut_.IsLoggedIn(1);
+    auto actual2 = sut_.IsLoggedIn(2);
+
+    ASSERT_EQ(actual1, expected1);
+    ASSERT_EQ(actual2, expected2);
+}
+
+TEST_F(Fixture, IsMultiSecondNotLoggedIn_WhenInvalidCreds)
+{
+    auto expected1{true}, expected2{false};
+    sut_.Login("myUser", "myPass", 1);
+    sut_.Login("invalid", "invalid", 2);
+
+    auto actual1 = sut_.IsLoggedIn(1);
+    auto actual2 = sut_.IsLoggedIn(2);
+
+    ASSERT_EQ(actual1, expected1);
+    ASSERT_EQ(actual2, expected2);
+}
+
 TEST_F(Fixture, IsNotLoggedIn_AfterLogout)
 {
     auto expected{false};
