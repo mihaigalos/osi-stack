@@ -92,8 +92,8 @@ public:
     Datalink &operator=(Datalink &&other) = delete;
 
 private:
-    PhysicalLayer physical_;
-    CRCFunctions crc_;
+    PhysicalLayer physical_{};
+    CRCFunctions crc_{};
     uint8_t retransmit_count_{kMaxRetransmitCount};
 
     Payload GetTransmitResponse() const

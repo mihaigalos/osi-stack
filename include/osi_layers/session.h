@@ -20,10 +20,10 @@ template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, clients_cookies_{}, state_{}, own_cookie_{} {}
+    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port} {}
 
 #ifdef TESTING
-    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, clients_cookies_{}, state_{}, own_cookie_{}
+    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}
     {
     }
 #endif
@@ -191,12 +191,12 @@ private:
         return transport_.Transmit(to, data.c_str(), data.size(), port_);
     }
 
-    TransportLayer transport_;
-    TString user_;
-    TString pass_;
-    uint8_t port_;
+    TransportLayer transport_{};
+    TString user_{};
+    TString pass_{};
+    uint8_t port_{};
 
-    mutable TMapClientsCookies clients_cookies_;
-    mutable SessionState state_;
-    mutable uint16_t own_cookie_;
+    mutable TMapClientsCookies clients_cookies_{};
+    mutable SessionState state_{};
+    mutable uint16_t own_cookie_{};
 };

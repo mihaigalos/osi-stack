@@ -169,5 +169,5 @@ public:
     Transport &operator=(Transport &&other) = delete;
 
 private:
-    NetworkLayer network_;
+    NetworkLayer network_{};
 };

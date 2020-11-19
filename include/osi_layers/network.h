@@ -56,5 +56,5 @@ public:
 
 private:
     uint8_t own_id_{};
-    DatalinkLayer datalink_;
+    DatalinkLayer datalink_{};
 };
