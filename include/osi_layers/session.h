@@ -62,8 +62,10 @@ public:
         else
         {
             result = attemptLogin(received, from_id);
-
-            serializeCookie(result, from_id);
+            if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
+            {
+                serializeCookie(result, from_id);
+            }
             transmit(from_id, result);
         }
 
