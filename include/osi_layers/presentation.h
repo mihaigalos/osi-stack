@@ -18,6 +18,7 @@ class Presentation
 {
 public:
     Presentation(SessionLayer &&session, uint8_t encryptionRounds) : session_{std::forward<SessionLayer>(session)}, encryptionRounds_{encryptionRounds} {}
+    Presentation(Presentation &&other) : session_{std::forward<SessionLayer>(other.session_)}, encdec_{std::forward<TEncryptDecrypt>(other.encdec_)}, encryptionRounds_{other.encryptionRounds_} {}
     CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
         encdec_.encrypt(encryptionRounds_, kEncryptionKey, data.c_str(), data.size());
@@ -36,9 +37,14 @@ public:
         return result;
     }
 
+    CommunicationStatus Login(const uint8_t from_id) const
+    {
+        return session_.Login(from_id);
+    }
+
     virtual ~Presentation() = default;
     Presentation(const Presentation &other) = delete;
-    Presentation(Presentation &&other) = delete;
+
     Presentation &operator=(const Presentation &other) = delete;
     Presentation &operator=(Presentation &&other) = delete;
 

@@ -20,8 +20,8 @@ template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port} {}
-    Session(Session &&other) : transport_{std::forward<TransportLayer>(other.transport_)}, user_{TString{other.user_}}, pass_{TString{other.pass_}}, port_{other.port_} {}
+    Session(TransportLayer &&transport) : transport_{std::forward<TransportLayer>(transport)} {}
+    Session(Session &&other) : transport_{std::forward<TransportLayer>(other.transport_)} {}
 
 #ifdef TESTING
     Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}
@@ -53,38 +53,21 @@ public:
     TString Receive(const uint8_t from_id, uint8_t port) const
     {
         TString result{};
+        result += static_cast<char>(CommunicationStatus::NotLoggedIn);
 
         auto received = transport_.Receive(from_id, port);
         if (IsLoggedIn(from_id))
         {
             result = received;
         }
-        else
-        {
-            result = attemptLogin(received, from_id);
-            if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
-            {
-                serializeCookie(result, from_id);
-            }
-            transmit(from_id, result);
-        }
 
         return result;
     }
 
-    CommunicationStatus Login(const TString &user, const TString &pass, const uint8_t from_id) const
+    CommunicationStatus Login(const uint8_t from_id) const
     {
-        CommunicationStatus result{};
-        if (user_ == user && pass_ == pass)
-        {
-            clients_cookies_[from_id] += kCookieBaseValue;
-            result = CommunicationStatus::Acknowledge;
-        }
-        else
-        {
-            result = CommunicationStatus::InvalidCredentials;
-        }
-        return result;
+        clients_cookies_[from_id] += kCookieBaseValue;
+        return CommunicationStatus::Acknowledge;
     }
 
     void Logout()
@@ -104,55 +87,6 @@ public:
     Session &operator=(Session &&other) = delete;
 
 private:
-    void login(const uint8_t from, uint8_t port) const
-    {
-        auto response = transmitCredentials(from);
-        state_ = SessionState::SentCredentials;
-        if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
-        {
-            own_cookie_ = receiveCookie(from, port);
-        }
-    }
-    CommunicationStatus transmitCredentials(const uint8_t to) const
-    {
-        TString credentials{serializeUserPassword()};
-        return transport_.Transmit(to, credentials.c_str(), credentials.size(), port_);
-    }
-
-    TString attemptLogin(TString &in, const uint8_t from_id) const
-    {
-        TString user{}, pass{};
-        TString result{};
-
-        deserializeUserPassword(in, user, pass);
-        result += static_cast<char>(Login(user, pass, from_id));
-
-        return result;
-    }
-
-    void deserializeUserPassword(TString &in, TString &user, TString &pass) const
-    {
-        TString *out{&user};
-        for (uint8_t i = 0; i < in.size(); ++i)
-        {
-            if (in[i] == ' ')
-            {
-                out->push_back('\0');
-                out = &pass;
-                continue;
-            }
-            out->push_back(in[i]);
-        }
-    }
-    TString serializeUserPassword() const
-    {
-        TString credentials{};
-        credentials += const_cast<Session *>(this)->user_;
-        credentials += ' ';
-        credentials += const_cast<Session *>(this)->pass_;
-        return credentials;
-    }
-
     bool isSuccess(TString &in) const
     {
         return (in[0] == static_cast<char>(CommunicationStatus::Acknowledge) && in[1] == ' ');
@@ -189,15 +123,8 @@ private:
         state_ = SessionState::ReceivedCookie;
         return deserializeCookie(cookie);
     }
-    CommunicationStatus transmit(const uint8_t to, TString &data) const
-    {
-        return transport_.Transmit(to, data.c_str(), data.size(), port_);
-    }
 
     TransportLayer transport_{};
-    TString user_{};
-    TString pass_{};
-    uint8_t port_{};
 
     mutable TMapClientsCookies clients_cookies_{};
     mutable SessionState state_{};
