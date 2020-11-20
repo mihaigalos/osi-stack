@@ -21,11 +21,11 @@ public:
     Presentation(Presentation &&other) : session_{std::forward<SessionLayer>(other.session_)}, encdec_{std::forward<TEncryptDecrypt>(other.encdec_)}, encryptionRounds_{other.encryptionRounds_} {}
     CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
-        encdec_.encrypt(encryptionRounds_, kEncryptionKey, data.c_str(), data.size());
         if (isOddLength(data))
         {
             data += '\0';
         }
+        encdec_.encrypt(encryptionRounds_, kEncryptionKey, data.c_str(), data.size());
 
         return session_.Transmit(to, data);
     }
@@ -43,6 +43,13 @@ public:
     {
         auto cookie = Receive(from_id, port);
         session_.SetCookie(session_.deserializeCookie(cookie));
+    }
+
+    void transmitEncryptCookie(const uint8_t to) const
+    {
+        TString data{};
+        data += static_cast<char>(CommunicationStatus::Acknowledge);
+        session_.Transmit(to, session_.serializeCookie(data, to));
     }
 
     virtual ~Presentation() = default;

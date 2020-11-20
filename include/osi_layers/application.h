@@ -30,7 +30,7 @@ public:
             result = attemptLogin(received, from_id);
             if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
             {
-                presentation_.GetSession().serializeCookie(result, from_id);
+                presentation_.transmitEncryptCookie(from_id);
             }
             transmit(from_id, result);
         }
@@ -61,7 +61,6 @@ private:
     void login(const uint8_t from, uint8_t port) const
     {
         auto response = transmitCredentials(from);
-        state_ = SessionState::SentCredentials;
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
             presentation_.GetSession().SetCookie(presentation_.receiveDecryptCookie(from, port));

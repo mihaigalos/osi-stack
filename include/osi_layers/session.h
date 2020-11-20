@@ -77,7 +77,7 @@ private:
     {
         return (in[0] == static_cast<char>(CommunicationStatus::Acknowledge) && in[1] == ' ');
     }
-    auto serializeCookie(TString &in) const
+    auto deserializeCookie(TString &in) const
     {
         decltype(own_cookie_) received_cookie{};
         if (isSuccess(in))
