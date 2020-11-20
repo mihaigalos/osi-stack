@@ -197,3 +197,16 @@ TEST_F(Fixture, SerializeCredentials_WhenTypical)
 
     ASSERT_EQ(actual, expected);
 }
+
+TEST_F(Fixture, MoveConstructorWorks_WhenLoggedIn)
+{
+    Session<> sut{Session<>{{"User"}, {"Pass"}, kPort}};
+    TString expected_user = "User";
+    TString expected_pass = "Pass";
+
+    auto actual_user = sut.user_;
+    auto actual_pass = sut.pass_;
+
+    ASSERT_EQ(actual_user, expected_user);
+    ASSERT_EQ(actual_pass, expected_pass);
+}
