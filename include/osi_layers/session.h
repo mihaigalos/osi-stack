@@ -30,38 +30,12 @@ public:
 #endif
     CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
-        if (!IsSelfLoggedIn())
-        {
-            login(to, port_);
-        }
-        if (IsSelfLoggedIn())
-        {
-            state_ = SessionState::TransmittingData;
-            serializeCookie(data);
-            return transmit(to, data);
-        }
-
-        log("Cannot login, false credentials.");
-
-        data = {};
-        data += static_cast<uint8_t>(CommunicationStatus::SessionCookieError);
-        transmit(to, data);
-
-        return CommunicationStatus::SessionCookieError;
+        return transport_.Transmit(to, data.c_str(), data.size(), port_);
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const
     {
-        TString result{};
-        result += static_cast<char>(CommunicationStatus::NotLoggedIn);
-
-        auto received = transport_.Receive(from_id, port);
-        if (IsLoggedIn(from_id))
-        {
-            result = received;
-        }
-
-        return result;
+        return transport_.Receive(from_id, port);
     }
 
     CommunicationStatus Login(const uint8_t from_id) const
@@ -80,6 +54,18 @@ public:
         return clients_cookies_[from_id] != decltype(own_cookie_){};
     }
 
+    void SetCookie(uint16_t cookie, uint8_t from_id = kSelf)
+    {
+        if (from_id == kSelf)
+        {
+            own_cookie_ = cookie;
+        }
+        else
+        {
+            clients_cookies_[from_id] = cookie;
+        }
+    }
+
     virtual ~Session() = default;
     Session(const Session &other) = delete;
 
@@ -91,7 +77,7 @@ private:
     {
         return (in[0] == static_cast<char>(CommunicationStatus::Acknowledge) && in[1] == ' ');
     }
-    auto deserializeCookie(TString &in) const
+    auto serializeCookie(TString &in) const
     {
         decltype(own_cookie_) received_cookie{};
         if (isSuccess(in))
@@ -115,13 +101,6 @@ private:
             in += static_cast<char>(clients_cookies_[from_id] >> 8);
             in += static_cast<char>(clients_cookies_[from_id]);
         }
-    }
-
-    auto receiveCookie(const uint8_t from_id, uint8_t port) const
-    {
-        auto cookie = transport_.Receive(from_id, port);
-        state_ = SessionState::ReceivedCookie;
-        return deserializeCookie(cookie);
     }
 
     TransportLayer transport_{};

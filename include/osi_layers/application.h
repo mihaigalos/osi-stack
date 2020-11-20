@@ -14,6 +14,10 @@ public:
     Application(PresentationLayer &&presentation, TString &&user, TString &&pass, uint8_t port) : presentation_{std::forward<PresentationLayer>(presentation)}, user_{user}, pass_{pass}, port_{port} {}
     CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
+        if (!presentation_.GetSession().IsSelfLoggedIn())
+        {
+            login(to, port_);
+        }
         return presentation_.Transmit(to, data);
     }
 
@@ -21,13 +25,15 @@ public:
     {
         TString result = presentation_.Receive(from_id, port);
 
-        result = attemptLogin(received, from_id);
-        if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
+        if (!presentation_.GetSession().IsLoggedIn(from_id))
         {
-            serializeCookie(result, from_id);
+            result = attemptLogin(received, from_id);
+            if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
+            {
+                presentation_.GetSession().serializeCookie(result, from_id);
+            }
+            transmit(from_id, result);
         }
-        transmit(from_id, result);
-
         return result;
     }
 
@@ -36,7 +42,7 @@ public:
         CommunicationStatus result{};
         if (user_ == user && pass_ == pass)
         {
-            result = presentation_.Login(from_id);
+            result = presentation_.GetSession().Login(from_id);
         }
         else
         {
@@ -58,7 +64,7 @@ private:
         state_ = SessionState::SentCredentials;
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
-            own_cookie_ = receiveCookie(from, port);
+            presentation_.GetSession().SetCookie(presentation_.receiveDecryptCookie(from, port));
         }
     }
     CommunicationStatus transmitCredentials(const uint8_t to) const
@@ -103,7 +109,7 @@ private:
 
     CommunicationStatus transmit(const uint8_t to, TString &data) const
     {
-        return transport_.Transmit(to, data.c_str(), data.size(), port_);
+        return presentation_.Transmit(to, data.c_str(), data.size(), port_);
     }
 
     PresentationLayer presentation_{};

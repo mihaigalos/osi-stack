@@ -37,9 +37,12 @@ public:
         return result;
     }
 
-    CommunicationStatus Login(const uint8_t from_id) const
+    const SessionLayer &GetSession() const { return session_; }
+
+    void receiveDecryptCookie(const uint8_t from_id, uint8_t port) const
     {
-        return session_.Login(from_id);
+        auto cookie = Receive(from_id, port);
+        session_.SetCookie(session_.deserializeCookie(cookie));
     }
 
     virtual ~Presentation() = default;
