@@ -14,24 +14,27 @@ enum class SessionState
     TransmittingData
 };
 
+constexpr uint8_t kSelf{0xFA};
+
 template <typename TransportLayer = Transport<Network<Datalink<Physical, CRC>>>>
 class Session
 {
 public:
-    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port}, cookie_{}, state_{} {}
+    Session(TransportLayer &&transport, TString &&user, TString &&pass, uint8_t port) : transport_{std::forward<TransportLayer>(transport)}, user_{user}, pass_{pass}, port_{port} {}
+    Session(Session &&other) : transport_{std::forward<TransportLayer>(other.transport_)}, user_{TString{other.user_}}, pass_{TString{other.pass_}}, port_{other.port_} {}
 
 #ifdef TESTING
-    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}, cookie_{}, state_{}
+    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}
     {
     }
 #endif
     CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
-        if (!IsLoggedIn())
+        if (!IsSelfLoggedIn())
         {
             login(to, port_);
         }
-        if (IsLoggedIn())
+        if (IsSelfLoggedIn())
         {
             state_ = SessionState::TransmittingData;
             serializeCookie(data);
@@ -52,27 +55,29 @@ public:
         TString result{};
 
         auto received = transport_.Receive(from_id, port);
-        if (IsLoggedIn())
+        if (IsLoggedIn(from_id))
         {
             result = received;
         }
         else
         {
-            result = attemptLogin(received);
-
-            serializeCookie(result);
+            result = attemptLogin(received, from_id);
+            if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
+            {
+                serializeCookie(result, from_id);
+            }
             transmit(from_id, result);
         }
 
         return result;
     }
 
-    CommunicationStatus Login(const TString &user, const TString &pass) const
+    CommunicationStatus Login(const TString &user, const TString &pass, const uint8_t from_id) const
     {
         CommunicationStatus result{};
         if (user_ == user && pass_ == pass)
         {
-            cookie_ += 0xBEEF;
+            clients_cookies_[from_id] += kCookieBaseValue;
             result = CommunicationStatus::Acknowledge;
         }
         else
@@ -84,13 +89,17 @@ public:
 
     void Logout()
     {
-        cookie_ = {};
+        own_cookie_ = decltype(own_cookie_){};
     }
-    bool IsLoggedIn() const { return cookie_ != decltype(cookie_){}; }
+    bool IsSelfLoggedIn() const { return own_cookie_ != decltype(own_cookie_){}; }
+    bool IsLoggedIn(const uint8_t from_id) const
+    {
+        return clients_cookies_[from_id] != decltype(own_cookie_){};
+    }
 
     virtual ~Session() = default;
     Session(const Session &other) = delete;
-    Session(Session &&other) = delete;
+
     Session &operator=(const Session &other) = delete;
     Session &operator=(Session &&other) = delete;
 
@@ -101,7 +110,7 @@ private:
         state_ = SessionState::SentCredentials;
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
-            cookie_ = receiveCookie(from, port);
+            own_cookie_ = receiveCookie(from, port);
         }
     }
     CommunicationStatus transmitCredentials(const uint8_t to) const
@@ -110,13 +119,13 @@ private:
         return transport_.Transmit(to, credentials.c_str(), credentials.size(), port_);
     }
 
-    TString attemptLogin(TString &in) const
+    TString attemptLogin(TString &in, const uint8_t from_id) const
     {
         TString user{}, pass{};
         TString result{};
 
         deserializeUserPassword(in, user, pass);
-        result += static_cast<char>(Login(user, pass));
+        result += static_cast<char>(Login(user, pass, from_id));
 
         return result;
     }
@@ -150,7 +159,7 @@ private:
     }
     auto deserializeCookie(TString &in) const
     {
-        decltype(cookie_) received_cookie{};
+        decltype(own_cookie_) received_cookie{};
         if (isSuccess(in))
         {
             received_cookie = (in[2] << 8);
@@ -159,11 +168,19 @@ private:
         return received_cookie;
     }
 
-    void serializeCookie(TString &in) const
+    void serializeCookie(TString &in, uint8_t from_id = kSelf) const
     {
         in += ' ';
-        in += static_cast<char>(cookie_ >> 8);
-        in += static_cast<char>(cookie_);
+        if (from_id == kSelf)
+        {
+            in += static_cast<char>(own_cookie_ >> 8);
+            in += static_cast<char>(own_cookie_);
+        }
+        else
+        {
+            in += static_cast<char>(clients_cookies_[from_id] >> 8);
+            in += static_cast<char>(clients_cookies_[from_id]);
+        }
     }
 
     auto receiveCookie(const uint8_t from_id, uint8_t port) const
@@ -177,10 +194,12 @@ private:
         return transport_.Transmit(to, data.c_str(), data.size(), port_);
     }
 
-    TransportLayer transport_;
-    TString user_;
-    TString pass_;
-    uint8_t port_;
-    mutable uint16_t cookie_;
-    mutable SessionState state_;
+    TransportLayer transport_{};
+    TString user_{};
+    TString pass_{};
+    uint8_t port_{};
+
+    mutable TMapClientsCookies clients_cookies_{};
+    mutable SessionState state_{};
+    mutable uint16_t own_cookie_{};
 };

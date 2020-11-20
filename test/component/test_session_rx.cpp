@@ -79,7 +79,7 @@ TEST_F(Fixture, ReceiveWorks_WhenLoggedIn)
     TString expected = "abcdef";
     EXPECT_CALL(sut_.transport_, Receive(_, _))
         .WillOnce(Return("abcdef"));
-    sut_.cookie_ = 0xBEEF;
+    sut_.clients_cookies_[kSourceId] = kCookieBaseValue;
 
     auto actual = sut_.Receive(kSourceId, kPort);
 
