@@ -45,12 +45,16 @@ public:
         session_.SetCookie(session_.deserializeCookie(cookie));
     }
 
-    void transmitEncryptCookie(const uint8_t to, const uint8_t port) const
+    TString transmitEncryptCookie(const uint8_t to, const uint8_t port) const
     {
-        TString data{};
+        TString data, result{};
+
         data += static_cast<char>(CommunicationStatus::Acknowledge);
         session_.serializeCookie(data, to);
+        result = data;
+
         Transmit(to, port, data);
+        return result;
     }
 
     virtual ~Presentation() = default;

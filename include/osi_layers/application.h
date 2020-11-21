@@ -30,9 +30,8 @@ public:
             result = attemptLogin(result, from_id);
             if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
             {
-                presentation_.transmitEncryptCookie(from_id, port);
+                result = presentation_.transmitEncryptCookie(from_id, port);
             }
-            transmit(from_id, result);
         }
         return result;
     }
