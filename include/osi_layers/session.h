@@ -24,13 +24,13 @@ public:
     Session(Session &&other) : transport_{std::forward<TransportLayer>(other.transport_)} {}
 
 #ifdef TESTING
-    Session(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}
+    Session()
     {
     }
 #endif
-    CommunicationStatus Transmit(const uint8_t to, TString &data) const
+    CommunicationStatus Transmit(const uint8_t to, const uint8_t port, TString &data) const
     {
-        return transport_.Transmit(to, data.c_str(), data.size(), port_);
+        return transport_.Transmit(to, data.c_str(), data.size(), port);
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const

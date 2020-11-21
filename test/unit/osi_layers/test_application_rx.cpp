@@ -40,6 +40,8 @@ protected:
     {
     }
     Application<> sut_{Presentation<>{Session<>{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}}, kEncryptionRounds}, {"User"}, {"Pass"}, kPort};
+
+    static uint8_t call_count_;
 };
 
 uint8_t Fixture::call_count_{};

@@ -7,7 +7,7 @@
 #include "config.h"
 #include "presentation.h"
 
-template <typename PresentationLayer = Presentation<Session<Transport<Network<Datalink<Physical, CRC>>>>, typename TEncryptDecrypt = SimpleTEA<>>>
+template <typename PresentationLayer = Presentation<Session<Transport<Network<Datalink<Physical, CRC>>>>>, typename TEncryptDecrypt = SimpleTEA<>>
 class Application
 {
 public:
@@ -18,7 +18,7 @@ public:
         {
             login(to, port_);
         }
-        return presentation_.Transmit(to, data);
+        return presentation_.Transmit(to, port_, data);
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const
@@ -27,7 +27,7 @@ public:
 
         if (!presentation_.GetSession().IsLoggedIn(from_id))
         {
-            result = attemptLogin(received, from_id);
+            result = attemptLogin(result, from_id);
             if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
             {
                 presentation_.transmitEncryptCookie(from_id);

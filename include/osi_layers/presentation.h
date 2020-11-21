@@ -19,7 +19,7 @@ class Presentation
 public:
     Presentation(SessionLayer &&session, uint8_t encryptionRounds) : session_{std::forward<SessionLayer>(session)}, encryptionRounds_{encryptionRounds} {}
     Presentation(Presentation &&other) : session_{std::forward<SessionLayer>(other.session_)}, encdec_{std::forward<TEncryptDecrypt>(other.encdec_)}, encryptionRounds_{other.encryptionRounds_} {}
-    CommunicationStatus Transmit(const uint8_t to, TString &data) const
+    CommunicationStatus Transmit(const uint8_t to, const uint8_t port, TString &data) const
     {
         if (isOddLength(data))
         {
@@ -27,7 +27,7 @@ public:
         }
         encdec_.encrypt(encryptionRounds_, kEncryptionKey, data.c_str(), data.size());
 
-        return session_.Transmit(to, data);
+        return session_.Transmit(to, port, data);
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const

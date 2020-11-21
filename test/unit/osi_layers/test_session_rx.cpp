@@ -43,42 +43,43 @@ protected:
         UnitBase::SetUp();
     }
     static uint8_t call_count_;
-    Session<> sut_{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}, {"User"}, {"Pass"}, kPort};
+    Session<> sut_{
+        Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}};
 };
 
 uint8_t Fixture::call_count_{};
 
-TEST_F(Fixture, LoginSuccess_WhenTypical)
-{
-    TString expected;
-    expected += static_cast<char>(CommunicationStatus::Acknowledge);
-    expected += " ";
-    expected += kCookieBaseValueStringified;
-    sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+// TEST_F(Fixture, LoginSuccess_WhenTypical)
+// {
+//     TString expected;
+//     expected += static_cast<char>(CommunicationStatus::Acknowledge);
+//     expected += " ";
+//     expected += kCookieBaseValueStringified;
+//     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
-    auto actual = sut_.Receive(kSourceId, kPort);
+//     auto actual = sut_.Receive(kSourceId, kPort);
 
-    ASSERT_EQ(actual, expected);
-}
+//     ASSERT_EQ(actual, expected);
+// }
 
-TEST_F(Fixture, CookieDeseralizeWorks_WhenTypical)
-{
-    decltype(sut_.own_cookie_) expected{kCookieBaseValue};
-    sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+// TEST_F(Fixture, CookieDeseralizeWorks_WhenTypical)
+// {
+//     decltype(sut_.own_cookie_) expected{kCookieBaseValue};
+//     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
-    auto response = sut_.Receive(kSourceId, kPort);
-    auto actual = sut_.deserializeCookie(response);
+//     auto response = sut_.Receive(kSourceId, kPort);
+//     auto actual = sut_.deserializeCookie(response);
 
-    ASSERT_EQ(actual, expected);
-}
+//     ASSERT_EQ(actual, expected);
+// }
 
-TEST_F(Fixture, CookieDeseralizeFails_WhenTypical)
-{
-    decltype(sut_.own_cookie_) expected{0xAAAA};
-    sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+// TEST_F(Fixture, CookieDeseralizeFails_WhenTypical)
+// {
+//     decltype(sut_.own_cookie_) expected{0xAAAA};
+//     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
-    auto response = sut_.Receive(kSourceId, kPort);
-    auto actual = sut_.deserializeCookie(response);
+//     auto response = sut_.Receive(kSourceId, kPort);
+//     auto actual = sut_.deserializeCookie(response);
 
-    ASSERT_NE(actual, expected);
-}
+//     ASSERT_NE(actual, expected);
+// }
