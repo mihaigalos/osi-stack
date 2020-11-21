@@ -73,24 +73,30 @@ TEST_F(Fixture, LoginSuccess_WhenTypical)
     ASSERT_EQ(actual, expected);
 }
 
-// TEST_F(Fixture, CookieDeseralizeWorks_WhenTypical)
-// {
-//     decltype(sut_.own_cookie_) expected{kCookieBaseValue};
-//     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+TEST_F(Fixture, CookieDeseralizeWorks_WhenTypical)
+{
+    decltype(sut_.presentation_.session_.own_cookie_) expected{kCookieBaseValue};
+    TString potential_response{};
+    potential_response += static_cast<char>(CommunicationStatus::Acknowledge);
+    potential_response += static_cast<char>(' ');
+    potential_response += static_cast<char>(kCookieBaseValue >> 8);
+    potential_response += static_cast<char>(kCookieBaseValue);
 
-//     auto response = sut_.Receive(kSourceId, kPort);
-//     auto actual = sut_.deserializeCookie(response);
+    auto actual = sut_.presentation_.session_.deserializeCookie(potential_response);
 
-//     ASSERT_EQ(actual, expected);
-// }
+    ASSERT_EQ(actual, expected);
+}
 
-// TEST_F(Fixture, CookieDeseralizeFails_WhenTypical)
-// {
-//     decltype(sut_.own_cookie_) expected{0xAAAA};
-//     sut_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+TEST_F(Fixture, CookieDeseralizeFails_WhenTypical)
+{
+    decltype(sut_.presentation_.session_.own_cookie_) expected{0xAAAA};
+    TString potential_response{};
+    potential_response += static_cast<char>(CommunicationStatus::Acknowledge);
+    potential_response += static_cast<char>(' ');
+    potential_response += static_cast<char>(kCookieBaseValue >> 8);
+    potential_response += static_cast<char>(kCookieBaseValue);
 
-//     auto response = sut_.Receive(kSourceId, kPort);
-//     auto actual = sut_.deserializeCookie(response);
+    auto actual = sut_.presentation_.session_.deserializeCookie(potential_response);
 
-//     ASSERT_NE(actual, expected);
-// }
+    ASSERT_NE(actual, expected);
+}
