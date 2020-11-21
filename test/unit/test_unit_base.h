@@ -53,13 +53,22 @@ public:
         payloadified_data_with_segment_to_from_crc_.data[payloadified_data_with_segment_to_from_crc_.size++] = kSourceId;
         payloadified_data_with_segment_to_from_crc_.data[payloadified_data_with_segment_to_from_crc_.size++] = kOwnId;
         payloadified_data_with_segment_to_from_crc_ = crc_.append_crc_to_payload(payloadified_data_with_segment_to_from_crc_);
+
+        payloadified_tstring_data_with_segment_to_from_crc_ = Payload{tstring_data_.c_str(), static_cast<uint8_t>(tstring_data_.size())};
+        payloadified_tstring_data_with_segment_to_from_crc_.data[payloadified_tstring_data_with_segment_to_from_crc_.size++] = kPort;
+        payloadified_tstring_data_with_segment_to_from_crc_.data[payloadified_tstring_data_with_segment_to_from_crc_.size++] = 00;
+        payloadified_tstring_data_with_segment_to_from_crc_.data[payloadified_tstring_data_with_segment_to_from_crc_.size++] = 00;
+        payloadified_tstring_data_with_segment_to_from_crc_.data[payloadified_tstring_data_with_segment_to_from_crc_.size++] = kSourceId;
+        payloadified_tstring_data_with_segment_to_from_crc_.data[payloadified_tstring_data_with_segment_to_from_crc_.size++] = kOwnId;
+        payloadified_tstring_data_with_segment_to_from_crc_ = crc_.append_crc_to_payload(payloadified_tstring_data_with_segment_to_from_crc_);
     }
     virtual void TearDown() override {}
 
 protected:
     static std::string data_;
+    static TString tstring_data_;
     static Payload payloadified_negative_acknowledge_, payloadified_acknowledge_, payloadified_data_, payloadified_crc_mismatch_;
-    static Payload payloadified_data_with_crc_, payloadified_data_with_to_from_crc_, payloadified_data_with_segment_to_from_crc_;
+    static Payload payloadified_data_with_crc_, payloadified_data_with_to_from_crc_, payloadified_data_with_segment_to_from_crc_, payloadified_tstring_data_with_segment_to_from_crc_;
     static Payload received_, transmitted_;
     static std::map<uint8_t, uint8_t> lookup_map_;
     CRC crc_;
@@ -68,7 +77,8 @@ protected:
 Payload UnitBase::received_, UnitBase::transmitted_;
 
 std::string UnitBase::data_{"abcd"};
+TString UnitBase::tstring_data_{};
 Payload UnitBase::payloadified_negative_acknowledge_, UnitBase::payloadified_acknowledge_, UnitBase::payloadified_data_, UnitBase::payloadified_crc_mismatch_;
-Payload UnitBase::payloadified_data_with_crc_, UnitBase::payloadified_data_with_to_from_crc_, UnitBase::payloadified_data_with_segment_to_from_crc_;
+Payload UnitBase::payloadified_data_with_crc_, UnitBase::payloadified_data_with_to_from_crc_, UnitBase::payloadified_data_with_segment_to_from_crc_, UnitBase::payloadified_tstring_data_with_segment_to_from_crc_;
 
 std::map<uint8_t, uint8_t> UnitBase::lookup_map_;

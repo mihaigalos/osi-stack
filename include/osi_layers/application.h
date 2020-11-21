@@ -30,7 +30,7 @@ public:
             result = attemptLogin(result, from_id);
             if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
             {
-                presentation_.transmitEncryptCookie(from_id);
+                presentation_.transmitEncryptCookie(from_id, port);
             }
             transmit(from_id, result);
         }
@@ -108,7 +108,7 @@ private:
 
     CommunicationStatus transmit(const uint8_t to, TString &data) const
     {
-        return presentation_.Transmit(to, data.c_str(), data.size(), port_);
+        return presentation_.Transmit(to, port_, data);
     }
 
     PresentationLayer presentation_{};

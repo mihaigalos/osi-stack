@@ -33,7 +33,7 @@ public:
         return transport_.Transmit(to, data.c_str(), data.size(), port);
     }
 
-    TString Receive(const uint8_t from_id, uint8_t port) const
+    TEncryptedString Receive(const uint8_t from_id, uint8_t port) const
     {
         return transport_.Receive(from_id, port);
     }

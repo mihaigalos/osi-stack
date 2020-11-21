@@ -17,16 +17,16 @@ inline uint16_t getSegmentsCount(const uint32_t size)
     return {static_cast<uint16_t>(full_segments + (partial_segments != 0 ? 1 : 0) - make_last_segment_be_zero)};
 }
 
-inline TString reconstructStringFromMap(TMapSequencePayload &buffer)
+inline TEncryptedString reconstructStringFromMap(TMapSequencePayload &buffer)
 {
-    TString result;
+    TEncryptedString result;
     uint8_t buffer_size = buffer.size();
     for (uint8_t i = buffer_size - 1;; --i)
     {
         Payload payload = buffer[i];
         for (uint8_t j = 0; j < payload.size; ++j)
         {
-            result = result + payload.data[j];
+            result += payload.data[j];
         }
 
         if (i == 0)
@@ -135,9 +135,9 @@ public:
         return Transmit(to, reinterpret_cast<uint8_t *>(const_cast<char *>(data)), total_size, port);
     }
 
-    virtual__ TString Receive(const uint8_t from_id, const uint8_t port) const
+    virtual__ TEncryptedString Receive(const uint8_t from_id, const uint8_t port) const
     {
-        TString result{};
+        TEncryptedString result{};
         TMapPortSequencePayload port_sequece_payload{};
         TSegment segment{};
         TSegment watchdog{kMaximumSegments};

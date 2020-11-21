@@ -25,16 +25,16 @@ public:
         {
             data += '\0';
         }
-        encdec_.encrypt(encryptionRounds_, kEncryptionKey, data.c_str(), data.size());
+        encdec_.encrypt(encryptionRounds_, kEncryptionKey, reinterpret_cast<uint8_t *>(const_cast<char *>(data.c_str())), data.size());
 
         return session_.Transmit(to, port, data);
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const
     {
-        TString result = session_.Receive(from_id, port);
+        TEncryptedString result = session_.Receive(from_id, port).c_str();
         encdec_.decrypt(encryptionRounds_, kEncryptionKey, reinterpret_cast<uint8_t *>(const_cast<char *>(result.c_str())), result.size());
-        return result;
+        return {result.c_str()};
     }
 
     const SessionLayer &GetSession() const { return session_; }
@@ -45,11 +45,12 @@ public:
         session_.SetCookie(session_.deserializeCookie(cookie));
     }
 
-    void transmitEncryptCookie(const uint8_t to) const
+    void transmitEncryptCookie(const uint8_t to, const uint8_t port) const
     {
         TString data{};
         data += static_cast<char>(CommunicationStatus::Acknowledge);
-        session_.Transmit(to, session_.serializeCookie(data, to));
+        session_.serializeCookie(data, to);
+        Transmit(to, port, data);
     }
 
     virtual ~Presentation() = default;
