@@ -59,12 +59,36 @@ TEST_F(Fixture, SetCookieOneClientWorks_WhenTypical)
 TEST_F(Fixture, SetCookieMultipleClientsWorks_WhenTypical)
 {
     auto expected = kCookieBaseValue;
+    uint8_t id1{1}, id2{2};
 
-    sut_.SetCookie(kCookieBaseValue, 1);
-    sut_.SetCookie(kCookieBaseValue, 2);
+    sut_.SetCookie(kCookieBaseValue, id1);
+    sut_.SetCookie(kCookieBaseValue, id2);
 
-    auto actual = sut_.clients_cookies_[1];
+    auto actual = sut_.clients_cookies_[id1];
     ASSERT_EQ(actual, expected);
-    actual = sut_.clients_cookies_[2];
+    actual = sut_.clients_cookies_[id2];
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, SerializeCookieOwnWorks_WhenTypical)
+{
+    auto expected = TString{" "} + kCookieBaseValueStringified;
+    sut_.own_cookie_ = kCookieBaseValue;
+    TString actual{};
+
+    sut_.serializeCookie(actual);
+
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, SerializeCookieClientsWorks_WhenTypical)
+{
+    uint8_t id1{1};
+    auto expected = TString{" "} + kCookieBaseValueStringified;
+    sut_.SetCookie(kCookieBaseValue, id1);
+    TString actual{};
+
+    sut_.serializeCookie(actual, id1);
+
     ASSERT_EQ(actual, expected);
 }
