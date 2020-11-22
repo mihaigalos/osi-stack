@@ -17,6 +17,7 @@ enum class CommunicationStatus : uint8_t
     Acknowledge = 0x06,
     SessionCookieError = 0x07,
     InvalidCredentials = 0x08,
+    NotLoggedIn = 0x09,
     NegativeAcknowledge = 0x15,
 };
 
@@ -92,8 +93,8 @@ public:
     Datalink &operator=(Datalink &&other) = delete;
 
 private:
-    PhysicalLayer physical_;
-    CRCFunctions crc_;
+    PhysicalLayer physical_{};
+    CRCFunctions crc_{};
     uint8_t retransmit_count_{kMaxRetransmitCount};
 
     Payload GetTransmitResponse() const

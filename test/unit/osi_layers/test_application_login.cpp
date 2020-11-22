@@ -10,7 +10,7 @@
 
 #include "osi_layers/physical.h"
 #include "crc.h"
-#include "osi_layers/session.h"
+#include "osi_layers/application.h"
 
 #include "utilities.h"
 #include "unit/test_unit_base.h"
@@ -42,14 +42,14 @@ protected:
     {
         UnitBase::SetUp();
     }
-    Session<> sut_{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}, {"myUser"}, {"myPass"}, kPort};
+    Application<> sut_{Presentation<>{Session<>{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}}, kEncryptionRounds}, {"myUser"}, {"myPass"}, kPort};
 };
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
 {
     auto expected = CommunicationStatus::Acknowledge;
 
-    auto actual = sut_.Login("myUser", "myPass");
+    auto actual = sut_.Login("myUser", "myPass", kOwnId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -58,7 +58,7 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidPass)
 {
     auto expected = CommunicationStatus::InvalidCredentials;
 
-    auto actual = sut_.Login("myUser", "watch_this");
+    auto actual = sut_.Login("myUser", "watch_this", kOwnId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -67,7 +67,7 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidUser)
 {
     auto expected = CommunicationStatus::InvalidCredentials;
 
-    auto actual = sut_.Login("foo", "myPass");
+    auto actual = sut_.Login("foo", "myPass", kOwnId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -75,41 +75,68 @@ TEST_F(Fixture, LoginInvalidCredentials_WhenInvalidUser)
 TEST_F(Fixture, IsLoggedIn_WhenTypical)
 {
     auto expected{true};
-    sut_.Login("myUser", "myPass");
+    sut_.Login("myUser", "myPass", kOwnId);
 
-    auto actual = sut_.IsLoggedIn();
+    auto actual = sut_.presentation_.GetSession().IsLoggedIn(kOwnId);
 
     ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, IsMultiLoggedIn_WhenTypical)
+{
+    auto expected1{true}, expected2{true};
+    sut_.Login("myUser", "myPass", 1);
+    sut_.Login("myUser", "myPass", 2);
+
+    auto actual1 = sut_.presentation_.GetSession().IsLoggedIn(1);
+    auto actual2 = sut_.presentation_.GetSession().IsLoggedIn(2);
+
+    ASSERT_EQ(actual1, expected1);
+    ASSERT_EQ(actual2, expected2);
+}
+
+TEST_F(Fixture, IsMultiSecondNotLoggedIn_WhenInvalidCreds)
+{
+    auto expected1{true}, expected2{false};
+    sut_.Login("myUser", "myPass", 1);
+    sut_.Login("invalid", "invalid", 2);
+
+    auto actual1 = sut_.presentation_.GetSession().IsLoggedIn(1);
+    auto actual2 = sut_.presentation_.GetSession().IsLoggedIn(2);
+
+    ASSERT_EQ(actual1, expected1);
+    ASSERT_EQ(actual2, expected2);
 }
 
 TEST_F(Fixture, IsNotLoggedIn_AfterLogout)
 {
     auto expected{false};
-    sut_.Login("myUser", "myPass");
+    sut_.Login("myUser", "myPass", kOwnId);
     sut_.Logout();
 
-    auto actual = sut_.IsLoggedIn();
+    auto actual = sut_.presentation_.GetSession().IsSelfLoggedIn();
 
     ASSERT_EQ(actual, expected);
 }
 
 TEST_F(Fixture, CookieUpdated_WhenTypical)
 {
-    auto initial_cookie{sut_.cookie_};
+    sut_.presentation_.session_.clients_cookies_[kOwnId] = kCookieBaseValue;
+    auto initial_cookie = sut_.presentation_.session_.clients_cookies_[kOwnId];
 
-    sut_.Login("myUser", "myPass");
-    auto current_cookie{sut_.cookie_};
+    sut_.Login("myUser", "myPass", kOwnId);
+    auto current_cookie{sut_.presentation_.session_.clients_cookies_[kOwnId]};
 
     ASSERT_NE(current_cookie, initial_cookie);
 }
 
 TEST_F(Fixture, CookieDeleted_WhenTypical)
 {
-    auto expected{decltype(sut_.cookie_){}};
+    auto expected{decltype(sut_.presentation_.session_.own_cookie_){}};
 
-    sut_.Login("myUser", "myPass");
+    sut_.Login("myUser", "myPass", kOwnId);
     sut_.Logout();
-    auto actual{sut_.cookie_};
+    auto actual{sut_.presentation_.session_.own_cookie_};
 
     ASSERT_EQ(actual, expected);
 }
@@ -133,7 +160,7 @@ TEST_F(Fixture, AttemptLoginWorks_WhenTypical)
     TString expected{};
     expected += static_cast<char>(CommunicationStatus::Acknowledge);
 
-    auto actual = sut_.attemptLogin(credentials);
+    auto actual = sut_.attemptLogin(credentials, kSourceId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -145,7 +172,7 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalseUser)
     TString expected{};
     expected += static_cast<char>(CommunicationStatus::InvalidCredentials);
 
-    auto actual = sut_.attemptLogin(credentials);
+    auto actual = sut_.attemptLogin(credentials, kSourceId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -157,7 +184,7 @@ TEST_F(Fixture, AttemptLoginFails_WhenFalsePass)
     TString expected{};
     expected += static_cast<char>(CommunicationStatus::InvalidCredentials);
 
-    auto actual = sut_.attemptLogin(credentials);
+    auto actual = sut_.attemptLogin(credentials, kSourceId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -169,4 +196,17 @@ TEST_F(Fixture, SerializeCredentials_WhenTypical)
     auto actual = sut_.serializeUserPassword();
 
     ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, MoveConstructorWorks_WhenLoggedIn)
+{
+    Application<> sut{{"User"}, {"Pass"}, kPort};
+    TString expected_user = "User";
+    TString expected_pass = "Pass";
+
+    auto actual_user = sut.user_;
+    auto actual_pass = sut.pass_;
+
+    ASSERT_EQ(actual_user, expected_user);
+    ASSERT_EQ(actual_pass, expected_pass);
 }

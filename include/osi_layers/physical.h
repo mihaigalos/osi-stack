@@ -58,6 +58,6 @@ public:
   Physical &operator=(Physical &&other) = delete;
 
 private:
-  TVoidUint8 on_transmit_byte_;
-  TUint8Void on_receive_byte_;
+  TVoidUint8 on_transmit_byte_{};
+  TUint8Void on_receive_byte_{};
 };
