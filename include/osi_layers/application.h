@@ -35,7 +35,7 @@ public:
             result = attemptLogin(result, from_id);
             if (static_cast<CommunicationStatus>(result[0]) != CommunicationStatus::InvalidCredentials)
             {
-                log("Login successul. Transmitting cookie (encrypted).");
+                log("Application :: Login successul. Transmitting cookie (encrypted).");
                 result = presentation_.transmitEncryptCookie(from_id, port);
             }
         }
@@ -73,6 +73,7 @@ private:
         auto response = transmitCredentials(from);
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
+            log("Application :: login :: credentials acknowledged. Receiving cookie.");
             presentation_.receiveDecryptCookie(from, port);
         }
     }
