@@ -54,7 +54,7 @@ public:
         return clients_cookies_[from_id] != decltype(own_cookie_){};
     }
 
-    void SetCookie(uint16_t cookie, uint8_t from_id = kSelf)
+    virtual__ void SetCookie(uint16_t cookie, uint8_t from_id = kSelf) const
     {
         if (from_id == kSelf)
         {

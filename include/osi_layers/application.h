@@ -12,6 +12,11 @@ class Application
 {
 public:
     Application(PresentationLayer &&presentation, TString &&user, TString &&pass, uint8_t port) : presentation_{std::forward<PresentationLayer>(presentation)}, user_{user}, pass_{pass}, port_{port} {}
+#ifdef TESTING
+    Application(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}
+    {
+    }
+#endif
     CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
         if (!presentation_.GetSession().IsSelfLoggedIn())
@@ -63,13 +68,13 @@ private:
         auto response = transmitCredentials(from);
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
-            presentation_.GetSession().SetCookie(presentation_.receiveDecryptCookie(from, port));
+            presentation_.receiveDecryptCookie(from, port);
         }
     }
     CommunicationStatus transmitCredentials(const uint8_t to) const
     {
         TString credentials{serializeUserPassword()};
-        return presentation_.Transmit(to, credentials.c_str(), credentials.size(), port_);
+        return presentation_.Transmit(to, port_, credentials);
     }
 
     TString attemptLogin(TString &in, const uint8_t from_id) const
