@@ -148,7 +148,7 @@ public:
             {
                 return result;
             }
-
+            log("Transport :: Deserializing data..");
             deserializeData(received, segment, port_sequece_payload);
 
         } while (segment && --watchdog);
