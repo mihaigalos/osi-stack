@@ -48,10 +48,10 @@ protected:
         sut_.encdec_.encrypt(sut_.encryptionRounds_, kEncryptionKey, reinterpret_cast<uint8_t *>(const_cast<char *>(data_.c_str())), data_.size());
         UnitBase::SetUp();
     }
-    static uint8_t call_count_;
-    Presentation<> sut_{Session<>{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}, {"User"}, {"Pass"}, kPort}, kEncryptionRounds};
-};
+    Presentation<> sut_{Session<>{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}}, kEncryptionRounds};
 
+    static uint8_t call_count_;
+};
 uint8_t Fixture::call_count_{};
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)

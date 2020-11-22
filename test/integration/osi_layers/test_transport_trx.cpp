@@ -43,14 +43,13 @@ TEST_F(Fixture, TRxFails_WhenBogusData)
 
 TEST_F(Fixture, TRxWorks_WhenPayloadLengthLongerThanPayloadMaxSize)
 {
-    std::string initial_data{"abcdefghijklmnopqrstuvwxyz"};
+    TEncryptedString initial_data{"abcdefghijklmnopqrstuvwxyz"};
     sut1_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
     sut2_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
 
     sut1_.Transmit(kDestinationId, initial_data.c_str(), initial_data.size(), kPort);
     pos_in_io_data_ = 0;
 
-    auto received = sut2_.Receive(kFromId, kPort);
-    auto actual = std::string{received.c_str()};
+    auto actual = sut2_.Receive(kFromId, kPort);
     ASSERT_EQ(actual, initial_data);
 }

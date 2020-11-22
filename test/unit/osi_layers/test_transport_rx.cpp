@@ -45,7 +45,7 @@ protected:
 
 TEST_F(Fixture, ReceiveWorks_WhenTypical)
 {
-    TString expected{"abcd"};
+    TEncryptedString expected{"abcd"};
 
     auto actual = sut_.Receive(kSourceId, kPort);
 

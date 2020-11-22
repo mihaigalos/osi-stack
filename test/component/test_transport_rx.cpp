@@ -35,7 +35,7 @@ protected:
 
 TEST_F(Fixture, ReturnsNothing_WhenSizeZero)
 {
-    TString expected{};
+    TEncryptedString expected{};
     EXPECT_CALL(sut_.network_, Receive(_))
         .WillOnce(Return(Payload{}));
 

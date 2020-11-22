@@ -10,7 +10,7 @@
 
 #include "osi_layers/physical.h"
 #include "crc.h"
-#include "osi_layers/session.h"
+#include "osi_layers/application.h"
 
 #include "utilities.h"
 #include "unit/test_unit_base.h"
@@ -42,7 +42,7 @@ protected:
     {
         UnitBase::SetUp();
     }
-    Session<> sut_{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}, {"myUser"}, {"myPass"}, kPort};
+    Application<> sut_{Presentation<>{Session<>{Transport<>{Network<>{kOwnId, {Datalink<>{Physical{generic_transmit_byte, generic_receive_byte}}}}}}, kEncryptionRounds}, {"myUser"}, {"myPass"}, kPort};
 };
 
 TEST_F(Fixture, LoginSuccess_WhenTypical)
@@ -77,7 +77,7 @@ TEST_F(Fixture, IsLoggedIn_WhenTypical)
     auto expected{true};
     sut_.Login("myUser", "myPass", kOwnId);
 
-    auto actual = sut_.IsLoggedIn(kOwnId);
+    auto actual = sut_.presentation_.GetSession().IsLoggedIn(kOwnId);
 
     ASSERT_EQ(actual, expected);
 }
@@ -88,8 +88,8 @@ TEST_F(Fixture, IsMultiLoggedIn_WhenTypical)
     sut_.Login("myUser", "myPass", 1);
     sut_.Login("myUser", "myPass", 2);
 
-    auto actual1 = sut_.IsLoggedIn(1);
-    auto actual2 = sut_.IsLoggedIn(2);
+    auto actual1 = sut_.presentation_.GetSession().IsLoggedIn(1);
+    auto actual2 = sut_.presentation_.GetSession().IsLoggedIn(2);
 
     ASSERT_EQ(actual1, expected1);
     ASSERT_EQ(actual2, expected2);
@@ -101,8 +101,8 @@ TEST_F(Fixture, IsMultiSecondNotLoggedIn_WhenInvalidCreds)
     sut_.Login("myUser", "myPass", 1);
     sut_.Login("invalid", "invalid", 2);
 
-    auto actual1 = sut_.IsLoggedIn(1);
-    auto actual2 = sut_.IsLoggedIn(2);
+    auto actual1 = sut_.presentation_.GetSession().IsLoggedIn(1);
+    auto actual2 = sut_.presentation_.GetSession().IsLoggedIn(2);
 
     ASSERT_EQ(actual1, expected1);
     ASSERT_EQ(actual2, expected2);
@@ -114,29 +114,29 @@ TEST_F(Fixture, IsNotLoggedIn_AfterLogout)
     sut_.Login("myUser", "myPass", kOwnId);
     sut_.Logout();
 
-    auto actual = sut_.IsSelfLoggedIn();
+    auto actual = sut_.presentation_.GetSession().IsSelfLoggedIn();
 
     ASSERT_EQ(actual, expected);
 }
 
 TEST_F(Fixture, CookieUpdated_WhenTypical)
 {
-    sut_.clients_cookies_[kOwnId] = kCookieBaseValue;
-    auto initial_cookie = sut_.clients_cookies_[kOwnId];
+    sut_.presentation_.session_.clients_cookies_[kOwnId] = kCookieBaseValue;
+    auto initial_cookie = sut_.presentation_.session_.clients_cookies_[kOwnId];
 
     sut_.Login("myUser", "myPass", kOwnId);
-    auto current_cookie{sut_.clients_cookies_[kOwnId]};
+    auto current_cookie{sut_.presentation_.session_.clients_cookies_[kOwnId]};
 
     ASSERT_NE(current_cookie, initial_cookie);
 }
 
 TEST_F(Fixture, CookieDeleted_WhenTypical)
 {
-    auto expected{decltype(sut_.own_cookie_){}};
+    auto expected{decltype(sut_.presentation_.session_.own_cookie_){}};
 
     sut_.Login("myUser", "myPass", kOwnId);
     sut_.Logout();
-    auto actual{sut_.own_cookie_};
+    auto actual{sut_.presentation_.session_.own_cookie_};
 
     ASSERT_EQ(actual, expected);
 }
@@ -200,7 +200,7 @@ TEST_F(Fixture, SerializeCredentials_WhenTypical)
 
 TEST_F(Fixture, MoveConstructorWorks_WhenLoggedIn)
 {
-    Session<> sut{Session<>{{"User"}, {"Pass"}, kPort}};
+    Application<> sut{{"User"}, {"Pass"}, kPort};
     TString expected_user = "User";
     TString expected_pass = "Pass";
 

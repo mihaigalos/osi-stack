@@ -77,8 +77,8 @@ protected:
         return static_cast<uint8_t>(character);
     }
 
-    Session<> sut1_{Transport<>{Network<>{kFromId, Datalink<>{Physical{generic_transmit_byte1, generic_receive_byte1}}}}};
-    Session<> sut2_{Transport<>{Network<>{kDestinationId, Datalink<>{Physical{generic_transmit_byte2, generic_receive_byte2}}}}};
+    Application<> sut1_{Presentation<>{Session<>{Transport<>{Network<>{kFromId, Datalink<>{Physical{generic_transmit_byte1, generic_receive_byte1}}}}}, kEncryptionRounds}, {"User"}, {"Pass"}, kPort};
+    Application<> sut2_{Presentation<>{Session<>{Transport<>{Network<>{kDestinationId, Datalink<>{Physical{generic_transmit_byte2, generic_receive_byte2}}}}}, kEncryptionRounds}, {"User"}, {"Pass"}, kPort};
 
 private:
     static void ResetChannel(uint8_t &call_count)
@@ -94,17 +94,41 @@ private:
     }
 };
 
-TEST_F(Fixture, TRxWorks_WhenTypical)
+TEST_F(Fixture, DISABLED_TRxReceivesCorrectCookie_WhenTypical)
 {
-    TEncryptedString actual{};
-    TString expected{"abcde"};
-    sut1_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
-    sut2_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+    TString actual{};
+    TString to_send{"abcde"};
+    TString expected{};
+    expected += static_cast<char>(CommunicationStatus::Acknowledge);
+    expected += ' ';
+    expected += kCookieBaseValueStringified;
 
-    std::thread t1([&] { sut1_.Transmit(kDestinationId, kPort, expected); });
+    sut1_.presentation_.session_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+    sut2_.presentation_.session_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+
+    std::thread t1([&] { sut1_.Transmit(kDestinationId, to_send); });
     std::thread t2([&] { std::this_thread::sleep_for(250ms);actual = sut2_.Receive(kFromId, kPort); });
+
     t1.join();
     t2.join();
 
-    ASSERT_EQ(TString{actual.c_str()}, expected);
+    ASSERT_EQ(actual, expected);
+}
+
+TEST_F(Fixture, TRxWorks_WhenTypical)
+{
+    TString actual{};
+    TString to_send{"abcde"};
+    TString expected{to_send};
+    sut1_.presentation_.session_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+    sut2_.presentation_.session_.transport_.network_.datalink_.retransmit_count_ = kRetransmitCountInCaseOfNoAcknowledge;
+
+    std::thread t1([&] { sut1_.Transmit(kDestinationId, to_send); });
+    std::thread t2([&] { std::this_thread::sleep_for(250ms);sut2_.Receive(kFromId, kPort); });
+
+    t1.join();
+    actual = sut2_.Receive(kFromId, kPort);
+    t2.join();
+
+    ASSERT_EQ(actual, expected);
 }

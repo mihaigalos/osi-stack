@@ -18,27 +18,54 @@ class Presentation
 {
 public:
     Presentation(SessionLayer &&session, uint8_t encryptionRounds) : session_{std::forward<SessionLayer>(session)}, encryptionRounds_{encryptionRounds} {}
-    CommunicationStatus Transmit(const uint8_t to, TString &data) const
+    Presentation(Presentation &&other) : session_{std::forward<SessionLayer>(other.session_)}, encdec_{std::forward<TEncryptDecrypt>(other.encdec_)}, encryptionRounds_{other.encryptionRounds_} {}
+#ifdef TESTING
+    Presentation()
     {
-        encdec_.encrypt(encryptionRounds_, kEncryptionKey, data.c_str(), data.size());
+    }
+#endif
+
+    virtual__ CommunicationStatus Transmit(const uint8_t to, const uint8_t port, TString &data) const
+    {
         if (isOddLength(data))
         {
             data += '\0';
         }
+        encdec_.encrypt(encryptionRounds_, kEncryptionKey, reinterpret_cast<uint8_t *>(const_cast<char *>(data.c_str())), data.size());
 
-        return session_.Transmit(to, data);
+        return session_.Transmit(to, port, data);
     }
 
-    TString Receive(const uint8_t from_id, uint8_t port) const
+    virtual__ TString Receive(const uint8_t from_id, const uint8_t port) const
     {
-        TString result = session_.Receive(from_id, port);
+        TEncryptedString result = session_.Receive(from_id, port).c_str();
         encdec_.decrypt(encryptionRounds_, kEncryptionKey, reinterpret_cast<uint8_t *>(const_cast<char *>(result.c_str())), result.size());
+        return {result.c_str()};
+    }
+
+    virtual__ const SessionLayer &GetSession() const { return session_; }
+
+    void receiveDecryptCookie(const uint8_t from_id, const uint8_t port) const
+    {
+        auto cookie = Receive(from_id, port);
+        session_.SetCookie(session_.deserializeCookie(cookie), kSelf);
+    }
+
+    TString transmitEncryptCookie(const uint8_t to, const uint8_t port) const
+    {
+        TString data, result{};
+
+        data += static_cast<char>(CommunicationStatus::Acknowledge);
+        session_.serializeCookie(data, to);
+        result = data;
+
+        Transmit(to, port, data);
         return result;
     }
 
     virtual ~Presentation() = default;
     Presentation(const Presentation &other) = delete;
-    Presentation(Presentation &&other) = delete;
+
     Presentation &operator=(const Presentation &other) = delete;
     Presentation &operator=(Presentation &&other) = delete;
 
