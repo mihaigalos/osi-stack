@@ -16,14 +16,21 @@ public:
     Application(TString &&user, TString &&pass, uint8_t port) : user_{user}, pass_{pass}, port_{port}
     {
     }
+    Application() {}
 #endif
     CommunicationStatus Transmit(const uint8_t to, TString &data) const
     {
+        CommunicationStatus result{CommunicationStatus::Acknowledge};
         if (!presentation_.GetSession().IsSelfLoggedIn())
         {
-            login(to, port_);
+            result = login(to, port_);
         }
-        return presentation_.Transmit(to, port_, data);
+
+        if (result == CommunicationStatus::Acknowledge)
+        {
+            return presentation_.Transmit(to, port_, data);
+        }
+        return result;
     }
 
     TString Receive(const uint8_t from_id, uint8_t port) const
@@ -67,22 +74,24 @@ public:
     Application &operator=(const Application &other) = delete;
     Application &operator=(Application &&other) = delete;
 
-private:
-    void login(const uint8_t from, uint8_t port) const
+protected:
+    virtual__ CommunicationStatus login(const uint8_t from, uint8_t port) const
     {
         auto response = transmitCredentials(from);
         if (response == CommunicationStatus::Acknowledge || response == CommunicationStatus::NoAcknowledgeRequired)
         {
             log("Application :: login :: credentials acknowledged. Receiving cookie.");
-            presentation_.receiveDecryptCookie(from, port);
+            return presentation_.receiveDecryptCookie(from, port);
         }
+        return CommunicationStatus::InvalidCredentials;
     }
-    CommunicationStatus transmitCredentials(const uint8_t to) const
+    virtual__ CommunicationStatus transmitCredentials(const uint8_t to) const
     {
         TString credentials{serializeUserPassword()};
         return presentation_.Transmit(to, port_, credentials);
     }
 
+private:
     TString attemptLogin(TString &in, const uint8_t from_id) const
     {
         TString user{}, pass{};
