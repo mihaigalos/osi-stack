@@ -56,6 +56,11 @@ public:
         return result;
     }
 
+    void Logout() const
+    {
+        presentation_.GetSession().Logout();
+    }
+
     virtual ~Application() = default;
     Application(const Application &other) = delete;
     Application(Application &&other) = delete;

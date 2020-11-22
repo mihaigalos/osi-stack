@@ -44,7 +44,7 @@ public:
         return CommunicationStatus::Acknowledge;
     }
 
-    void Logout()
+    void Logout() const
     {
         own_cookie_ = decltype(own_cookie_){};
     }
