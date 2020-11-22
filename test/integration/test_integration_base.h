@@ -5,6 +5,8 @@
 
 #define private public // For testing purposes only
 
+#include "osi_layers/application.h"
+#include "osi_layers/presentation.h"
 #include "osi_layers/session.h"
 #include "osi_layers/transport.h"
 #include "osi_layers/network.h"

@@ -65,22 +65,22 @@ cc_library(
     ]
 ]
 
-# [
-#     cc_test(
-#         name = "integration/" + integration_name,
-#         srcs = [
-#             "test/integration/" + integration_name + ".cpp",
-#         ],
-#         copts = DEFAULT_TEST_COMPILE_OPTIONS,
-#         linkopts = DEFAULT_TEST_LINK_OPTIONS,
-#         tags = ["integration"],
-#         deps = DEFAULT_TEST_DEPS + [":test_headers"],
-#     )
-#     for integration_name in [
-#         file_name.replace("test/integration/", "").replace(".cpp", "")
-#         for file_name in glob(["test/integration/**/*.cpp"])
-#     ]
-# ]
+[
+    cc_test(
+        name = "integration/" + integration_name,
+        srcs = [
+            "test/integration/" + integration_name + ".cpp",
+        ],
+        copts = DEFAULT_TEST_COMPILE_OPTIONS,
+        linkopts = DEFAULT_TEST_LINK_OPTIONS,
+        tags = ["integration"],
+        deps = DEFAULT_TEST_DEPS + [":test_headers"],
+    )
+    for integration_name in [
+        file_name.replace("test/integration/", "").replace(".cpp", "")
+        for file_name in glob(["test/integration/**/*.cpp"])
+    ]
+]
 
 [
     cc_test(

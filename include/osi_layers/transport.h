@@ -19,7 +19,7 @@ inline uint16_t getSegmentsCount(const uint32_t size)
 
 inline TEncryptedString reconstructStringFromMap(TMapSequencePayload &buffer)
 {
-    TEncryptedString result;
+    TEncryptedString result{};
     uint8_t buffer_size = buffer.size();
     for (uint8_t i = buffer_size - 1;; --i)
     {
