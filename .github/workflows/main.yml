@@ -28,8 +28,10 @@ jobs:
       - name: Build and Test
         run: |
           bazel test --color=yes --config=buildbuddy //... > >(tee -a /tmp/test.log) 2>&1
+
+      - name: Generate statistics
+        run: |
           ./scripts/cl1p_build_buddy_invocation.sh
-          ./scripts/profiling.sh
 
   converage:
     runs-on: ubuntu-20.04
@@ -54,3 +56,4 @@ jobs:
           bazel coverage --combined_report=lcov --sandbox_base=/run/shm //...
           genhtml bazel-out/_coverage/_coverage_report.dat --output-directory coverage
           ./scripts/push_test_coverage.sh
+          ./scripts/profiling.sh
