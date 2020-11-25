@@ -45,10 +45,11 @@ public:
 
     virtual__ const SessionLayer &GetSession() const { return session_; }
 
-    void receiveDecryptCookie(const uint8_t from_id, const uint8_t port) const
+    CommunicationStatus receiveDecryptCookie(const uint8_t from_id, const uint8_t port) const
     {
-        auto cookie = Receive(from_id, port);
-        session_.SetCookie(session_.deserializeCookie(cookie), kSelf);
+        auto data = Receive(from_id, port);
+        session_.SetCookie(session_.deserializeCookie(data), kSelf);
+        return static_cast<CommunicationStatus>(data[0]);
     }
 
     TString transmitEncryptCookie(const uint8_t to, const uint8_t port) const
