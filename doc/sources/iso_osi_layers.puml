@@ -7,6 +7,6 @@ title
   | 4 | Transport Layer    |= Length |= To |= From |= Segment |= Port |             |           |=           Raw Data |= CRC |
   | 3 | Network Layer      |= Length |= To |= From |          |       |             |           |=           Raw Data |= CRC |
   | 2 | Datalink Layer     |= Length |     |       |          |       |             |           |=           Raw Data |= CRC |
-  | 1 | Physical Layer     |= Length |     |       |          |       |             |           |=           Raw Data |      |
+  | 1 | Physical Layer     |         |     |       |          |       |             |           |=           Raw Data |      |
 end title
 @enduml
