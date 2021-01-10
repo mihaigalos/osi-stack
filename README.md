@@ -5,7 +5,7 @@
 ![Last Logs](https://img.shields.io/endpoint?style=social&url=https%3A%2F%2Fapi.cl1p.net%2Fosi_stack%2Fclipboard)
 
 
-Very rough model of an ISO/OSI communication stack.
+ISO/OSI communication stack, initially written for AVR UART communication. 
 
 This implementation intentionally uses raw pointers instead of smart pointers.
 
