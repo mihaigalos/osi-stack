@@ -13,7 +13,7 @@ DEFAULT_COMPILER_OPTIONS = [
 ]
 
 DEFAULT_TEST_DEPS = [
-    ":osi_stack",
+    ":osi-stack",
     "@gtest",
     "@gtest//:gtest_main",
 ]
@@ -32,7 +32,7 @@ DEFAULT_TEST_LINK_OPTIONS = [
 ]
 
 cc_library(
-    name = "osi_stack",
+    name = "osi-stack",
     srcs = glob(["src/**/*.cpp"]),
     hdrs = glob(["include/**/*.h"]),
     copts = DEFAULT_COMPILER_OPTIONS,
