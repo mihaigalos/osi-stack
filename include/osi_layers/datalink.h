@@ -89,6 +89,7 @@ public:
 #endif
 
     virtual ~Datalink() = default;
+    Datalink(const Datalink &other) = delete;
     Datalink &operator=(const Datalink &other) = delete;
     Datalink &operator=(Datalink &&other) = delete;
 

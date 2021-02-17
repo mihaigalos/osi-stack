@@ -50,7 +50,6 @@ public:
 
     virtual ~Network() = default;
     Network(const Network &other) = delete;
-
     Network &operator=(const Network &other) = delete;
     Network &operator=(Network &&other) = delete;
 
