@@ -1,6 +1,6 @@
 # OSI Stack
 
-![CI](https://github.com/mihaigalos/osi-stack/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/mihaigalos/osi-stack/branch/master/graph/badge.svg)](https://codecov.io/gh/mihaigalos/osi-stack) [![license](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](LICENSE) [![HitCount](http://hits.dwyl.com/mihaigalos/osi-stack.svg)](http://hits.dwyl.com/mihaigalos/osi-stack) [![LoC](https://tokei.rs/b1/github/mihaigalos/osi-stack)](https://github.com/Aaronepower/tokei)
+![CI](https://github.com/mihaigalos/osi-stack/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/mihaigalos/osi-stack/branch/master/graph/badge.svg)](https://codecov.io/gh/mihaigalos/osi-stack) [![license](https://img.shields.io/badge/license-GPLv3-brightgreen.svg)](LICENSE) [![LoC](https://tokei.rs/b1/github/mihaigalos/osi-stack)](https://github.com/Aaronepower/tokei)
 
 ![Last Logs](https://img.shields.io/endpoint?style=social&url=https%3A%2F%2Fapi.cl1p.net%2Fosi-stack%2Fclipboard)
 
