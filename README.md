@@ -44,16 +44,16 @@ The Session handshake is described in the following diagram:
 
 This code respects many of the Clean Code & Architecture Principles:
 
-* Composition over inheritance
-* Dependency injection
+* Composition over Inheritance
+* Dependency Injection
 * DMT
-* Docs as code
+* Docs as Code
 * DRY
 * FIRST
 * GRASP
 * KISS
-* Single source of truth
+* Single Source of Truth
 * SoC
 * SOLID
 * TDD
-* Testing pyramid
+* Testing Pyramid
