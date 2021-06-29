@@ -41,7 +41,7 @@ inline Payload constructPayloadFromData(const uint32_t &total_size, const uint8_
 {
     uint8_t i{0};
     Payload payload{};
-    for (i = 0; i <= (kTransportPayloadSize) && (serialized_bytes + i <= total_size); ++i)
+    for (i = 0; i <= kTransportPayloadSize && (serialized_bytes + i <= total_size); ++i)
     {
         payload.data[i] = data[serialized_bytes + i];
     }
@@ -88,7 +88,7 @@ inline void deserializeData(const Payload &received, TSegment &segment, TMapPort
     uint8_t segment_end = received.size - 1 - kSizeOfToField - kSizeOfFromField - kCRCSize;
     uint8_t port_begining = segment_end - sizeof(TSegment);
     uint8_t port{};
-    // constexpr uint8_t kTransportPayloadSize{kPayloadMaxSize - kSizeOfToField - kSizeOfFromField - sizeof(TSegment) - kSizeOfPort - kCRCSize};
+
     port = deserializePort(received, port_begining);
     segment = deserializeSegment(received, segment_end);
 
@@ -112,7 +112,6 @@ public:
         auto result{CommunicationStatus::Unknown};
 
         TSegment segment{getSegmentsCount(total_size)};
-
         for (uint32_t serialized_bytes = 0; serialized_bytes < total_size;)
         {
             Payload payload = serializeData(total_size, data, segment, port, serialized_bytes);
@@ -141,6 +140,7 @@ public:
         TMapPortSequencePayload port_sequece_payload{};
         TSegment segment{};
         TSegment watchdog{kMaximumSegments};
+
         do
         {
             Payload received = network_.Receive(from_id);
