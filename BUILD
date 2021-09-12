@@ -5,7 +5,7 @@ DEFAULT_COMPILER_OPTIONS = [
     "-DTESTING",
     "-fdiagnostics-color",
     "-fmax-errors=3",
-    "-std=c++14",
+    "-std=c++17",
     "-Wall",
     "-Werror",
     "-Wextra",
